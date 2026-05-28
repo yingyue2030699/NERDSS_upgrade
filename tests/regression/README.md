@@ -38,6 +38,24 @@ Use `--json-output <path>` with `--list`, `--dry-run`, or a real run to emit a
 machine-readable report containing selected cases, planned commands, run
 directories, stochastic summaries, threshold status, and failures.
 
+## Default validation coverage
+
+The default manifest keeps runtime short by patching long validation samples down
+to tens of iterations while preserving their original molecule and reaction
+definitions. It currently covers:
+
+- `create_destroy_fresh_small`: zeroth-order creation/destruction.
+- `create_destroy_stochastic_seed_set`: five-seed stochastic summary check.
+- `michaelis_menten_fresh_small`: coupled binding/state-change Michaelis-Menten
+  sample.
+- `implicit_lipid_fresh_small`: box-boundary implicit-lipid association sample.
+- `sphere_fresh_small`: spherical-boundary implicit-lipid association sample.
+- `trimer_het_fresh_small`: heterotrimer assembly sample.
+- `homo_trimer_restart_from_1000`: restart-path trimer smoke regression.
+
+No validation-suite cases are currently excluded from the default manifest due to
+known simulator failures in this harness slice.
+
 ## Baselines
 
 Without `--baseline-root`, the runner executes each case twice with the same

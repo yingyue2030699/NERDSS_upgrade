@@ -60,6 +60,7 @@
             "^Command:",
             "^Start date:",
             "^End date:",
+            "^System time:",
             "^\\s*Wall Time:",
             "^Avg timestep duration:",
             "^Estimated end time:",
@@ -173,6 +174,314 @@
       ]
     },
     {
+      "name": "michaelis_menten_fresh_small",
+      "description": "Fresh fixed-seed Michaelis-Menten validation sample with a shortened runtime.",
+      "sample_dir": "sample_inputs/VALIDATE_SUITE/michaelis_menten",
+      "stage_files": [
+        "E.mol",
+        "S.mol",
+        "michaelis.inp"
+      ],
+      "input_file": "michaelis.inp",
+      "mode": "fresh",
+      "seed": 20240530,
+      "patches": [
+        {
+          "path": "michaelis.inp",
+          "pattern": "nItr\\s*=\\s*20000000",
+          "replace": "nItr = 80"
+        },
+        {
+          "path": "michaelis.inp",
+          "pattern": "timeWrite\\s*=\\s*500",
+          "replace": "timeWrite = 20"
+        },
+        {
+          "path": "michaelis.inp",
+          "pattern": "trajWrite\\s*=\\s*100000",
+          "replace": "trajWrite = 40"
+        },
+        {
+          "path": "michaelis.inp",
+          "pattern": "restartWrite\\s*=\\s*100000",
+          "replace": "restartWrite = 40"
+        },
+        {
+          "path": "michaelis.inp",
+          "pattern": "checkPoint\\s*=\\s*10000000",
+          "replace": "checkPoint = 40"
+        }
+      ],
+      "comparisons": [
+        {
+          "path": "stdout.txt",
+          "mode": "exact",
+          "ignore_lines_matching": [
+            "^Command:",
+            "^Start date:",
+            "^End date:",
+            "^System time:",
+            "^\\s*Wall Time:",
+            "^Avg timestep duration:",
+            "^Estimated end time:",
+            "^Time elapsed:",
+            "^Estimated time remaining:",
+            "^Total runtime:"
+          ]
+        },
+        {
+          "path": "DATA/copy_numbers_time.dat",
+          "mode": "tolerant",
+          "rtol": 1e-12,
+          "atol": 1e-12
+        },
+        {
+          "path": "DATA/mono_dimer_time.dat",
+          "mode": "exact"
+        },
+        {
+          "path": "DATA/bound_pair_time.dat",
+          "mode": "exact"
+        },
+        {
+          "path": "DATA/restart.dat",
+          "mode": "tolerant",
+          "rtol": 1e-12,
+          "atol": 1e-12
+        }
+      ]
+    },
+    {
+      "name": "implicit_lipid_fresh_small",
+      "description": "Fresh fixed-seed implicit-lipid validation sample with a shortened runtime.",
+      "sample_dir": "sample_inputs/VALIDATE_SUITE/implicit_lipid",
+      "stage_files": [
+        "B.mol",
+        "IL.mol",
+        "parms.inp"
+      ],
+      "input_file": "parms.inp",
+      "mode": "fresh",
+      "seed": 20240531,
+      "patches": [
+        {
+          "path": "parms.inp",
+          "pattern": "nItr\\s*=\\s*500000",
+          "replace": "nItr         = 60"
+        },
+        {
+          "path": "parms.inp",
+          "pattern": "timeWrite\\s*=\\s*100",
+          "replace": "timeWrite    = 20"
+        },
+        {
+          "path": "parms.inp",
+          "pattern": "trajWrite\\s*=\\s*10000",
+          "replace": "trajWrite    = 30"
+        },
+        {
+          "path": "parms.inp",
+          "pattern": "restartWrite\\s*=\\s*100000",
+          "replace": "restartWrite = 30"
+        }
+      ],
+      "comparisons": [
+        {
+          "path": "stdout.txt",
+          "mode": "exact",
+          "ignore_lines_matching": [
+            "^Command:",
+            "^Start date:",
+            "^End date:",
+            "^System time:",
+            "^\\s*Wall Time:",
+            "^Avg timestep duration:",
+            "^Estimated end time:",
+            "^Time elapsed:",
+            "^Estimated time remaining:",
+            "^Total runtime:"
+          ]
+        },
+        {
+          "path": "DATA/copy_numbers_time.dat",
+          "mode": "tolerant",
+          "rtol": 1e-12,
+          "atol": 1e-12
+        },
+        {
+          "path": "DATA/mono_dimer_time.dat",
+          "mode": "exact"
+        },
+        {
+          "path": "DATA/bound_pair_time.dat",
+          "mode": "exact"
+        },
+        {
+          "path": "DATA/restart.dat",
+          "mode": "tolerant",
+          "rtol": 1e-12,
+          "atol": 1e-12
+        }
+      ]
+    },
+    {
+      "name": "sphere_fresh_small",
+      "description": "Fresh fixed-seed spherical-boundary validation sample with a shortened runtime.",
+      "sample_dir": "sample_inputs/VALIDATE_SUITE/sphere",
+      "stage_files": [
+        "A.mol",
+        "IL.mol",
+        "parms_sphere.inp"
+      ],
+      "input_file": "parms_sphere.inp",
+      "mode": "fresh",
+      "seed": 20240601,
+      "patches": [
+        {
+          "path": "parms_sphere.inp",
+          "pattern": "nItr\\s*=\\s*1000000",
+          "replace": "nItr = 60"
+        },
+        {
+          "path": "parms_sphere.inp",
+          "pattern": "timeWrite\\s*=\\s*100",
+          "replace": "timeWrite = 20"
+        },
+        {
+          "path": "parms_sphere.inp",
+          "pattern": "trajWrite\\s*=\\s*1000",
+          "replace": "trajWrite = 30"
+        },
+        {
+          "path": "parms_sphere.inp",
+          "pattern": "restartWrite\\s*=\\s*10000",
+          "replace": "restartWrite = 30"
+        }
+      ],
+      "comparisons": [
+        {
+          "path": "stdout.txt",
+          "mode": "exact",
+          "ignore_lines_matching": [
+            "^Command:",
+            "^Start date:",
+            "^End date:",
+            "^System time:",
+            "^\\s*Wall Time:",
+            "^Avg timestep duration:",
+            "^Estimated end time:",
+            "^Time elapsed:",
+            "^Estimated time remaining:",
+            "^Total runtime:"
+          ]
+        },
+        {
+          "path": "DATA/copy_numbers_time.dat",
+          "mode": "tolerant",
+          "rtol": 1e-12,
+          "atol": 1e-12
+        },
+        {
+          "path": "DATA/mono_dimer_time.dat",
+          "mode": "exact"
+        },
+        {
+          "path": "DATA/bound_pair_time.dat",
+          "mode": "exact"
+        },
+        {
+          "path": "DATA/restart.dat",
+          "mode": "tolerant",
+          "rtol": 1e-12,
+          "atol": 1e-12
+        }
+      ]
+    },
+    {
+      "name": "trimer_het_fresh_small",
+      "description": "Fresh fixed-seed heterotrimer validation sample with a shortened runtime.",
+      "sample_dir": "sample_inputs/VALIDATE_SUITE/trimer",
+      "stage_files": [
+        "A.mol",
+        "B.mol",
+        "C.mol",
+        "parm_hetTri.inp"
+      ],
+      "input_file": "parm_hetTri.inp",
+      "mode": "fresh",
+      "seed": 20240602,
+      "patches": [
+        {
+          "path": "parm_hetTri.inp",
+          "pattern": "nItr\\s*=\\s*5E6",
+          "replace": "nItr = 60"
+        },
+        {
+          "path": "parm_hetTri.inp",
+          "pattern": "timeWrite\\s*=\\s*1000",
+          "replace": "timeWrite = 20"
+        },
+        {
+          "path": "parm_hetTri.inp",
+          "pattern": "trajWrite\\s*=\\s*100000",
+          "replace": "trajWrite = 30"
+        },
+        {
+          "path": "parm_hetTri.inp",
+          "pattern": "pdbWrite\\s*=\\s*100000",
+          "replace": "pdbWrite = 30"
+        },
+        {
+          "path": "parm_hetTri.inp",
+          "pattern": "restartWrite\\s*=\\s*1000000",
+          "replace": "restartWrite = 30"
+        },
+        {
+          "path": "parm_hetTri.inp",
+          "pattern": "checkPoint\\s*=\\s*5000000",
+          "replace": "checkPoint = 30"
+        }
+      ],
+      "comparisons": [
+        {
+          "path": "stdout.txt",
+          "mode": "exact",
+          "ignore_lines_matching": [
+            "^Command:",
+            "^Start date:",
+            "^End date:",
+            "^System time:",
+            "^\\s*Wall Time:",
+            "^Avg timestep duration:",
+            "^Estimated end time:",
+            "^Time elapsed:",
+            "^Estimated time remaining:",
+            "^Total runtime:"
+          ]
+        },
+        {
+          "path": "DATA/copy_numbers_time.dat",
+          "mode": "tolerant",
+          "rtol": 1e-12,
+          "atol": 1e-12
+        },
+        {
+          "path": "DATA/mono_dimer_time.dat",
+          "mode": "exact"
+        },
+        {
+          "path": "DATA/bound_pair_time.dat",
+          "mode": "exact"
+        },
+        {
+          "path": "DATA/restart.dat",
+          "mode": "tolerant",
+          "rtol": 1e-12,
+          "atol": 1e-12
+        }
+      ]
+    },
+    {
       "name": "homo_trimer_restart_from_1000",
       "description": "Restart-path smoke regression from a checked-in homoTrimer restart, shortened to a few iterations.",
       "sample_dir": "sample_inputs/VALIDATE_SUITE/homoTrimer",
@@ -217,6 +526,7 @@
             "^Command:",
             "^Start date:",
             "^End date:",
+            "^System time:",
             "^\\s*Wall Time:",
             "^Avg timestep duration:",
             "^Estimated end time:",
