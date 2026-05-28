@@ -1,6 +1,6 @@
 # NERDSS output format modernization
 
-This page documents the first Phase 4 output-modernization slice: a run manifest schema and a small helper for inventorying existing outputs. It is intentionally metadata-only. The current C++ simulation writers continue to emit the same legacy files and directory layout.
+This page documents the first Phase 4 output-modernization slices: a run manifest schema and a small helper for inventorying existing outputs or writing `DATA/run_manifest.json`. It is intentionally metadata-only. The current C++ simulation writers continue to emit the same legacy files and directory layout.
 
 ## Current legacy outputs
 
@@ -85,9 +85,25 @@ Useful options:
 python3 python_scripts/inspect_nerdss_run_manifest.py . --pretty
 python3 python_scripts/inspect_nerdss_run_manifest.py DATA --run-id smoke-001
 python3 python_scripts/inspect_nerdss_run_manifest.py . --hash --output run_manifest.json
+python3 python_scripts/inspect_nerdss_run_manifest.py . --write-data-manifest --pretty
 ```
 
-The helper scans the run directory, its `DATA`, `PDB`, and `RESTARTS` directories when present, and known root-level legacy files. It infers file role, file format, size, selected columns, approximate sample count, and MPI rank suffixes where possible. The output is a manifest skeleton; missing simulation metadata such as executable version, exact command line, input parameters, and final status can be filled by workflow tooling later.
+The helper scans the run directory, its `DATA`, `PDB`, and `RESTARTS` directories when present, and known root-level legacy files. It infers file role, file format, size, selected columns, approximate sample count, and MPI rank suffixes where possible. With `--write-data-manifest`, the helper writes the canonical manifest path for a run, `DATA/run_manifest.json`, creating `DATA` if needed.
+
+Workflow or wrapper tooling can pass run metadata without changing the C++ simulation path:
+
+```bash
+python3 python_scripts/inspect_nerdss_run_manifest.py . \
+  --write-data-manifest \
+  --run-id smoke-001 \
+  --status completed \
+  --input-file parms.inp \
+  --nerdss-executable ./nerdss \
+  --nerdss-command "./nerdss -f parms.inp" \
+  --nerdss-git-commit "$(git rev-parse HEAD)"
+```
+
+The output remains a best-effort manifest from existing artifacts. Missing simulation metadata such as executable version, exact input parameter expansion, and final status can be supplied by workflow tooling when available.
 
 ## Compatibility policy for this PR
 
@@ -95,6 +111,6 @@ This PR does not change C++ output behavior. It only adds:
 
 - A schema for a future run manifest.
 - Documentation describing the manifest and current legacy files.
-- A helper that reads existing outputs and prints JSON metadata.
+- A helper that reads existing outputs and prints JSON metadata or writes `DATA/run_manifest.json`.
 
 Existing notebooks, validation data, and post-processing scripts should continue to consume the legacy files directly.

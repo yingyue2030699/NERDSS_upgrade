@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Inspect legacy NERDSS outputs and emit a run manifest skeleton."""
+"""Inspect legacy NERDSS outputs and emit or write a run manifest."""
 
 from __future__ import annotations
 
@@ -9,13 +9,14 @@ import datetime as _dt
 import hashlib
 import json
 import re
+import shlex
 import sys
 from pathlib import Path
 from typing import Any
 
 
 SCHEMA_VERSION = "1.0.0"
-GENERATOR_VERSION = "0.1.0"
+GENERATOR_VERSION = "0.2.0"
 
 KNOWN_FILES: dict[str, dict[str, str]] = {
     "copy_numbers_time.dat": {
@@ -102,6 +103,11 @@ KNOWN_FILES: dict[str, dict[str, str]] = {
         "format": "legacy_text",
         "description": "Captured NERDSS standard output.",
     },
+    "run_manifest.json": {
+        "role": "manifest",
+        "format": "json",
+        "description": "NERDSS run manifest.",
+    },
 }
 
 RANK_SUFFIX_RE = re.compile(r"^(?P<stem>.+)_(?P<rank>[0-9]+)(?P<suffix>\.[^.]+)$")
@@ -125,6 +131,56 @@ def sha256_file(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def parse_datetime_arg(value: str) -> str:
+    """Return an ISO-8601 datetime string acceptable to the manifest schema."""
+    if value.endswith("Z"):
+        value = f"{value[:-1]}+00:00"
+    try:
+        parsed = _dt.datetime.fromisoformat(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(
+            f"expected ISO-8601 datetime, got {value!r}"
+        ) from exc
+    if parsed.tzinfo is None:
+        raise argparse.ArgumentTypeError(
+            f"expected timezone-aware ISO-8601 datetime, got {value!r}"
+        )
+    return parsed.isoformat()
+
+
+def parse_command(value: str) -> list[str]:
+    try:
+        command = shlex.split(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(
+            f"could not parse command line {value!r}: {exc}"
+        ) from exc
+    if not command:
+        raise argparse.ArgumentTypeError("command line must not be empty")
+    return command
+
+
+def parse_build_metadata(value: str) -> dict[str, str | int | float | bool | None]:
+    try:
+        parsed = json.loads(value)
+    except json.JSONDecodeError as exc:
+        raise argparse.ArgumentTypeError(
+            f"expected JSON object for build metadata: {exc}"
+        ) from exc
+    if not isinstance(parsed, dict):
+        raise argparse.ArgumentTypeError("build metadata must be a JSON object")
+
+    allowed_types = (str, int, float, bool, type(None))
+    for key, item in parsed.items():
+        if not isinstance(key, str):
+            raise argparse.ArgumentTypeError("build metadata keys must be strings")
+        if not isinstance(item, allowed_types):
+            raise argparse.ArgumentTypeError(
+                "build metadata values must be strings, numbers, booleans, or null"
+            )
+    return parsed
 
 
 def base_name_for_ranked_file(name: str) -> tuple[str, int | None]:
@@ -202,7 +258,8 @@ def infer_columns_and_samples(path: Path, file_format: str) -> dict[str, Any]:
     return metadata
 
 
-def collect_files(run_dir: Path) -> list[Path]:
+def collect_files(run_dir: Path, exclude_paths: set[Path] | None = None) -> list[Path]:
+    exclude_paths = exclude_paths or set()
     scan_roots: list[Path] = []
     if run_dir.name in {"DATA", "PDB", "RESTARTS"}:
         scan_roots.append(run_dir)
@@ -218,6 +275,8 @@ def collect_files(run_dir: Path) -> list[Path]:
     for root in scan_roots:
         for path in sorted(root.iterdir()):
             if not path.is_file() or path in seen:
+                continue
+            if path.resolve() in exclude_paths:
                 continue
             if root == run_dir and path.name not in KNOWN_FILES:
                 continue
@@ -252,7 +311,7 @@ def build_manifest(args: argparse.Namespace) -> dict[str, Any]:
     manifest_root = run_dir.parent if run_dir.name in {"DATA", "PDB", "RESTARTS"} else run_dir
 
     files = []
-    for path in collect_files(run_dir):
+    for path in collect_files(run_dir, args.exclude_paths):
         entry: dict[str, Any] = {
             "path": relative_path(path, manifest_root),
             "exists": True,
@@ -266,16 +325,27 @@ def build_manifest(args: argparse.Namespace) -> dict[str, Any]:
 
     run: dict[str, Any] = {
         "output_directory": relative_path(run_dir, manifest_root),
-        "working_directory": str(run_dir),
-        "status": "unknown",
+        "working_directory": args.working_directory or str(run_dir),
+        "status": args.status,
     }
     data_dir = run_dir / "DATA"
     if data_dir.is_dir():
         run["data_directory"] = relative_path(data_dir, manifest_root)
     if args.run_id:
         run["id"] = args.run_id
+    if args.title:
+        run["title"] = args.title
     if args.input_file:
         run["input_file"] = args.input_file
+    if args.started_at:
+        run["started_at"] = args.started_at
+    if args.ended_at:
+        run["ended_at"] = args.ended_at
+    if args.mpi_ranks is not None:
+        run["mpi"] = {
+            "enabled": args.mpi_ranks > 1,
+            "ranks": args.mpi_ranks,
+        }
 
     manifest: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
@@ -293,6 +363,20 @@ def build_manifest(args: argparse.Namespace) -> dict[str, Any]:
         ],
     }
 
+    nerdss: dict[str, Any] = {}
+    if args.nerdss_executable:
+        nerdss["executable"] = args.nerdss_executable
+    if args.nerdss_command:
+        nerdss["command"] = args.nerdss_command
+    if args.nerdss_version:
+        nerdss["version"] = args.nerdss_version
+    if args.nerdss_git_commit:
+        nerdss["git_commit"] = args.nerdss_git_commit
+    if args.nerdss_build:
+        nerdss["build"] = args.nerdss_build
+    if nerdss:
+        manifest["nerdss"] = nerdss
+
     directories = collect_directories(run_dir, manifest_root)
     if directories:
         manifest["directories"] = directories
@@ -300,9 +384,39 @@ def build_manifest(args: argparse.Namespace) -> dict[str, Any]:
     return manifest
 
 
+def default_data_manifest_path(run_directory: Path) -> Path:
+    if run_directory.name == "DATA":
+        return run_directory / "run_manifest.json"
+    if run_directory.name in {"PDB", "RESTARTS"}:
+        return run_directory.parent / "DATA" / "run_manifest.json"
+    return run_directory / "DATA" / "run_manifest.json"
+
+
+def add_manifest_file_entry(
+    manifest: dict[str, Any], output_path: Path, run_directory: Path
+) -> None:
+    run_dir = run_directory.resolve()
+    manifest_root = run_dir.parent if run_dir.name in {"DATA", "PDB", "RESTARTS"} else run_dir
+    manifest_path = relative_path(output_path.resolve(), manifest_root)
+    if any(entry.get("path") == manifest_path for entry in manifest["files"]):
+        return
+    manifest["files"].append(
+        {
+            "path": manifest_path,
+            "role": "manifest",
+            "format": "json",
+            "exists": True,
+            "description": "NERDSS run manifest generated after inspecting legacy outputs.",
+            "notes": [
+                "Size and checksum are omitted to avoid circular manifest metadata."
+            ],
+        }
+    )
+
+
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Inspect a NERDSS run directory or DATA directory and emit a run manifest skeleton."
+        description="Inspect a NERDSS run directory or DATA directory and emit or write a run manifest."
     )
     parser.add_argument(
         "run_directory",
@@ -316,8 +430,59 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Optional run identifier to include in the manifest.",
     )
     parser.add_argument(
+        "--title",
+        help="Optional human-readable run title.",
+    )
+    parser.add_argument(
         "--input-file",
         help="Optional input file path to record in run.input_file.",
+    )
+    parser.add_argument(
+        "--working-directory",
+        help="Working directory to record for the run. Defaults to the inspected directory.",
+    )
+    parser.add_argument(
+        "--status",
+        choices=["planned", "running", "completed", "failed", "unknown"],
+        default="unknown",
+        help="Run status to record. Defaults to unknown.",
+    )
+    parser.add_argument(
+        "--started-at",
+        type=parse_datetime_arg,
+        help="Run start time as a timezone-aware ISO-8601 timestamp.",
+    )
+    parser.add_argument(
+        "--ended-at",
+        type=parse_datetime_arg,
+        help="Run end time as a timezone-aware ISO-8601 timestamp.",
+    )
+    parser.add_argument(
+        "--mpi-ranks",
+        type=int,
+        help="Number of MPI ranks used for the run.",
+    )
+    parser.add_argument(
+        "--nerdss-executable",
+        help="NERDSS executable path or name used for the run.",
+    )
+    parser.add_argument(
+        "--nerdss-command",
+        type=parse_command,
+        help="NERDSS command line used for the run, parsed with shell-style quoting.",
+    )
+    parser.add_argument(
+        "--nerdss-version",
+        help="NERDSS version string to record, if known.",
+    )
+    parser.add_argument(
+        "--nerdss-git-commit",
+        help="NERDSS source git commit to record, if known.",
+    )
+    parser.add_argument(
+        "--nerdss-build",
+        type=parse_build_metadata,
+        help="NERDSS build metadata as a JSON object with scalar values.",
     )
     parser.add_argument(
         "--hash",
@@ -334,7 +499,18 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         type=Path,
         help="Write JSON to this file instead of standard output.",
     )
-    return parser.parse_args(argv)
+    parser.add_argument(
+        "--write-data-manifest",
+        action="store_true",
+        help="Write to DATA/run_manifest.json for the inspected run.",
+    )
+    args = parser.parse_args(argv)
+    if args.mpi_ranks is not None and args.mpi_ranks < 1:
+        parser.error("--mpi-ranks must be at least 1")
+    if args.output and args.write_data_manifest:
+        parser.error("--output and --write-data-manifest are mutually exclusive")
+    args.exclude_paths = set()
+    return args
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -346,19 +522,31 @@ def main(argv: list[str] | None = None) -> int:
         print(f"error: expected a directory: {args.run_directory}", file=sys.stderr)
         return 2
 
+    output_path: Path | None = None
+    if args.write_data_manifest:
+        output_path = default_data_manifest_path(args.run_directory).resolve()
+    elif args.output:
+        output_path = args.output.resolve()
+
+    if output_path is not None:
+        args.exclude_paths.add(output_path)
+
     manifest = build_manifest(args)
+    if args.write_data_manifest and output_path is not None:
+        add_manifest_file_entry(manifest, output_path, args.run_directory)
+
     json_text = json.dumps(
         manifest,
         indent=2 if args.pretty else None,
         sort_keys=True,
     )
-    if args.pretty:
-        json_text += "\n"
+    json_text += "\n"
 
-    if args.output:
-        args.output.write_text(json_text, encoding="utf-8")
+    if output_path is not None:
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(json_text, encoding="utf-8")
     else:
-        print(json_text)
+        print(json_text, end="")
     return 0
 
 
