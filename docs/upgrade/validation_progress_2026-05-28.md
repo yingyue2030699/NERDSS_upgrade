@@ -128,3 +128,14 @@ Post-merge validation:
 | Serial build | Passed | Incremental `make serial` rebuilt `bin/nerdss`. |
 | Smoke runner | Passed | `--skip-build` smoke passed and CLI checks passed. |
 | Expanded regression suite | Passed | `PASS: 7 regression case(s)`. |
+| Upgrade validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed; benchmark mode also passed with `medium_michaelis_menten`. |
+
+## Validation Runner Update
+
+Added `tools/run_upgrade_validation.py` as a top-level orchestrator for the
+upgrade workflow. It runs the existing smoke runner, CMake unit tests, CTest,
+the regression harness, and optional benchmark cases, then writes a single
+`validation_report.json` plus per-step stdout/stderr logs.
+
+This runner is intended as the standard local command before behavior-sensitive
+refactors and as the future CI entry point once workflow pushes are available.
