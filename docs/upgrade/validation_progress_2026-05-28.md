@@ -100,5 +100,31 @@ macOS Instruments or `sample` run, or a Linux `perf`/`gprof` profiling run.
 | Main loop first slice | `codex/upgrade-main-loop-first-slice` | Docs-only slice committed and pushed to `personal`. |
 | Run manifest writer | `codex/upgrade-run-manifest-writer` | Implemented, validated, committed, and pushed to `personal`. |
 | CI regression workflow | `codex/upgrade-ci-regression` | Implemented and validated locally; push blocked because the OAuth credential lacks GitHub `workflow` scope. |
-| Expanded validation | `codex/upgrade-expanded-validation` | Still running at the time of this note. |
+| Expanded validation | `codex/upgrade-expanded-validation` | Implemented, validated, committed, and pushed to `personal`. |
 
+## Integration Update
+
+The local integration branch was advanced after the initial note by merging the
+completed non-core slices for baseline policy, architecture mapping, style
+tooling, sanitizer/static-analysis tooling, input schema conversion, run
+manifest writing, main-loop extraction planning, and expanded regression
+validation.
+
+A small CLI error-handling slice was also added locally:
+
+- `parse_command` now reports missing values for flags such as `-f` and `-s`
+  instead of indexing past `argv`.
+- `--help` prints usage and exits successfully.
+- Running without `-f` or `-r` now exits with the structured input error code.
+- The smoke runner now includes negative CLI checks for `--help`, missing `-f`
+  value, and missing `-s` value.
+
+Post-merge validation:
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| Python syntax checks | Passed | Smoke, regression, benchmark, input converter, and manifest inspector scripts compiled with `py_compile`. |
+| JSON schema syntax | Passed | Input and run-manifest schemas loaded with `python3 -m json.tool`. |
+| Serial build | Passed | Incremental `make serial` rebuilt `bin/nerdss`. |
+| Smoke runner | Passed | `--skip-build` smoke passed and CLI checks passed. |
+| Expanded regression suite | Passed | `PASS: 7 regression case(s)`. |

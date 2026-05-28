@@ -17,6 +17,8 @@ By default, the runner:
 - runs `make serial`;
 - stages `smoke.inp` and `A.mol` into a temporary directory;
 - runs `bin/nerdss -f smoke.inp -s 123`;
+- verifies basic CLI error handling for `--help`, missing `-f` values, and
+  missing `-s` values;
 - captures stdout, stderr, exit code, runtime, and produced file names/sizes;
 - writes `report.json`, command logs, and the isolated run directory when
   `--artifact-dir` is provided.

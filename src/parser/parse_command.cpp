@@ -1,7 +1,34 @@
 #include "classes/class_Parameters.hpp"
+#include "error/error_codes.hpp"
+#include <cstdlib>
 #include <iostream>
 #include <sstream>
 #include <string>
+
+namespace {
+
+void print_usage(const char *executable) {
+  std::cout << "\nUsage: " << executable
+            << " -f <input.inp> [-s <seed>] [-a <add.inp>]"
+               " [-c <coords.dat>]\n"
+            << "       " << executable << " -r <restart.dat> [-s <seed>]\n";
+}
+
+void exit_with_usage_error(const std::string &message, const char *executable) {
+  std::cerr << "\nERROR [input]: " << message << '\n';
+  print_usage(executable);
+  std::exit(nerdss::error::to_exit_status(nerdss::error::ExitCode::input));
+}
+
+const char *require_value(int argc, char *argv[], int flagIndex) {
+  if (flagIndex + 1 >= argc) {
+    exit_with_usage_error(std::string("missing value for ") + argv[flagIndex],
+                          argv[0]);
+  }
+  return argv[flagIndex + 1];
+}
+
+} // namespace
 
 void parse_command(int argc, char *argv[], Parameters &params,
                    std::string &paramFileName, std::string &restartFileName,
@@ -11,19 +38,24 @@ void parse_command(int argc, char *argv[], Parameters &params,
   for (int flagItr{1}; flagItr < argc; ++flagItr) {
     std::string flag{argv[flagItr]};
     std::cout << ' ' << flag << std::flush;
-    if (flag == "-f") {
-      paramFileName = argv[flagItr + 1];
-      std::cout << ' ' << std::string(argv[flagItr + 1]) << std::flush;
+    if (flag == "-h" || flag == "--help") {
+      print_usage(argv[0]);
+      std::exit(nerdss::error::to_exit_status(nerdss::error::ExitCode::success));
+    } else if (flag == "-f") {
+      const char *value = require_value(argc, argv, flagItr);
+      paramFileName = value;
+      std::cout << ' ' << value << std::flush;
       ++flagItr;
     } else if (flag == "-s" || flag == "--seed") {
-      std::stringstream iss(argv[flagItr + 1]);
+      const char *value = require_value(argc, argv, flagItr);
+      std::stringstream iss(value);
       unsigned tmpseed;
       if (iss >> tmpseed) {
         seed = tmpseed;
         std::cout << ' ' << seed << std::flush;
       } else {
-        std::cerr << "Error reading seed, exiting.\n";
-        exit(1);
+        exit_with_usage_error(std::string("invalid seed value: ") + value,
+                              argv[0]);
       }
       ++flagItr;
       std::cout << '\n';
@@ -35,8 +67,9 @@ void parse_command(int argc, char *argv[], Parameters &params,
       params.debugParams.printSystemInfo = true;
     } else if (flag == "-r" || flag == "--restart") {
       if (params.rank < 0) { // for serial jobs
-        restartFileName = std::string(argv[flagItr + 1]);
-        std::cout << ' ' << std::string(argv[flagItr + 1]) << std::flush;
+        const char *value = require_value(argc, argv, flagItr);
+        restartFileName = value;
+        std::cout << ' ' << value << std::flush;
       } else { // for parallel jobs
         restartFileName = "restart.dat";
         char rankChar[10];
@@ -47,12 +80,14 @@ void parse_command(int argc, char *argv[], Parameters &params,
       params.fromRestart = true;
       ++flagItr;
     } else if (flag == "-a" || flag == "--add") {
-      addFileName = std::string(argv[flagItr + 1]);
-      std::cout << ' ' << std::string(argv[flagItr + 1]) << std::flush;
+      const char *value = require_value(argc, argv, flagItr);
+      addFileName = value;
+      std::cout << ' ' << value << std::flush;
       ++flagItr;
     } else if (flag == "-c" || flag == "--coordinate") {
-      coordinateFileName = std::string(argv[flagItr + 1]);
-      std::cout << ' ' << std::string(argv[flagItr + 1]) << std::flush;
+      const char *value = require_value(argc, argv, flagItr);
+      coordinateFileName = value;
+      std::cout << ' ' << value << std::flush;
       ++flagItr;
     } else if (flag == "-v") {
       params.debugParams.verbosity = 1;
@@ -61,5 +96,10 @@ void parse_command(int argc, char *argv[], Parameters &params,
     } else {
       std::cout << " ignored " << std::endl;
     }
+  }
+  if (!params.fromRestart && paramFileName.empty()) {
+    exit_with_usage_error("missing required input file; pass -f <input.inp> or "
+                          "-r <restart.dat>",
+                          argv[0]);
   }
 }

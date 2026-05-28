@@ -106,6 +106,7 @@ class SmokeReport:
     environment: Dict[str, str] = field(default_factory=dict)
     build: Optional[CommandResult] = None
     run: Optional[CommandResult] = None
+    cli_checks: List[CommandResult] = field(default_factory=list)
     produced_files: List[Dict[str, object]] = field(default_factory=list)
 
     def to_dict(self) -> Dict[str, object]:
@@ -121,6 +122,7 @@ class SmokeReport:
             "environment": self.environment,
             "build": self.build.to_dict() if self.build else None,
             "run": self.run.to_dict() if self.run else None,
+            "cli_checks": [check.to_dict() for check in self.cli_checks],
             "produced_files": self.produced_files,
         }
 
@@ -352,6 +354,34 @@ def list_produced_files(smoke_dir: Path) -> List[Dict[str, object]]:
     return produced
 
 
+def run_cli_error_checks(executable: Path) -> List[CommandResult]:
+    checks = []
+    check_dir = Path(tempfile.mkdtemp(prefix="nerdss-cli-check-"))
+    try:
+        checks.append(run_command([str(executable), "--help"], check_dir, timeout=10.0))
+        checks.append(run_command([str(executable), "-f"], check_dir, timeout=10.0))
+        checks.append(
+            run_command([str(executable), "-f", "smoke.inp", "-s"], check_dir, timeout=10.0)
+        )
+    finally:
+        shutil.rmtree(check_dir, ignore_errors=True)
+    return checks
+
+
+def cli_error_checks_passed(checks: List[CommandResult]) -> bool:
+    if len(checks) != 3:
+        return False
+    help_check, missing_file, missing_seed = checks
+    return (
+        help_check.exit_code == 0
+        and "Usage:" in help_check.stdout
+        and missing_file.exit_code == 2
+        and "missing value for -f" in missing_file.stderr
+        and missing_seed.exit_code == 2
+        and "missing value for -s" in missing_seed.stderr
+    )
+
+
 def write_report_artifacts(report: SmokeReport, artifact_dir: Path) -> None:
     artifact_dir.mkdir(parents=True, exist_ok=True)
     report.artifact_dir = str(artifact_dir)
@@ -368,6 +398,10 @@ def write_command_logs(report: SmokeReport, artifact_dir: Path) -> None:
     if report.run:
         (artifact_dir / "run.stdout.txt").write_text(report.run.stdout, encoding="utf-8")
         (artifact_dir / "run.stderr.txt").write_text(report.run.stderr, encoding="utf-8")
+    for index, check in enumerate(report.cli_checks, start=1):
+        prefix = artifact_dir / f"cli_check_{index}"
+        prefix.with_suffix(".stdout.txt").write_text(check.stdout, encoding="utf-8")
+        prefix.with_suffix(".stderr.txt").write_text(check.stderr, encoding="utf-8")
 
 
 def preserve_artifacts(report: SmokeReport, smoke_dir: Path, artifact_dir: Path) -> None:
@@ -399,6 +433,8 @@ def print_text_summary(report: SmokeReport) -> None:
             f"runtime={report.run.runtime_seconds:.2f}s "
             f"cmd='{command_to_string(report.run.command)}'"
         )
+    if report.cli_checks:
+        print(f"CLI checks: {'passed' if cli_error_checks_passed(report.cli_checks) else 'failed'}")
     if report.artifact_dir:
         print(f"Artifacts: {report.artifact_dir}")
     print(f"Produced files: {len(report.produced_files)}")
@@ -472,12 +508,16 @@ def main() -> int:
             args.run_timeout,
         )
         report.produced_files = list_produced_files(smoke_dir)
-        if report.run.ok:
+        report.cli_checks = run_cli_error_checks(executable)
+        if report.run.ok and cli_error_checks_passed(report.cli_checks):
             report.status = "passed"
             report.message = "Serial NERDSS build and minimal smoke simulation succeeded."
         elif report.run.timed_out:
             report.status = "failed"
             report.message = f"Smoke simulation timed out after {args.run_timeout:.1f}s."
+        elif report.run.ok:
+            report.status = "failed"
+            report.message = "Smoke simulation passed, but CLI error handling checks failed."
         else:
             report.status = "failed"
             report.message = "Smoke simulation failed. See captured run stderr/stdout."
