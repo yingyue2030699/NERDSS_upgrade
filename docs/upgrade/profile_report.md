@@ -5,6 +5,10 @@ Owner: Agent P
 Status: initial template and profiler command guide. Fill measured results after
 Agent O benchmark cases are available.
 
+Update 2026-05-28: the benchmark harness now has local numeric baseline results.
+An attempted macOS `sample` profile of the homotrimer case was blocked by
+process-inspection permissions, so hotspot attribution is still pending.
+
 ## Purpose
 
 Phase 6 profiling should identify expensive NERDSS components from
@@ -201,6 +205,39 @@ compiler. Record `brew --prefix gperftools`, compiler, and linker flags if this
 path is used. Treat Instruments as the default macOS source of truth.
 
 ## Result Template
+
+## Local Attempt - 2026-05-28
+
+| Field | Value |
+| --- | --- |
+| Branch | `codex/validation-integration` |
+| Case | `small_homotrimer` |
+| Command | `bin/nerdss -f parmTri6.inp -s 12345` |
+| Benchmark wall time | 8.668 s |
+| Benchmark CPU time | 8.560 s |
+| Profiler attempted | macOS `sample` |
+| Result | Blocked by macOS process-inspection permission. |
+
+`tools/profile_commands.sh` produced the expected command block:
+
+```sh
+pgrep -fl nerdss
+sample <PID> 10 -file sample.txt
+```
+
+The live attach attempt failed with:
+
+```text
+sample cannot examine process ...; try running with `sudo`.
+```
+
+The simulation itself completed successfully during the profiling attempt.
+Hotspot attribution should be completed by either:
+
+- running Instruments or `sample` with the required local permissions on macOS;
+- running Linux `perf` against an optimized symbolized build;
+- running `gprof` from a `make serial profile` build where `gmon.out` is
+  emitted correctly.
 
 ### Run Metadata
 

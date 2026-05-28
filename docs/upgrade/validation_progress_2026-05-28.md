@@ -1,0 +1,104 @@
+# Validation Progress - 2026-05-28
+
+This note records the validation, benchmark, coverage, and agent status from
+the local integration workflow on `codex/validation-integration`.
+
+## Integration Context
+
+Local branch:
+
+```text
+codex/validation-integration
+```
+
+Integrated slices at the time of this run:
+
+- Smoke runner and serial build fixes.
+- Deterministic regression harness.
+- Stochastic seed-set validation harness.
+- Minimal CTest unit test target.
+- Create/destroy crash hardening.
+- Legacy restart crash hardening.
+- Benchmark harness.
+- Profiling command guide.
+
+The local worktree was dirty only because of generated build directories:
+
+```text
+?? build-coverage/
+?? build-unit-validation/
+```
+
+## Validation Results
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| Serial smoke runner | Passed | Built serial NERDSS and completed the generated smoke simulation. |
+| CTest unit target | Passed | `1/1` tests passed. |
+| Regression manifest | Passed | All three selected validation cases passed. |
+| Stochastic seed set | Passed | `create_destroy_stochastic_seed_set` passed seeds `31001` through `31005`. |
+| Restart regression | Passed | `homo_trimer_restart_from_1000` passed with legacy restart input. |
+
+The restart regression depends on the legacy `RNGwrite` parser hardening. The
+create/destroy seed-set regression depends on skipping destroyed molecules in
+the overlap-check loop.
+
+## Coverage Snapshot
+
+Coverage was collected after smoke and the full validation manifest using the
+Xcode `llvm-cov` toolchain.
+
+| Metric | Coverage |
+| --- | ---: |
+| Lines | 17.43% |
+| Functions | 20.25% |
+| Branches | 16.32% |
+
+This is an early integration coverage snapshot, not a target threshold. It is
+useful for trend tracking and for identifying large untested regions before
+deeper refactoring.
+
+## Benchmark Snapshot
+
+All benchmark manifest cases completed with exit status `0` using seed `12345`.
+
+| Case | Wall time (s) | CPU time (s) | Output files | Output bytes |
+| --- | ---: | ---: | ---: | ---: |
+| `small_homotrimer` | 8.668 | 8.560 | 24 | 8,828,354 |
+| `medium_michaelis_menten` | 1.036 | 0.871 | 15 | 164,072 |
+| `representative_implicit_lipid` | 2.068 | 1.979 | 24 | 1,510,702 |
+| `large_clathrin_short` | 0.419 | 0.256 | 15 | 442,377 |
+
+Benchmark artifacts were written outside the repository:
+
+```text
+/tmp/nerdss-benchmark-baseline/
+/tmp/nerdss-benchmark-representative/
+/tmp/nerdss-benchmark-large/
+```
+
+## Profiling Status
+
+`tools/profile_commands.sh` generated the expected macOS `sample` command
+block for the homotrimer case. A live attempt to attach `sample` to the running
+NERDSS process was blocked by macOS permissions:
+
+```text
+sample cannot examine process ...; try running with `sudo`.
+```
+
+The same homotrimer case was rerun successfully while trying to collect timing
+data with `/usr/bin/time -lp`, but the sandbox blocked the kernel clock query
+after the simulation completed. The benchmark runner timings above remain the
+current reliable baseline. A full hotspot report still needs an elevated
+macOS Instruments or `sample` run, or a Linux `perf`/`gprof` profiling run.
+
+## Agent Status
+
+| Agent slice | Branch | Status |
+| --- | --- | --- |
+| Main loop first slice | `codex/upgrade-main-loop-first-slice` | Docs-only slice committed and pushed to `personal`. |
+| Run manifest writer | `codex/upgrade-run-manifest-writer` | Implemented, validated, committed, and pushed to `personal`. |
+| CI regression workflow | `codex/upgrade-ci-regression` | Implemented and validated locally; push blocked because the OAuth credential lacks GitHub `workflow` scope. |
+| Expanded validation | `codex/upgrade-expanded-validation` | Still running at the time of this note. |
+

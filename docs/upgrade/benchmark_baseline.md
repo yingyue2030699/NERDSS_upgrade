@@ -80,7 +80,25 @@ quick trend comparisons.
 
 ## Baseline Notes
 
-No numeric performance baseline is committed yet. The first numeric baseline
-should be generated after the serial build fix is available on the branch used
-for benchmarking, then attached to this document or stored as an external CI
-artifact. Avoid committing large raw output directories.
+The first numeric local baseline was collected on 2026-05-28 from
+`codex/validation-integration` after the serial build fix, smoke runner,
+regression harnesses, crash hardening, benchmark harness, and profile command
+guide were merged locally.
+
+| Case | Seed | Wall time (s) | CPU time (s) | Output files | Output bytes |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `small_homotrimer` | 12345 | 8.668 | 8.560 | 24 | 8,828,354 |
+| `medium_michaelis_menten` | 12345 | 1.036 | 0.871 | 15 | 164,072 |
+| `representative_implicit_lipid` | 12345 | 2.068 | 1.979 | 24 | 1,510,702 |
+| `large_clathrin_short` | 12345 | 0.419 | 0.256 | 15 | 442,377 |
+
+Raw artifacts were kept outside the repository under `/tmp`:
+
+- `/tmp/nerdss-benchmark-baseline/`
+- `/tmp/nerdss-benchmark-representative/`
+- `/tmp/nerdss-benchmark-large/`
+
+The benchmark result metadata marked the repository dirty only because of
+generated local build directories. Avoid committing large raw output
+directories; keep detailed benchmark JSON/CSV as CI artifacts or external
+run artifacts.
