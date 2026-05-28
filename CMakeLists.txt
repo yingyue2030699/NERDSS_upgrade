@@ -5,9 +5,12 @@ project(nerdss)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 
-set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -fsanitize=address -fno-omit-frame-pointer")
+set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -fno-omit-frame-pointer")
 
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+
+option(NERDSS_ENABLE_ASAN "Build the serial executable with AddressSanitizer." OFF)
+option(NERDSS_ENABLE_UBSAN "Build the serial executable with UndefinedBehaviorSanitizer." OFF)
 
 set(default_build_type "Release")
 if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -52,9 +55,25 @@ endforeach()
 
 add_executable(nerdss ${SOURCES} EXEs/nerdss.cpp)
 
+set(NERDSS_SANITIZER_FLAGS "")
+if(NERDSS_ENABLE_ASAN)
+    list(APPEND NERDSS_SANITIZER_FLAGS -fsanitize=address)
+endif()
+if(NERDSS_ENABLE_UBSAN)
+    list(APPEND NERDSS_SANITIZER_FLAGS -fsanitize=undefined)
+endif()
+if(NERDSS_SANITIZER_FLAGS)
+    if(NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+        message(WARNING "Sanitizer flags are only validated with Clang and GCC.")
+    endif()
+    list(APPEND NERDSS_SANITIZER_FLAGS -fno-omit-frame-pointer)
+    target_compile_options(nerdss PRIVATE ${NERDSS_SANITIZER_FLAGS})
+    target_link_libraries(nerdss PRIVATE ${NERDSS_SANITIZER_FLAGS})
+endif()
+
 # Set up external libraries
 find_package(GSL REQUIRED)
-target_link_libraries(nerdss GSL::gsl GSL::gslcblas)
+target_link_libraries(nerdss PRIVATE GSL::gsl GSL::gslcblas)
 
 # Set up header directories
 include_directories(include $(GSL_INCLUDE_DIR))
