@@ -228,3 +228,16 @@ Validation for this slice:
 | Serial build | Passed | Incremental `make serial` rebuilt `bin/nerdss`. |
 | Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
 | Benchmark mode | Passed | `small_homotrimer` wall time `8.643s`, CPU time `8.557s`. |
+
+Follow-up: moved the 2D free-diffusion normalization integrand behind the same
+service facade as `FreeDiffusionNormIntegrand2D`, with `norm_function` retained
+as the GSL callback adapter.
+
+Validation for the follow-up:
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| CTest unit suite | Passed | Added facade-vs-callback coverage for the 2D norm integrand. |
+| Serial build | Passed | Incremental `make serial` rebuilt `bin/nerdss`. |
+| Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
+| Benchmark mode | Passed | `small_homotrimer` wall time `8.602s`, CPU time `8.441s`. |

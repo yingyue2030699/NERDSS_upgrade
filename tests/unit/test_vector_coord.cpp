@@ -218,6 +218,11 @@ void test_probability_engine_facade()
             absorbing_params.r0, absorbing_params.r, absorbing_params.t),
         pir_function(0.6, &absorbing_params),
         "2D absorbing pir integrand facade should match legacy callback");
+    require_close(
+        nerdss::core::ProbabilityEngine::FreeDiffusionNormIntegrand2D(
+            0.6, finite_params.r0, finite_params.D, finite_params.t),
+        norm_function(0.6, &finite_params),
+        "2D norm integrand facade should match legacy callback");
 }
 
 } // namespace

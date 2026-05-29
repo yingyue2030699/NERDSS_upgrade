@@ -8,6 +8,7 @@
 
 #include <cmath>
 #include <complex>
+#include <gsl/gsl_sf_bessel.h>
 
 namespace nerdss {
 namespace core {
@@ -260,6 +261,21 @@ public:
 
     return x * std::exp(-diffusion_total * time * x * x) * current_projection
            * initial_projection / (2.0 * pi);
+  }
+
+  static double FreeDiffusionNormIntegrand2D(double x, double initial_radius,
+                                             double diffusion_total,
+                                             double time) {
+    const double scaled_radius {
+        x * initial_radius / (2.0 * diffusion_total * time) };
+    const double prefactor { x / (2.0 * diffusion_total * time) };
+    const double exponent {
+        scaled_radius
+        - (initial_radius * initial_radius + x * x)
+              / (4.0 * time * diffusion_total) };
+
+    return prefactor * std::exp(exponent)
+           * gsl_sf_bessel_I0_scaled(scaled_radius);
   }
 };
 
