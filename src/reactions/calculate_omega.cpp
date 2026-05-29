@@ -1,3 +1,4 @@
+#include "core/math_engine.hpp"
 #include "reactions/association/association.hpp"
 #include "tracing.hpp"
 
@@ -20,25 +21,5 @@ double calculate_omega(Coord reactIface1, int reactIface2, Vector& sigma,
         v2 = Vector(reactMol2.tmpICoords[reactIface2] - reactMol2.tmpComCoord);
     }
 
-    Vector projVec1 { v1.x, v1.y, 0 };
-    Vector projVec2 { v2.x, v2.y, 0 };
-    projVec1.calc_magnitude();
-    projVec2.calc_magnitude();
-    Vector test = projVec1.cross(projVec2);
-    double omega = projVec1.dot_theta(projVec2);
-    double tol = 1E-11;
-    /*DO NOT FLIP SIGN IF IT IS PI OR ZERO, DUE TO PRECISION, z COULD BE >0! */
-    if (test.z > 0 and std::abs(omega) > tol and (M_PI - std::abs(omega)) > tol) //positive z, flip theta sign
-        omega = -omega;
-    return omega;
-
-    //(projVec1.cross(projVec2).z < 0) ? projVec1.dot_theta(projVec2) : -projVec1.dot_theta(projVec2);
-
-    //    projVec1 = Vector { v1.x, v1.y, 0 };
-    //    projVec2 = Vector { v2.x, v2.y, 0 };
-    //
-    //    projVec1.calc_magnitude();
-    //    projVec2.calc_magnitude();
-    //
-    //    return (angleSignIsCorrect(projVec1, projVec2)) ? projVec1.dot_theta(projVec2) : -projVec1.dot_theta(projVec2);
+    return nerdss::core::MathEngine::SignedProjectedAngleOnXY(v1, v2, 1E-11);
 }

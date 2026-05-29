@@ -401,3 +401,20 @@ Validation for this slice:
 | Serial build | Passed | Incremental `make serial` rebuilt the legacy wrapper and `bin/nerdss`. |
 | Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
 | Benchmark mode | Passed | `small_homotrimer` wall time `8.060s`, CPU time `7.879s`. |
+
+## Signed Projected-Angle Facade
+
+Moved the shared XY-projected signed-angle calculation used by `calculate_phi`
+and `calculate_omega` behind
+`nerdss::core::MathEngine::SignedProjectedAngleOnXY`. The reaction-level
+wrappers still perform their existing transform, normal selection, and
+tolerance choices before delegating the pure angle kernel.
+
+Validation for this slice:
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| CTest unit suite | Passed | Added direct `MathEngine` coverage for sign flip, sign preservation, and endpoint handling. |
+| Serial build | Passed | Incremental `make serial` rebuilt `calculate_phi`, `calculate_omega`, and `bin/nerdss`. |
+| Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
+| Benchmark mode | Passed | `small_homotrimer` wall time `8.073s`, CPU time `7.868s`. |

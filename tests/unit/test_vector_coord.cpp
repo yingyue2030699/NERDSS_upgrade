@@ -173,6 +173,21 @@ void test_math_engine_facade()
         nerdss::core::MathEngine::IsAngleSignCorrect({ 1.0, 0.0, 1.0 }, { 0.0, 0.0, 1.0 })
             == angleSignIsCorrect({ 1.0, 0.0, 1.0 }, { 0.0, 0.0, 1.0 }),
         "angle sign facade should match legacy wrapper");
+    require_close(
+        nerdss::core::MathEngine::SignedProjectedAngleOnXY(
+            { 1.0, 0.0, 3.0 }, { 0.0, 1.0, 4.0 }, 1.0e-12),
+        -pi / 2.0,
+        "signed projected angle should flip positive-z cross products");
+    require_close(
+        nerdss::core::MathEngine::SignedProjectedAngleOnXY(
+            { 0.0, 1.0, 3.0 }, { 1.0, 0.0, 4.0 }, 1.0e-12),
+        pi / 2.0,
+        "signed projected angle should preserve negative-z cross products");
+    require_close(
+        nerdss::core::MathEngine::SignedProjectedAngleOnXY(
+            { 1.0, 0.0, 0.0 }, { 1.0, 0.0, 1.0e-14 }, 1.0e-12),
+        0.0,
+        "signed projected angle should preserve zero-angle endpoint");
 
     Vector arbitrary_input { 0.0, 1.0, 0.0 };
     Vector legacy_arbitrary_input { 0.0, 1.0, 0.0 };

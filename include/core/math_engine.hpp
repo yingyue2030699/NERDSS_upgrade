@@ -172,6 +172,22 @@ public:
     return projected1.cross(projected2).z < 0.0;
   }
 
+  static Scalar SignedProjectedAngleOnXY(Vector3 vector1, Vector3 vector2,
+                                         Scalar tolerance) {
+    const Scalar pi { 3.141592653589793238462643383279502884 };
+    Vector3 projected1 { vector1.x, vector1.y, 0.0 };
+    Vector3 projected2 { vector2.x, vector2.y, 0.0 };
+    projected1.calc_magnitude();
+    projected2.calc_magnitude();
+    const Vector3 sign { projected1.cross(projected2) };
+    Scalar angle { projected1.dot_theta(projected2) };
+    if (sign.z > 0.0 && std::abs(angle) > tolerance
+        && (pi - std::abs(angle)) > tolerance) {
+      angle = -angle;
+    }
+    return angle;
+  }
+
   static Vector3 CreateArbitraryOrthogonalVector(Vector3 vector) {
     const Scalar pi { 3.141592653589793238462643383279502884 };
     Vector3 x_axis { 1.0, 0.0, 0.0 };
