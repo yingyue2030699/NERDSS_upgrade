@@ -322,3 +322,19 @@ Validation for this slice:
 | Serial build | Passed | Incremental `make serial` rebuilt `bin/nerdss`. |
 | Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
 | Benchmark mode | Passed | `small_homotrimer` wall time `8.894s`, CPU time `8.704s`. |
+
+## Spherical Math Kernel Facade
+
+Moved spherical coordinate helpers behind `nerdss::core::MathEngine`: radius,
+cartesian/spherical conversion, theta/phi wrapping, spherical-angle addition,
+and binding-radius conversion on a sphere. The legacy free functions in
+`functions_for_spherical_system.cpp` remain as forwarding wrappers.
+
+Validation for this slice:
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| CTest unit suite | Passed | Added direct `MathEngine` checks for spherical radius, conversion, wrapping, and binding-radius kernels. |
+| Serial build | Passed | Incremental `make serial` rebuilt the legacy spherical wrapper translation unit. |
+| Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
+| Benchmark mode | Passed | `small_homotrimer` wall time `8.685s`, CPU time `8.487s`. |

@@ -122,6 +122,28 @@ void test_math_engine_facade()
     require_close(identity[0], 1.0, "facade matrix 0");
     require_close(identity[4], 1.0, "facade matrix 4");
     require_close(identity[8], 1.0, "facade matrix 8");
+
+    nerdss::core::Coordinate3 radius_coordinate { 3.0, 4.0, 12.0 };
+    require_close(nerdss::core::MathEngine::Radius(radius_coordinate), 13.0, "facade spherical radius");
+
+    const double pi = std::acos(-1.0);
+    nerdss::core::Coordinate3 spherical { pi / 2.0, 0.0, 2.0 };
+    nerdss::core::Coordinate3 cartesian = nerdss::core::MathEngine::CartesianFromSpherical(spherical);
+    require_close(cartesian.x, 2.0, "facade spherical-to-cartesian x");
+    require_close(cartesian.y, 0.0, "facade spherical-to-cartesian y");
+    require_close(cartesian.z, 0.0, "facade spherical-to-cartesian z");
+
+    nerdss::core::Coordinate3 round_trip = nerdss::core::MathEngine::SphericalFromCartesian(cartesian);
+    require_close(round_trip.x, spherical.x, "facade cartesian-to-spherical theta");
+    require_close(round_trip.y, spherical.y, "facade cartesian-to-spherical phi");
+    require_close(round_trip.z, spherical.z, "facade cartesian-to-spherical radius");
+
+    require_close(nerdss::core::MathEngine::ThetaPlus(0.75 * pi, 0.5 * pi), 0.75 * pi, "facade theta wrap");
+    require_close(nerdss::core::MathEngine::PhiPlus(1.75 * pi, 0.5 * pi), 0.25 * pi, "facade phi wrap");
+    require_close(
+        nerdss::core::MathEngine::BindingRadiusOnSphere(1.0, { 0.0, 0.0, 2.0 }),
+        4.0 * std::asin(0.25),
+        "facade spherical binding radius");
 }
 
 void test_diagnostics_trace_stack()

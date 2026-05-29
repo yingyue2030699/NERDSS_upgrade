@@ -8,6 +8,7 @@
 #include "classes/class_Membrane.hpp"
 #include "classes/class_Molecule_Complex.hpp"
 #include "classes/class_Vector.hpp"
+#include "core/math_engine.hpp"
 #include "reactions/association/functions_for_spherical_system.hpp"
 
 #include <array>
@@ -15,88 +16,32 @@
 
 double radius(Coord mol)
 {
-    return sqrt(mol.x * mol.x + mol.y * mol.y + mol.z * mol.z);
+    return nerdss::core::MathEngine::Radius(mol);
 }
 
 Coord find_spherical_coords(Coord mol) // mol: cardesian coords, output spherical coords
 {
-    Coord angles;
-    double R = radius(mol);
-    if (mol.z == R) {
-        angles.x = 0.0;
-        angles.y = 0.0;
-        angles.z = R;
-    } else if (mol.z == -R) {
-        angles.x = -M_PI;
-        angles.y = 0.0;
-        angles.z = R;
-    } else {
-        double theta = acos(mol.z / R); // acos, gives angle range [0,pi]
-        double phi = acos(mol.x / (R * sin(theta)));
-        if (std::isnan(phi)) {
-            phi = 0.0;
-        }
-        if (mol.y < 0)
-            phi = 2.0 * M_PI - phi;
-        angles.x = theta;
-        angles.y = phi;
-        angles.z = R;
-    }
-    return angles;
+    return nerdss::core::MathEngine::SphericalFromCartesian(mol);
 }
 
 Coord find_cardesian_coords(Coord mol) // mol: spherical coords, output cardesian coords
 {
-    Coord xyz;
-    double theta = mol.x;
-    double phi = mol.y;
-    double R = mol.z;
-    xyz.x = R * sin(theta) * cos(phi);
-    xyz.y = R * sin(theta) * sin(phi);
-    xyz.z = R * cos(theta);
-    return xyz;
+    return nerdss::core::MathEngine::CartesianFromSpherical(mol);
 }
 
 double theta_plus(double theta1, double theta2) // sum of two theta
 {
-    double sum = theta1 + theta2;
-    if (sum > M_PI) {
-        sum = 2.0 * M_PI - sum;
-    } else if (sum < 0.0) {
-        sum = -sum;
-    }
-    return sum;
+    return nerdss::core::MathEngine::ThetaPlus(theta1, theta2);
 }
 
 double phi_plus(double phi1, double phi2) // sum of two phi
 {
-    double sum = phi1 + phi2;
-    if (sum > 2.0 * M_PI) {
-        sum = sum - 2.0 * M_PI;
-    } else if (sum < 0.0) {
-        sum = 2.0 * M_PI + sum;
-    }
-    return sum;
+    return nerdss::core::MathEngine::PhiPlus(phi1, phi2);
 }
 
 Coord angle_plus(Coord angle1, Coord angle2)
 {
-    Coord sum;
-    double phi = phi_plus(angle1.y, angle2.y);
-    double theta = angle1.x + angle2.x;
-    if (theta > M_PI) {
-        theta = 2.0 * M_PI - theta;
-        phi = phi_plus(phi, M_PI);
-    } else if (theta < 0.0) {
-        theta = -theta;
-        phi = phi_plus(phi, -M_PI);
-    } else if (theta == 0.0 || theta == M_PI) {
-        phi = 0.0;
-    }
-    sum.x = theta;
-    sum.y = phi;
-    sum.z = angle1.z;
-    return sum;
+    return nerdss::core::MathEngine::SphericalAnglePlus(angle1, angle2);
 }
 
 Coord find_position_after_association(double arc1, Coord Iface1, Coord Iface2, double arc_total, double bindRadius)
@@ -434,11 +379,7 @@ Coord rotate_on_sphere(Coord Targ, Coord COM, std::array<double, 9> crdset, doub
 
 double calc_bindRadius2D(double bindRadius, Coord iFace)
 {
-    double R;
-    R = radius(iFace);
-    double bindRadius2D;
-    bindRadius2D = R * 2 * asin((0.5 * bindRadius) / R);
-    return bindRadius2D;
+    return nerdss::core::MathEngine::BindingRadiusOnSphere(bindRadius, iFace);
 }
 
 void set_memProtein_sphere(Complex reactCom, Molecule& memProtein, std::vector<Molecule> moleculeList, const Membrane membraneObject)
