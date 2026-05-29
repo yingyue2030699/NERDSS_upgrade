@@ -36,7 +36,8 @@ trajectory math, restart semantics, or legacy input/output compatibility.
 
 1. Add a `nerdss::core::MathEngine` CPU scalar facade that groups numeric
    primitives under a single header. Current slices cover vector/matrix helpers
-   plus spherical coordinate and angular wrapping kernels.
+   plus spherical coordinate, angular wrapping, and association-angle predicate
+   kernels.
 2. Add unit coverage proving the facade delegates to legacy `Coord`, `Vector`,
    and matrix behavior.
 3. Move pure probability functions behind explicit service names while keeping

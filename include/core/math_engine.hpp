@@ -136,6 +136,29 @@ public:
     const Scalar radius { Radius(interface_coordinate) };
     return radius * 2.0 * std::asin((0.5 * binding_radius) / radius);
   }
+
+  static bool AreAnglesNearlyEqual(Scalar angle1, Scalar angle2) {
+    return std::abs(angle1 - angle2) < 1.0e-4;
+  }
+
+  static bool IsParallelAngle(Scalar angle) {
+    const Scalar pi { 3.141592653589793238462643383279502884 };
+    return angle == pi || angle == 0.0;
+  }
+
+  static bool IsAngleSignCorrect(const Vector3& vector1,
+                                 const Vector3& vector2) {
+    if (std::abs(vector1.z) > 1.0e-12
+        && std::abs(vector2.z) > 1.0e-12) {
+      Vector3 projected1 { vector1.x, 0.0, vector1.z };
+      Vector3 projected2 { vector2.x, 0.0, vector2.z };
+      return projected1.cross(projected2).y < 0.0;
+    }
+
+    Vector3 projected1 { vector1.x, vector1.y, 0.0 };
+    Vector3 projected2 { vector2.x, vector2.y, 0.0 };
+    return projected1.cross(projected2).z < 0.0;
+  }
 };
 
 } // namespace core

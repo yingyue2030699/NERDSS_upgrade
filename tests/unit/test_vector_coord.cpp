@@ -19,6 +19,9 @@ double pirr_pfree_ratio_psF(
 double pirr_pfree_ratio_psF_1D(
     double rCurr, double r0, double tCurr, double Dtot, double bindrad,
     double ka, double ps_prev);
+bool areSameAngle(double ang1, double ang2);
+bool areParallel(const double& angle);
+bool angleSignIsCorrect(const Vector& vec1, const Vector& vec2);
 
 namespace {
 
@@ -144,6 +147,21 @@ void test_math_engine_facade()
         nerdss::core::MathEngine::BindingRadiusOnSphere(1.0, { 0.0, 0.0, 2.0 }),
         4.0 * std::asin(0.25),
         "facade spherical binding radius");
+
+    require_true(
+        nerdss::core::MathEngine::AreAnglesNearlyEqual(1.0, 1.0 + 1.0e-5),
+        "facade angle equality tolerance");
+    require_true(
+        nerdss::core::MathEngine::AreAnglesNearlyEqual(1.0, 1.0 + 1.0e-5)
+            == areSameAngle(1.0, 1.0 + 1.0e-5),
+        "angle equality facade should match legacy wrapper");
+    require_true(
+        nerdss::core::MathEngine::IsParallelAngle(pi) == areParallel(pi),
+        "parallel angle facade should match legacy wrapper");
+    require_true(
+        nerdss::core::MathEngine::IsAngleSignCorrect({ 1.0, 0.0, 1.0 }, { 0.0, 0.0, 1.0 })
+            == angleSignIsCorrect({ 1.0, 0.0, 1.0 }, { 0.0, 0.0, 1.0 }),
+        "angle sign facade should match legacy wrapper");
 }
 
 void test_diagnostics_trace_stack()

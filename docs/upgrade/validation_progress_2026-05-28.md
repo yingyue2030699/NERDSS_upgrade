@@ -338,3 +338,19 @@ Validation for this slice:
 | Serial build | Passed | Incremental `make serial` rebuilt the legacy spherical wrapper translation unit. |
 | Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
 | Benchmark mode | Passed | `small_homotrimer` wall time `8.685s`, CPU time `8.487s`. |
+
+## Association Angle Predicate Facade
+
+Moved association angle predicates behind `nerdss::core::MathEngine`:
+near-equality checks, parallel-angle detection, and angle-sign orientation. The
+legacy `areSameAngle`, `areParallel`, and `angleSignIsCorrect` functions remain
+as forwarding wrappers.
+
+Validation for this slice:
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| CTest unit suite | Passed | Added facade-vs-wrapper coverage for all three predicates. |
+| Serial build | Passed | Incremental `make serial` rebuilt the predicate wrappers. |
+| Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
+| Benchmark mode | Passed | `small_homotrimer` wall time `8.687s`, CPU time `8.590s`. |
