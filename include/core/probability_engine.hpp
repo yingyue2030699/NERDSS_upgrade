@@ -543,6 +543,35 @@ public:
 
     return coefficient * (func1 - func2);
   }
+
+  static double ImplicitLipidIntegralKernel2D(double u, double binding_radius,
+                                              double diffusion_total,
+                                              double association_rate,
+                                              double reaction_radius,
+                                              double time) {
+    const double pi { 3.141592653589793238462643383279502884 };
+    const double r_max {
+        5.0
+        * (binding_radius
+           + 3.0 * std::sqrt(4.0 * diffusion_total * time)) };
+    const double h { 2.0 * pi * binding_radius * diffusion_total };
+    const double alpha {
+        h * u * gsl_sf_bessel_Y1(binding_radius * u)
+        + association_rate * gsl_sf_bessel_Y0(binding_radius * u) };
+    const double eta {
+        h * u * gsl_sf_bessel_J1(binding_radius * u)
+        + association_rate * gsl_sf_bessel_J0(binding_radius * u) };
+    const double a {
+        u * r_max * gsl_sf_bessel_J1(r_max * u)
+        - u * reaction_radius * gsl_sf_bessel_J1(reaction_radius * u) };
+    const double b {
+        u * r_max * gsl_sf_bessel_Y1(r_max * u)
+        - u * reaction_radius * gsl_sf_bessel_Y1(reaction_radius * u) };
+
+    return 1.0 / std::pow(u, 3.0)
+           * (std::exp(-diffusion_total * u * u * time) - 1.0)
+           / (alpha * alpha + eta * eta) * (alpha * a - eta * b);
+  }
 };
 
 } // namespace core

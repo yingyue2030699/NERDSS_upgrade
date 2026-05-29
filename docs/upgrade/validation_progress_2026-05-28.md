@@ -307,3 +307,18 @@ Validation for this slice:
 | Serial build | Passed | Incremental `make serial` rebuilt `bin/nerdss`. |
 | Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
 | Benchmark mode | Passed | `small_homotrimer` wall time `8.656s`, CPU time `8.512s`. |
+
+## Implicit-Lipid 2D Integral Kernel Facade
+
+Moved the scalar kernel used by the implicit-lipid 2D integration callback
+behind `nerdss::core::ProbabilityEngine::ImplicitLipidIntegralKernel2D`. The
+legacy `function2D` callback remains the GSL adapter from `paramsIL`.
+
+Validation for this slice:
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| CTest unit suite | Passed | Added facade-vs-callback coverage for `function2D`. |
+| Serial build | Passed | Incremental `make serial` rebuilt `bin/nerdss`. |
+| Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
+| Benchmark mode | Passed | `small_homotrimer` wall time `8.894s`, CPU time `8.704s`. |

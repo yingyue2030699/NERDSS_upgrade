@@ -23,23 +23,9 @@ double dissociate2D(paramsIL& parameters2D)
 double function2D(double u, void* parameter)
 {
     struct paramsIL* params = (struct paramsIL*)parameter;
-    double sigma = (params->sigma);
-    double D = (params->Dtot);
-    double r = (params->R2D);
-    double ka = (params->ka);
-    double h = (params->dt);
-
-    double Rmax = sigma + 3.0 * sqrt(4.0 * D * h);
-
-    double H = 2.0 * M_PI * sigma * D;
-    double rmax = 5 * Rmax;
-    double a, b, alpha, peta;
-    alpha = H * u * gsl_sf_bessel_Y1(sigma * u) + ka * gsl_sf_bessel_Y0(sigma * u);
-    peta = H * u * gsl_sf_bessel_J1(sigma * u) + ka * gsl_sf_bessel_J0(sigma * u);
-    a = u * rmax * gsl_sf_bessel_J1(rmax * u) - u * r * gsl_sf_bessel_J1(r * u);
-    b = u * rmax * gsl_sf_bessel_Y1(rmax * u) - u * r * gsl_sf_bessel_Y1(r * u);
-    double out = 1.0 / pow(u, 3.0) * (exp(-D * u * u * h) - 1.0) / (alpha * alpha + peta * peta) * (alpha * a - peta * b);
-    return out;
+    return nerdss::core::ProbabilityEngine::ImplicitLipidIntegralKernel2D(
+        u, params->sigma, params->Dtot, params->ka, params->R2D,
+        params->dt);
 }
 
 // the block-distance

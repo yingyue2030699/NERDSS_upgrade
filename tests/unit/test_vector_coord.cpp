@@ -247,6 +247,7 @@ void test_probability_engine_facade()
     implicit_lipid_params.area = 100.0;
     implicit_lipid_params.compartmentR = 10.0;
     implicit_lipid_params.compartSiteRho = 0.2;
+    implicit_lipid_params.R2D = 1.2;
     require_close(
         nerdss::core::ProbabilityEngine::ImplicitLipidDissociationProbability2D(
             implicit_lipid_params.dt, implicit_lipid_params.Dtot,
@@ -288,6 +289,13 @@ void test_probability_engine_facade()
             implicit_lipid_params.compartSiteRho),
         prob_exiting_compartment(0.9, implicit_lipid_params),
         "compartment exit facade should match legacy wrapper");
+    require_close(
+        nerdss::core::ProbabilityEngine::ImplicitLipidIntegralKernel2D(
+            0.8, implicit_lipid_params.sigma, implicit_lipid_params.Dtot,
+            implicit_lipid_params.ka, implicit_lipid_params.R2D,
+            implicit_lipid_params.dt),
+        function2D(0.8, &implicit_lipid_params),
+        "2D implicit-lipid integrand facade should match legacy callback");
 }
 
 } // namespace
