@@ -137,6 +137,17 @@ public:
     return radius * 2.0 * std::asin((0.5 * binding_radius) / radius);
   }
 
+  static Scalar GeodesicDistance(Coordinate3 first, Coordinate3 second) {
+    const Scalar first_radius { Radius(first) };
+    const Scalar second_radius { Radius(second) };
+    const Scalar dot_product {
+        first.x * second.x + first.y * second.y + first.z * second.z };
+    const Scalar theta {
+        std::acos(dot_product / (first_radius * second_radius)) };
+    const Scalar mean_radius { (first_radius + second_radius) / 2.0 };
+    return mean_radius * theta;
+  }
+
   static bool AreAnglesNearlyEqual(Scalar angle1, Scalar angle2) {
     return std::abs(angle1 - angle2) < 1.0e-4;
   }

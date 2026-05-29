@@ -354,3 +354,19 @@ Validation for this slice:
 | Serial build | Passed | Incremental `make serial` rebuilt the predicate wrappers. |
 | Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
 | Benchmark mode | Passed | `small_homotrimer` wall time `8.687s`, CPU time `8.590s`. |
+
+## Geodesic Distance Facade
+
+Moved the spherical geodesic-distance formula behind
+`nerdss::core::MathEngine::GeodesicDistance`. The legacy
+`get_geodesic_distance` function remains as a forwarding wrapper for existing
+spherical association call sites.
+
+Validation for this slice:
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| CTest unit suite | Passed | Added facade-vs-wrapper coverage for a quarter-circumference case. |
+| Serial build | Passed | Incremental `make serial` rebuilt the legacy wrapper. |
+| Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
+| Benchmark mode | Passed | `small_homotrimer` wall time `8.782s`, CPU time `8.551s`. |

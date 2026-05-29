@@ -22,6 +22,7 @@ double pirr_pfree_ratio_psF_1D(
 bool areSameAngle(double ang1, double ang2);
 bool areParallel(const double& angle);
 bool angleSignIsCorrect(const Vector& vec1, const Vector& vec2);
+double get_geodesic_distance(Coord intFace1, Coord intFace2);
 
 namespace {
 
@@ -147,6 +148,14 @@ void test_math_engine_facade()
         nerdss::core::MathEngine::BindingRadiusOnSphere(1.0, { 0.0, 0.0, 2.0 }),
         4.0 * std::asin(0.25),
         "facade spherical binding radius");
+    require_close(
+        nerdss::core::MathEngine::GeodesicDistance({ 2.0, 0.0, 0.0 }, { 0.0, 2.0, 0.0 }),
+        pi,
+        "facade geodesic quarter circumference");
+    require_close(
+        nerdss::core::MathEngine::GeodesicDistance({ 2.0, 0.0, 0.0 }, { 0.0, 2.0, 0.0 }),
+        get_geodesic_distance({ 2.0, 0.0, 0.0 }, { 0.0, 2.0, 0.0 }),
+        "geodesic facade should match legacy wrapper");
 
     require_true(
         nerdss::core::MathEngine::AreAnglesNearlyEqual(1.0, 1.0 + 1.0e-5),
