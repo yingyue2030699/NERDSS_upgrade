@@ -1,3 +1,4 @@
+#include "core/probability_engine.hpp"
 #include "reactions/implicitlipid/implicitlipid_reactions.hpp"
 #include "tracing.hpp"
 #include <gsl/gsl_errno.h>
@@ -12,31 +13,10 @@
 // Nlipid is the number of lipids on the membrane surface, A is the area of membrane surface
 double dissociate2D(paramsIL& parameters2D)
 {
-    double h = parameters2D.dt;
-    double D = parameters2D.Dtot;
-    double sigma = parameters2D.sigma;
-    double ka = parameters2D.ka;
-    double kb = parameters2D.kb / 1.0e6;
-    int Na = parameters2D.Na;
-    int Nlipid = parameters2D.Nlipid;
-    double A = parameters2D.area;
-    if (kb < 1E-15) {
-        return 0.0;
-    }
-
-    double KD = kb / ka;
-    double maxNaNlipid = 0;
-    if (Na > Nlipid) {
-        maxNaNlipid = Na;
-    } else {
-        maxNaNlipid = Nlipid;
-    }
-
-    double b = 2.0 * sqrt(A / M_PI / maxNaNlipid + sigma * sigma);
-    double kon = 1.0 / (1.0 / ka + 1.0 / (8.0 * M_PI * D) * (4.0 * log(b / sigma) / pow(1.0 - pow(sigma / b, 2.0), 2.0) - 2.0 / (1.0 - pow(sigma / b, 2.0)) - 1.0));
-    double koff = kon * KD;
-    double out = 1.0 - exp(-koff * h);
-    return out;
+    return nerdss::core::ProbabilityEngine::ImplicitLipidDissociationProbability2D(
+        parameters2D.dt, parameters2D.Dtot, parameters2D.sigma,
+        parameters2D.ka, parameters2D.kb, parameters2D.Na,
+        parameters2D.Nlipid, parameters2D.area);
 }
 
 // a function that is necessary for other caculation
@@ -160,20 +140,8 @@ double pimplicitlipid_2D(paramsIL& parameters2D)
 // 3D
 double dissociate3D(double h, double D, double sigma, double ka, double kbsecond)
 {
-    //double h = parameters3D.dt;
-    //double D = parameters3D.Dtot;
-    //double sigma = parameters3D.sigma;
-    //double ka = parameters3D.ka;
-    //double kb = parameters3D.kb;
-    double kb = kbsecond / 1.0e6; // change the unit S into us.
-    if (kb < 1E-15) {
-        return 0.0;
-    }
-    double KD = 2.0 * kb / ka;
-    double kon = 0.5 / (1.0 / ka + 1.0 / (4.0 * M_PI * D * sigma));
-    double koff = kon * KD;
-    double out = 1.0 - exp(-koff * h);
-    return out;
+    return nerdss::core::ProbabilityEngine::ImplicitLipidDissociationProbability3D(
+        h, D, sigma, ka, kbsecond);
 }
 
 // binding probability, but must time the lipid density

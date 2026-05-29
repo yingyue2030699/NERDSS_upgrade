@@ -258,3 +258,20 @@ Validation for this slice:
 | Serial build | Passed | Incremental `make serial` rebuilt `bin/nerdss`. |
 | Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
 | Benchmark mode | Passed | `small_homotrimer` wall time `8.395s`, CPU time `8.371s`. |
+
+## Implicit-Lipid Dissociation Facade
+
+Started the implicit-lipid probability extraction by moving the closed-form 2D
+and 3D dissociation probabilities behind
+`nerdss::core::ProbabilityEngine`. The legacy `dissociate2D` and
+`dissociate3D` functions remain as wrappers, preserving existing reaction call
+sites and units while making the scalar formulas directly testable.
+
+Validation for this slice:
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| CTest unit suite | Passed | Added facade-vs-wrapper checks for 2D and 3D implicit-lipid dissociation. |
+| Serial build | Passed | Incremental `make serial` rebuilt `bin/nerdss`. |
+| Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
+| Benchmark mode | Passed | `small_homotrimer` wall time `8.687s`, CPU time `8.529s`. |

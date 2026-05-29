@@ -4,6 +4,7 @@
 #include "core/math_engine.hpp"
 #include "core/probability_engine.hpp"
 #include "reactions/bimolecular/2D_reaction_table_functions.hpp"
+#include "reactions/implicitlipid/implicitlipid_reactions.hpp"
 
 #include <cmath>
 #include <cstdlib>
@@ -234,6 +235,29 @@ void test_probability_engine_facade()
     require_close(
         free_probability, free_norm / (2.0 * pi * 0.6),
         "2D free probability should match radial norm relation");
+
+    paramsIL implicit_lipid_params {};
+    implicit_lipid_params.dt = 0.1;
+    implicit_lipid_params.Dtot = 1.5;
+    implicit_lipid_params.sigma = 0.7;
+    implicit_lipid_params.ka = 0.25;
+    implicit_lipid_params.kb = 2.5;
+    implicit_lipid_params.Na = 5;
+    implicit_lipid_params.Nlipid = 9;
+    implicit_lipid_params.area = 100.0;
+    require_close(
+        nerdss::core::ProbabilityEngine::ImplicitLipidDissociationProbability2D(
+            implicit_lipid_params.dt, implicit_lipid_params.Dtot,
+            implicit_lipid_params.sigma, implicit_lipid_params.ka,
+            implicit_lipid_params.kb, implicit_lipid_params.Na,
+            implicit_lipid_params.Nlipid, implicit_lipid_params.area),
+        dissociate2D(implicit_lipid_params),
+        "2D implicit-lipid dissociation facade should match legacy wrapper");
+    require_close(
+        nerdss::core::ProbabilityEngine::ImplicitLipidDissociationProbability3D(
+            0.1, 1.5, 0.7, 0.25, 2.5),
+        dissociate3D(0.1, 1.5, 0.7, 0.25, 2.5),
+        "3D implicit-lipid dissociation facade should match legacy wrapper");
 }
 
 } // namespace

@@ -294,6 +294,62 @@ public:
     return prefactor * std::exp(exponent)
            * gsl_sf_bessel_I0_scaled(scaled_radius);
   }
+
+  static double ImplicitLipidDissociationProbability2D(
+      double time, double diffusion_total, double binding_radius,
+      double association_rate, double dissociation_rate, int solution_count,
+      int lipid_count, double membrane_area) {
+    const double pi { 3.141592653589793238462643383279502884 };
+    const double dissociation_rate_per_microsecond { dissociation_rate / 1.0e6 };
+    if (dissociation_rate_per_microsecond < 1.0e-15) {
+      return 0.0;
+    }
+
+    const double equilibrium_constant {
+        dissociation_rate_per_microsecond / association_rate };
+    double max_count { static_cast<double>(lipid_count) };
+    if (solution_count > lipid_count) {
+      max_count = static_cast<double>(solution_count);
+    }
+
+    const double outer_radius {
+        2.0 * std::sqrt(membrane_area / pi / max_count
+                        + binding_radius * binding_radius) };
+    const double radius_ratio { binding_radius / outer_radius };
+    const double radius_denominator { 1.0 - radius_ratio * radius_ratio };
+    const double diffusion_limited_correction {
+        1.0 / (8.0 * pi * diffusion_total)
+        * (4.0 * std::log(outer_radius / binding_radius)
+               / (radius_denominator * radius_denominator)
+           - 2.0 / radius_denominator - 1.0) };
+    const double effective_association_rate {
+        1.0 / (1.0 / association_rate + diffusion_limited_correction) };
+    const double effective_dissociation_rate {
+        effective_association_rate * equilibrium_constant };
+
+    return 1.0 - std::exp(-effective_dissociation_rate * time);
+  }
+
+  static double ImplicitLipidDissociationProbability3D(
+      double time, double diffusion_total, double binding_radius,
+      double association_rate, double dissociation_rate) {
+    const double pi { 3.141592653589793238462643383279502884 };
+    const double dissociation_rate_per_microsecond { dissociation_rate / 1.0e6 };
+    if (dissociation_rate_per_microsecond < 1.0e-15) {
+      return 0.0;
+    }
+
+    const double equilibrium_constant {
+        2.0 * dissociation_rate_per_microsecond / association_rate };
+    const double effective_association_rate {
+        0.5
+        / (1.0 / association_rate
+           + 1.0 / (4.0 * pi * diffusion_total * binding_radius)) };
+    const double effective_dissociation_rate {
+        effective_association_rate * equilibrium_constant };
+
+    return 1.0 - std::exp(-effective_dissociation_rate * time);
+  }
 };
 
 } // namespace core
