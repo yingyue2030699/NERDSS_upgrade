@@ -394,6 +394,31 @@ public:
               + (1.0 / distance_c) + (1.0 / distance_d));
   }
 
+  static double RebindingProbabilityRatioTable2D(
+      const gsl_matrix* pir_matrix, const gsl_matrix* survival_matrix,
+      const gsl_matrix* norm_matrix, double current_radius,
+      double diffusion_total, double time, double initial_radius,
+      double previous_survival, double tolerance, double binding_radius) {
+    const double radius_step_size { TableStepSize2D(diffusion_total, time) };
+    const double free_probability { FreeDiffusionProbability2D(
+        current_radius, initial_radius, diffusion_total, time) };
+    const double norm_probability { PreviousNormProbability2D(
+        norm_matrix, radius_step_size, initial_radius, binding_radius) };
+    const double irreversible_probability { IrreversibleProbabilityTable2D(
+        pir_matrix, survival_matrix, radius_step_size, current_radius,
+        initial_radius, binding_radius) };
+    const double normalized_free_probability {
+        free_probability / norm_probability };
+
+    if (std::abs(irreversible_probability
+                 - normalized_free_probability * previous_survival)
+        < tolerance) {
+      return 1.0;
+    }
+    return irreversible_probability
+           / (normalized_free_probability * previous_survival);
+  }
+
   static double ImplicitLipidDissociationProbability2D(
       double time, double diffusion_total, double binding_radius,
       double association_rate, double dissociation_rate, int solution_count,

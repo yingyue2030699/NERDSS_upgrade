@@ -23,6 +23,8 @@ double pirr_pfree_ratio_psF_1D(
 double get_prevNorm(gsl_matrix* normMatrix, double RStepSize, double r0, double bindRadius);
 double get_prevSurv(const gsl_matrix* survMatrix, double Dtot, double deltaT, double r0, double bindRadius);
 double calc_pirr(gsl_matrix* pirMatrix, gsl_matrix* survMatrix, double RStepSize, double r, double r0, double a);
+double DDpirr_pfree_ratio_ps(gsl_matrix* pirMatrix, gsl_matrix* survMatrix, gsl_matrix* normMatrix,
+    double r, double Dtot, double deltaT, double r0, double ps_prev, double rTol, double bindRadius);
 bool areSameAngle(double ang1, double ang2);
 bool areParallel(const double& angle);
 bool angleSignIsCorrect(const Vector& vec1, const Vector& vec2);
@@ -360,6 +362,14 @@ void test_probability_engine_facade()
             pir_matrix, lookup_matrix, 0.1, 0.85, 0.85, 0.7),
         calc_pirr(pir_matrix, lookup_matrix, 0.1, 0.85, 0.85, 0.7),
         "2D pir table facade should match legacy diagonal lookup");
+    require_close(
+        nerdss::core::ProbabilityEngine::RebindingProbabilityRatioTable2D(
+            pir_matrix, lookup_matrix, lookup_matrix, 0.95, 1.0, 25.0, 0.85,
+            0.8, 1.0e-12, 0.7),
+        DDpirr_pfree_ratio_ps(
+            pir_matrix, lookup_matrix, lookup_matrix, 0.95, 1.0, 25.0, 0.85,
+            0.8, 1.0e-12, 0.7),
+        "2D table rebinding ratio facade should match legacy wrapper");
     gsl_matrix_free(pir_matrix);
     gsl_matrix_free(lookup_matrix);
 
