@@ -8,6 +8,7 @@
 
 #include <cmath>
 #include <complex>
+#include <gsl/gsl_matrix.h>
 #include <gsl/gsl_sf_bessel.h>
 
 namespace nerdss {
@@ -293,6 +294,47 @@ public:
 
     return prefactor * std::exp(exponent)
            * gsl_sf_bessel_I0_scaled(scaled_radius);
+  }
+
+  static double TableStepSize2D(double diffusion_total, double time) {
+    return std::sqrt(diffusion_total * time) / 50.0;
+  }
+
+  static double InterpolateMatrixRow2D(const gsl_matrix* matrix,
+                                       double radius_step_size,
+                                       double radius,
+                                       double binding_radius) {
+    int index {
+        static_cast<int>(std::floor((radius - binding_radius)
+                                    / radius_step_size)) };
+    if (index < 0) {
+      index = 0;
+    }
+
+    const double value1 { gsl_matrix_get(matrix, 1, index) };
+    const double value2 { gsl_matrix_get(matrix, 1, index + 1) };
+    const double radius1 { gsl_matrix_get(matrix, 0, index) };
+    const double radius2 { gsl_matrix_get(matrix, 0, index + 1) };
+
+    return (value1 * (radius2 - radius) + value2 * (radius - radius1))
+           / radius_step_size;
+  }
+
+  static double PreviousSurvivalProbability2D(const gsl_matrix* survival_matrix,
+                                              double diffusion_total,
+                                              double time, double radius,
+                                              double binding_radius) {
+    return InterpolateMatrixRow2D(
+        survival_matrix, TableStepSize2D(diffusion_total, time), radius,
+        binding_radius);
+  }
+
+  static double PreviousNormProbability2D(const gsl_matrix* norm_matrix,
+                                          double radius_step_size,
+                                          double radius,
+                                          double binding_radius) {
+    return InterpolateMatrixRow2D(
+        norm_matrix, radius_step_size, radius, binding_radius);
   }
 
   static double ImplicitLipidDissociationProbability2D(

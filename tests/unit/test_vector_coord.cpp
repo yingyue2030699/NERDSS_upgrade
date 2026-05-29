@@ -8,6 +8,7 @@
 
 #include <cmath>
 #include <cstdlib>
+#include <gsl/gsl_matrix.h>
 #include <iostream>
 #include <string>
 
@@ -19,6 +20,8 @@ double pirr_pfree_ratio_psF(
 double pirr_pfree_ratio_psF_1D(
     double rCurr, double r0, double tCurr, double Dtot, double bindrad,
     double ka, double ps_prev);
+double get_prevNorm(gsl_matrix* normMatrix, double RStepSize, double r0, double bindRadius);
+double get_prevSurv(const gsl_matrix* survMatrix, double Dtot, double deltaT, double r0, double bindRadius);
 bool areSameAngle(double ang1, double ang2);
 bool areParallel(const double& angle);
 bool angleSignIsCorrect(const Vector& vec1, const Vector& vec2);
@@ -320,6 +323,26 @@ void test_probability_engine_facade()
             0.6, finite_params.r0, finite_params.D, finite_params.t),
         norm_function(0.6, &finite_params),
         "2D norm integrand facade should match legacy callback");
+
+    gsl_matrix* lookup_matrix = gsl_matrix_alloc(2, 100);
+    for (size_t index = 0; index < 100; ++index) {
+        gsl_matrix_set(lookup_matrix, 0, index, 0.7 + 0.1 * static_cast<double>(index));
+        gsl_matrix_set(lookup_matrix, 1, index, 0.2 + 0.05 * static_cast<double>(index));
+    }
+    require_close(
+        nerdss::core::ProbabilityEngine::PreviousNormProbability2D(
+            lookup_matrix, 0.1, 0.85, 0.7),
+        get_prevNorm(lookup_matrix, 0.1, 0.85, 0.7),
+        "2D previous norm facade should match legacy lookup");
+    require_close(
+        nerdss::core::ProbabilityEngine::PreviousSurvivalProbability2D(
+            lookup_matrix, 1.0, 25.0, 0.85, 0.7),
+        get_prevSurv(lookup_matrix, 1.0, 25.0, 0.85, 0.7),
+        "2D previous survival facade should match legacy lookup");
+    require_close(
+        nerdss::core::ProbabilityEngine::TableStepSize2D(1.0, 0.01), 0.002,
+        "2D table step helper should preserve legacy sqrt(Dt)/50 relation");
+    gsl_matrix_free(lookup_matrix);
 
     const double pi = std::acos(-1.0);
     const double free_probability =

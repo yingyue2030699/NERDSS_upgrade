@@ -97,6 +97,8 @@ if(BUILD_TESTING)
         src/reactions/pirr_pfree_ratio_psF_1D.cpp
         src/reactions/functions_implicitlipid.cpp
         src/reactions/get_geodesic_distance.cpp
+        src/reactions/get_prevNorm.cpp
+        src/reactions/get_prevSurv.cpp
         src/reactions/norm_function.cpp
         src/reactions/pir_function.cpp
         src/reactions/survival_function.cpp

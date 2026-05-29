@@ -435,3 +435,19 @@ Validation for this slice:
 | Serial build | Passed | Incremental `make serial` rebuilt `calc_one_angular_displacement` and `bin/nerdss`. |
 | Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
 | Benchmark mode | Passed | `small_homotrimer` wall time `8.064s`, CPU time `7.867s`. |
+
+## 2D Table Interpolation Facade
+
+Moved the legacy `get_prevNorm` and `get_prevSurv` matrix interpolation
+helpers behind `nerdss::core::ProbabilityEngine` as table step-size and
+previous-probability lookup services. The legacy functions remain forwarding
+wrappers for existing 2D reaction-table call sites.
+
+Validation for this slice:
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| CTest unit suite | Passed | Added synthetic GSL matrix coverage comparing facade and legacy lookup wrappers. |
+| Serial build | Passed | Incremental `make serial` rebuilt `get_prevNorm`, `get_prevSurv`, and `bin/nerdss`. |
+| Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
+| Benchmark mode | Passed | `small_homotrimer` wall time `8.474s`, CPU time `8.370s`. |
