@@ -188,6 +188,24 @@ public:
     return angle;
   }
 
+  static Scalar SignedAngularDisplacement(Vector3 original, Vector3 displaced,
+                                          Scalar tolerance) {
+    displaced.calc_magnitude();
+    if (displaced.magnitude < tolerance) {
+      return 0.0;
+    }
+    original.calc_magnitude();
+
+    Scalar angle { original.dot_theta(displaced) };
+    const Vector3 sign { original.cross(displaced) };
+    const Scalar pi { 3.141592653589793238462643383279502884 };
+    if (sign.z > 0.0 && std::abs(angle) > tolerance
+        && (pi - std::abs(angle)) > tolerance) {
+      angle = -angle;
+    }
+    return angle;
+  }
+
   static Vector3 CreateArbitraryOrthogonalVector(Vector3 vector) {
     const Scalar pi { 3.141592653589793238462643383279502884 };
     Vector3 x_axis { 1.0, 0.0, 0.0 };

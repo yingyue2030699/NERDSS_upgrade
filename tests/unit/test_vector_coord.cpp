@@ -188,6 +188,16 @@ void test_math_engine_facade()
             { 1.0, 0.0, 0.0 }, { 1.0, 0.0, 1.0e-14 }, 1.0e-12),
         0.0,
         "signed projected angle should preserve zero-angle endpoint");
+    require_close(
+        nerdss::core::MathEngine::SignedAngularDisplacement(
+            { 1.0, 0.0, 0.0 }, { 0.0, 1.0, 0.0 }, 1.0e-12),
+        -pi / 2.0,
+        "signed angular displacement should flip positive-z cross products");
+    require_close(
+        nerdss::core::MathEngine::SignedAngularDisplacement(
+            { 1.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, 1.0e-12),
+        0.0,
+        "signed angular displacement should preserve zero-displacement guard");
 
     Vector arbitrary_input { 0.0, 1.0, 0.0 };
     Vector legacy_arbitrary_input { 0.0, 1.0, 0.0 };

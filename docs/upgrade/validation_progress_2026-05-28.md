@@ -418,3 +418,20 @@ Validation for this slice:
 | Serial build | Passed | Incremental `make serial` rebuilt `calculate_phi`, `calculate_omega`, and `bin/nerdss`. |
 | Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
 | Benchmark mode | Passed | `small_homotrimer` wall time `8.073s`, CPU time `7.868s`. |
+
+## Angular Displacement Facade
+
+Moved the signed angular-displacement kernel used by
+`calc_one_angular_displacement` behind
+`nerdss::core::MathEngine::SignedAngularDisplacement`. The legacy wrapper still
+extracts vectors from molecule and complex state, then delegates the pure
+vector calculation.
+
+Validation for this slice:
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| CTest unit suite | Passed | Added direct `MathEngine` coverage for signed displacement and the zero-vector guard. |
+| Serial build | Passed | Incremental `make serial` rebuilt `calc_one_angular_displacement` and `bin/nerdss`. |
+| Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
+| Benchmark mode | Passed | `small_homotrimer` wall time `8.064s`, CPU time `7.867s`. |
