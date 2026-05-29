@@ -87,6 +87,8 @@ if(BUILD_TESTING)
         src/math/matrix_functions.cpp
         src/reactions/passocF.cpp
         src/reactions/passocF_1D.cpp
+        src/reactions/pirr_pfree_ratio_psF.cpp
+        src/reactions/pirr_pfree_ratio_psF_1D.cpp
     )
     target_include_directories(nerdss_unit_tests PRIVATE include)
     add_test(NAME nerdss_unit_tests COMMAND nerdss_unit_tests)

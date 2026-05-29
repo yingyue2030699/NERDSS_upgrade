@@ -11,6 +11,12 @@
 
 double passocF(double r0, double tCurr, double Dtot, double bindRadius, double alpha, double cof);
 double passocF_1D(double r0, double tCurr, double Dtot, double bindRadius, double ka);
+double pirr_pfree_ratio_psF(
+    double rCurr, double r0, double tCurr, double Dtot, double bindrad,
+    double alpha, double ps_prev, double rtol);
+double pirr_pfree_ratio_psF_1D(
+    double rCurr, double r0, double tCurr, double Dtot, double bindrad,
+    double ka, double ps_prev);
 
 namespace {
 
@@ -164,6 +170,18 @@ void test_probability_engine_facade()
             0.7, 0.1, 0.0, 0.7, 0.25),
         1.0,
         "1D zero-diffusion touching reactants associate");
+
+    const double ratio3d = nerdss::core::ProbabilityEngine::RebindingProbabilityRatio3D(
+        1.9, 2.0, 0.1, 1.5, 0.7, 0.25, 0.8, 1.0e-12);
+    require_close(
+        ratio3d, pirr_pfree_ratio_psF(1.9, 2.0, 0.1, 1.5, 0.7, 0.25, 0.8, 1.0e-12),
+        "3D rebinding ratio facade should match legacy wrapper");
+
+    const double ratio1d = nerdss::core::ProbabilityEngine::RebindingProbabilityRatio1D(
+        1.9, 2.0, 0.1, 1.5, 0.7, 0.25, 0.8);
+    require_close(
+        ratio1d, pirr_pfree_ratio_psF_1D(1.9, 2.0, 0.1, 1.5, 0.7, 0.25, 0.8),
+        "1D rebinding ratio facade should match legacy wrapper");
 }
 
 } // namespace

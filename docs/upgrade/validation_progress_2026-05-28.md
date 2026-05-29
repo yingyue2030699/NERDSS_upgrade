@@ -193,3 +193,20 @@ Validation for this slice:
 | CTest unit suite | Passed | Added facade-vs-wrapper checks for 1D and 3D association probability. |
 | Unified validation runner | Passed | Smoke, unit configure/build/CTest, and 7-case regression passed. |
 | Benchmark mode | Passed | `small_homotrimer` wall time `8.655s`, CPU time `8.518s`. |
+
+## Rebinding Probability Ratio Facade
+
+Continued the probability-kernel extraction by moving the 3D and 1D rebinding
+probability ratio formulas behind `nerdss::core::ProbabilityEngine`. The legacy
+`pirr_pfree_ratio_psF` and `pirr_pfree_ratio_psF_1D` functions now forward to
+the core service so existing reaction call sites remain stable while future
+math-engine and GPU-oriented work gets a clearer pure-kernel boundary.
+
+Validation for this slice:
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| CTest unit suite | Passed | Added facade-vs-wrapper checks for 1D and 3D rebinding probability ratios. |
+| Serial build | Passed | Incremental `make serial` rebuilt `bin/nerdss` with the forwarding wrappers. |
+| Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
+| Benchmark mode | Passed | `small_homotrimer` wall time `8.584s`, CPU time `8.404s`. |
