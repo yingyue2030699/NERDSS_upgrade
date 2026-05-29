@@ -370,3 +370,19 @@ Validation for this slice:
 | Serial build | Passed | Incremental `make serial` rebuilt the legacy wrapper. |
 | Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
 | Benchmark mode | Passed | `small_homotrimer` wall time `8.782s`, CPU time `8.551s`. |
+
+## Arbitrary Orthogonal Vector Facade
+
+Moved the arbitrary orthogonal-vector helper behind
+`nerdss::core::MathEngine::CreateArbitraryOrthogonalVector`. The legacy
+`create_arbitrary_vector` function remains as a forwarding wrapper and preserves
+its caller-visible input-normalization side effect.
+
+Validation for this slice:
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| CTest unit suite | Passed | Added facade-vs-wrapper coverage and verified the legacy wrapper still normalizes the input vector. |
+| Serial build | Passed | Incremental `make serial` rebuilt the legacy wrapper and `bin/nerdss`. |
+| Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
+| Benchmark mode | Passed | `small_homotrimer` wall time `8.074s`, CPU time `7.849s`. |

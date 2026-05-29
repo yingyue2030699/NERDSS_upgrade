@@ -88,6 +88,7 @@ if(BUILD_TESTING)
         src/reactions/angleSignIsCorrect.cpp
         src/reactions/areParallel.cpp
         src/reactions/areSameAngle.cpp
+        src/reactions/create_arbitrary_vector.cpp
         src/reactions/passocF.cpp
         src/reactions/passocF_1D.cpp
         src/reactions/pirr_pfree_ratio_psF.cpp

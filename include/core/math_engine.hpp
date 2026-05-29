@@ -170,6 +170,17 @@ public:
     Vector3 projected2 { vector2.x, vector2.y, 0.0 };
     return projected1.cross(projected2).z < 0.0;
   }
+
+  static Vector3 CreateArbitraryOrthogonalVector(Vector3 vector) {
+    const Scalar pi { 3.141592653589793238462643383279502884 };
+    Vector3 x_axis { 1.0, 0.0, 0.0 };
+    Vector3 y_axis { 0.0, 1.0, 0.0 };
+    vector.normalize();
+
+    return (vector.dot_theta(x_axis) != 0.0 && vector.dot_theta(x_axis) != pi)
+        ? Vector3(vector).cross(x_axis)
+        : Vector3(vector).cross(y_axis);
+  }
 };
 
 } // namespace core

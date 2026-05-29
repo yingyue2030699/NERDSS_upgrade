@@ -23,6 +23,7 @@ bool areSameAngle(double ang1, double ang2);
 bool areParallel(const double& angle);
 bool angleSignIsCorrect(const Vector& vec1, const Vector& vec2);
 double get_geodesic_distance(Coord intFace1, Coord intFace2);
+Vector create_arbitrary_vector(Vector& vec);
 
 namespace {
 
@@ -171,6 +172,15 @@ void test_math_engine_facade()
         nerdss::core::MathEngine::IsAngleSignCorrect({ 1.0, 0.0, 1.0 }, { 0.0, 0.0, 1.0 })
             == angleSignIsCorrect({ 1.0, 0.0, 1.0 }, { 0.0, 0.0, 1.0 }),
         "angle sign facade should match legacy wrapper");
+
+    Vector arbitrary_input { 0.0, 1.0, 0.0 };
+    Vector legacy_arbitrary_input { 0.0, 1.0, 0.0 };
+    Vector arbitrary = nerdss::core::MathEngine::CreateArbitraryOrthogonalVector(arbitrary_input);
+    Vector legacy_arbitrary = create_arbitrary_vector(legacy_arbitrary_input);
+    require_close(arbitrary.x, legacy_arbitrary.x, "arbitrary vector facade x");
+    require_close(arbitrary.y, legacy_arbitrary.y, "arbitrary vector facade y");
+    require_close(arbitrary.z, legacy_arbitrary.z, "arbitrary vector facade z");
+    require_close(legacy_arbitrary_input.magnitude, 1.0, "legacy arbitrary vector wrapper normalizes input");
 }
 
 void test_diagnostics_trace_stack()
