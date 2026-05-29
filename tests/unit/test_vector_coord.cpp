@@ -223,6 +223,17 @@ void test_probability_engine_facade()
             0.6, finite_params.r0, finite_params.D, finite_params.t),
         norm_function(0.6, &finite_params),
         "2D norm integrand facade should match legacy callback");
+
+    const double pi = std::acos(-1.0);
+    const double free_probability =
+        nerdss::core::ProbabilityEngine::FreeDiffusionProbability2D(
+            0.6, finite_params.r0, finite_params.D, finite_params.t);
+    const double free_norm =
+        nerdss::core::ProbabilityEngine::FreeDiffusionNormIntegrand2D(
+            0.6, finite_params.r0, finite_params.D, finite_params.t);
+    require_close(
+        free_probability, free_norm / (2.0 * pi * 0.6),
+        "2D free probability should match radial norm relation");
 }
 
 } // namespace

@@ -241,3 +241,20 @@ Validation for the follow-up:
 | Serial build | Passed | Incremental `make serial` rebuilt `bin/nerdss`. |
 | Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
 | Benchmark mode | Passed | `small_homotrimer` wall time `8.602s`, CPU time `8.441s`. |
+
+## 2D Free-Diffusion Probability Facade
+
+Extracted the free-diffusion probability density used by
+`DDpirr_pfree_ratio_ps` into
+`nerdss::core::ProbabilityEngine::FreeDiffusionProbability2D`. The remaining
+legacy function still owns the GSL matrix lookups and ratio orchestration, which
+keeps this slice limited to the pure scalar math.
+
+Validation for this slice:
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| CTest unit suite | Passed | Added a radial-normalization relation check against `FreeDiffusionNormIntegrand2D`. |
+| Serial build | Passed | Incremental `make serial` rebuilt `bin/nerdss`. |
+| Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
+| Benchmark mode | Passed | `small_homotrimer` wall time `8.395s`, CPU time `8.371s`. |

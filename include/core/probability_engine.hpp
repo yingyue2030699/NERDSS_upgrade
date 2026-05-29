@@ -277,6 +277,23 @@ public:
     return prefactor * std::exp(exponent)
            * gsl_sf_bessel_I0_scaled(scaled_radius);
   }
+
+  static double FreeDiffusionProbability2D(double current_radius,
+                                           double initial_radius,
+                                           double diffusion_total,
+                                           double time) {
+    const double pi { 3.141592653589793238462643383279502884 };
+    const double scaled_radius {
+        current_radius * initial_radius / (2.0 * diffusion_total * time) };
+    const double prefactor { 1.0 / (4.0 * pi * time * diffusion_total) };
+    const double exponent {
+        scaled_radius
+        - (initial_radius * initial_radius + current_radius * current_radius)
+              / (4.0 * time * diffusion_total) };
+
+    return prefactor * std::exp(exponent)
+           * gsl_sf_bessel_I0_scaled(scaled_radius);
+  }
 };
 
 } // namespace core
