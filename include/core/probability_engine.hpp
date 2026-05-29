@@ -405,6 +405,144 @@ public:
            * (std::exp(b * b) * std::erfc(b) - 1.0
               + 2.0 * alpha * std::sqrt(time / pi));
   }
+
+  static double CompartmentEntryProbability(double distance_to_surface,
+                                            double time,
+                                            double diffusion_total,
+                                            double binding_radius,
+                                            double association_rate,
+                                            double compartment_radius,
+                                            double site_density) {
+    const double pi { 3.141592653589793238462643383279502884 };
+    if (association_rate < 1.0e-15) {
+      return 0.0;
+    }
+
+    double clamped_distance { distance_to_surface };
+    if (clamped_distance < binding_radius) {
+      clamped_distance = binding_radius;
+    }
+
+    const double diffusion_limited_rate {
+        4.0 * pi * binding_radius * diffusion_total };
+    const double radius { clamped_distance + compartment_radius };
+    const double alpha {
+        std::sqrt(diffusion_total * time)
+        * (association_rate + diffusion_limited_rate)
+        / (binding_radius * diffusion_limited_rate) };
+    const double coefficient {
+        compartment_radius / radius * 2.0 * pi * site_density * binding_radius
+        * binding_radius * association_rate * diffusion_limited_rate
+        / (association_rate + diffusion_limited_rate)
+        / (association_rate + diffusion_limited_rate) };
+    const double sqrt_four_dt { std::sqrt(4.0 * diffusion_total * time) };
+    const double x1 {
+        (radius + compartment_radius - binding_radius) / sqrt_four_dt };
+    const double x2 {
+        (radius - compartment_radius - binding_radius) / sqrt_four_dt };
+
+    double func1 {};
+    double func2 {};
+    if (std::isinf(std::exp(alpha * alpha + 2.0 * alpha * x2))) {
+      func1 = -(2.0 * alpha / std::sqrt(pi)
+                + 1.0 / (alpha + x1) / std::sqrt(pi))
+                  * std::exp(-x1 * x1)
+              + (2.0 * alpha * x1 + 1.0) * std::erfc(x1);
+      func2 = -(2.0 * alpha / std::sqrt(pi)
+                + 1.0 / (alpha + x2) / std::sqrt(pi))
+                  * std::exp(-x2 * x2)
+              + (2.0 * alpha * x2 + 1.0) * std::erfc(x2);
+    } else if (std::isinf(std::exp(alpha * alpha + 2.0 * alpha * x1))) {
+      func1 = -(2.0 * alpha / std::sqrt(pi)
+                + 1.0 / (alpha + x1) / std::sqrt(pi))
+                  * std::exp(-x1 * x1)
+              + (2.0 * alpha * x1 + 1.0) * std::erfc(x1);
+      func2 = -std::exp(alpha * alpha + 2.0 * alpha * x2)
+                  * std::erfc(alpha + x2)
+              + (2.0 * alpha * x2 + 1.0) * std::erfc(x2)
+              - 2.0 * alpha / std::sqrt(pi) * std::exp(-x2 * x2);
+    } else {
+      func1 = -std::exp(alpha * alpha + 2.0 * alpha * x1)
+                  * std::erfc(alpha + x1)
+              + (2.0 * alpha * x1 + 1.0) * std::erfc(x1)
+              - 2.0 * alpha / std::sqrt(pi) * std::exp(-x1 * x1);
+      func2 = -std::exp(alpha * alpha + 2.0 * alpha * x2)
+                  * std::erfc(alpha + x2)
+              + (2.0 * alpha * x2 + 1.0) * std::erfc(x2)
+              - 2.0 * alpha / std::sqrt(pi) * std::exp(-x2 * x2);
+    }
+
+    return coefficient * (func1 - func2);
+  }
+
+  static double CompartmentExitProbability(double distance_to_surface,
+                                           double time,
+                                           double diffusion_total,
+                                           double binding_radius,
+                                           double association_rate,
+                                           double compartment_radius,
+                                           double site_density) {
+    const double pi { 3.141592653589793238462643383279502884 };
+    if (association_rate < 1.0e-15) {
+      return 0.0;
+    }
+
+    double clamped_distance { distance_to_surface };
+    if (clamped_distance < binding_radius) {
+      clamped_distance = binding_radius;
+    }
+
+    const double diffusion_limited_rate {
+        4.0 * pi * binding_radius * diffusion_total };
+    const double radius { -clamped_distance + compartment_radius };
+    const double alpha {
+        std::sqrt(diffusion_total * time)
+        * (association_rate + diffusion_limited_rate)
+        / (binding_radius * diffusion_limited_rate) };
+    const double coefficient {
+        compartment_radius / radius * 2.0 * pi * site_density * binding_radius
+        * binding_radius * association_rate * diffusion_limited_rate
+        / (association_rate + diffusion_limited_rate)
+        / (association_rate + diffusion_limited_rate) };
+    const double sqrt_four_dt { std::sqrt(4.0 * diffusion_total * time) };
+    const double x1 {
+        (compartment_radius - binding_radius + radius) / sqrt_four_dt };
+    const double x2 {
+        (compartment_radius - binding_radius - radius) / sqrt_four_dt };
+
+    double func1 {};
+    double func2 {};
+    if (std::isinf(std::exp(alpha * alpha + 2.0 * alpha * x2))) {
+      func1 = -(2.0 * alpha / std::sqrt(pi)
+                + 1.0 / (alpha + x1) / std::sqrt(pi))
+                  * std::exp(-x1 * x1)
+              + (2.0 * alpha * x1 + 1.0) * std::erfc(x1);
+      func2 = -(2.0 * alpha / std::sqrt(pi)
+                + 1.0 / (alpha + x2) / std::sqrt(pi))
+                  * std::exp(-x2 * x2)
+              + (2.0 * alpha * x2 + 1.0) * std::erfc(x2);
+    } else if (std::isinf(std::exp(alpha * alpha + 2.0 * alpha * x1))) {
+      func1 = -(2.0 * alpha / std::sqrt(pi)
+                + 1.0 / (alpha + x1) / std::sqrt(pi))
+                  * std::exp(-x1 * x1)
+              + (2.0 * alpha * x1 + 1.0) * std::erfc(x1);
+      func2 = -std::exp(alpha * alpha + 2.0 * alpha * x2)
+                  * std::erfc(alpha + x2)
+              + (2.0 * alpha * x2 + 1.0) * std::erfc(x2)
+              - 2.0 * alpha / std::sqrt(pi) * std::exp(-x2 * x2);
+    } else {
+      func1 = -std::exp(alpha * alpha + 2.0 * alpha * x1)
+                  * std::erfc(alpha + x1)
+              + (2.0 * alpha * x1 + 1.0) * std::erfc(x1)
+              - 2.0 * alpha / std::sqrt(pi) * std::exp(-x1 * x1);
+      func2 = -std::exp(alpha * alpha + 2.0 * alpha * x2)
+                  * std::erfc(alpha + x2)
+              + (2.0 * alpha * x2 + 1.0) * std::erfc(x2)
+              - 2.0 * alpha / std::sqrt(pi) * std::exp(-x2 * x2);
+    }
+
+    return coefficient * (func1 - func2);
+  }
 };
 
 } // namespace core

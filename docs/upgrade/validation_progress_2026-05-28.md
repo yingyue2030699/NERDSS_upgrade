@@ -291,3 +291,19 @@ Validation for this slice:
 | Serial build | Passed | Incremental `make serial` rebuilt `bin/nerdss`. |
 | Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
 | Benchmark mode | Passed | `small_homotrimer` wall time `8.684s`, CPU time `8.583s`. |
+
+## Compartment Probability Facade
+
+Moved the compartment entry and exit binding probabilities behind
+`nerdss::core::ProbabilityEngine` as `CompartmentEntryProbability` and
+`CompartmentExitProbability`. The legacy `prob_entering_compartment` and
+`prob_exiting_compartment` functions remain as `paramsIL` adapters.
+
+Validation for this slice:
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| CTest unit suite | Passed | Added facade-vs-wrapper checks for entry and exit probabilities. |
+| Serial build | Passed | Incremental `make serial` rebuilt `bin/nerdss`. |
+| Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
+| Benchmark mode | Passed | `small_homotrimer` wall time `8.656s`, CPU time `8.512s`. |
