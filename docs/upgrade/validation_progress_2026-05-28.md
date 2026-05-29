@@ -210,3 +210,21 @@ Validation for this slice:
 | Serial build | Passed | Incremental `make serial` rebuilt `bin/nerdss` with the forwarding wrappers. |
 | Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
 | Benchmark mode | Passed | `small_homotrimer` wall time `8.584s`, CPU time `8.404s`. |
+
+## 2D Table Integrand Facade
+
+Moved the 2D survival and irreversible-probability table integrand formulas
+behind `nerdss::core::ProbabilityEngine`. The legacy `survival_function` and
+`pir_function` GSL callback signatures remain in place as adapters from
+`IntegrandParams` to explicit scalar arguments. This keeps matrix construction
+compatible while making the formulas easier to unit test and batch in future
+math-engine work.
+
+Validation for this slice:
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| CTest unit suite | Passed | Added facade-vs-callback checks for finite-rate and absorbing 2D integrands. |
+| Serial build | Passed | Incremental `make serial` rebuilt `bin/nerdss`. |
+| Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
+| Benchmark mode | Passed | `small_homotrimer` wall time `8.643s`, CPU time `8.557s`. |

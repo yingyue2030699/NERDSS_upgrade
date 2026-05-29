@@ -3,6 +3,7 @@
 #include "core/diagnostics.hpp"
 #include "core/math_engine.hpp"
 #include "core/probability_engine.hpp"
+#include "reactions/bimolecular/2D_reaction_table_functions.hpp"
 
 #include <cmath>
 #include <cstdlib>
@@ -182,6 +183,41 @@ void test_probability_engine_facade()
     require_close(
         ratio1d, pirr_pfree_ratio_psF_1D(1.9, 2.0, 0.1, 1.5, 0.7, 0.25, 0.8),
         "1D rebinding ratio facade should match legacy wrapper");
+
+    IntegrandParams finite_params;
+    finite_params.a = 0.7;
+    finite_params.D = 1.5;
+    finite_params.k = 0.25;
+    finite_params.r0 = 2.0;
+    finite_params.r = 1.9;
+    finite_params.t = 0.1;
+    require_close(
+        nerdss::core::ProbabilityEngine::SurvivalProbabilityIntegrand2D(
+            0.6, finite_params.a, finite_params.D, finite_params.k,
+            finite_params.r0, finite_params.t),
+        survival_function(0.6, &finite_params),
+        "2D finite-rate survival integrand facade should match legacy callback");
+    require_close(
+        nerdss::core::ProbabilityEngine::IrreversibleProbabilityIntegrand2D(
+            0.6, finite_params.a, finite_params.D, finite_params.k,
+            finite_params.r0, finite_params.r, finite_params.t),
+        pir_function(0.6, &finite_params),
+        "2D finite-rate pir integrand facade should match legacy callback");
+
+    IntegrandParams absorbing_params = finite_params;
+    absorbing_params.k = 1.0 / 0.0;
+    require_close(
+        nerdss::core::ProbabilityEngine::SurvivalProbabilityIntegrand2D(
+            0.6, absorbing_params.a, absorbing_params.D, absorbing_params.k,
+            absorbing_params.r0, absorbing_params.t),
+        survival_function(0.6, &absorbing_params),
+        "2D absorbing survival integrand facade should match legacy callback");
+    require_close(
+        nerdss::core::ProbabilityEngine::IrreversibleProbabilityIntegrand2D(
+            0.6, absorbing_params.a, absorbing_params.D, absorbing_params.k,
+            absorbing_params.r0, absorbing_params.r, absorbing_params.t),
+        pir_function(0.6, &absorbing_params),
+        "2D absorbing pir integrand facade should match legacy callback");
 }
 
 } // namespace

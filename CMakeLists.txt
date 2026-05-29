@@ -89,7 +89,10 @@ if(BUILD_TESTING)
         src/reactions/passocF_1D.cpp
         src/reactions/pirr_pfree_ratio_psF.cpp
         src/reactions/pirr_pfree_ratio_psF_1D.cpp
+        src/reactions/pir_function.cpp
+        src/reactions/survival_function.cpp
     )
     target_include_directories(nerdss_unit_tests PRIVATE include)
+    target_link_libraries(nerdss_unit_tests PRIVATE GSL::gsl GSL::gslcblas)
     add_test(NAME nerdss_unit_tests COMMAND nerdss_unit_tests)
 endif()

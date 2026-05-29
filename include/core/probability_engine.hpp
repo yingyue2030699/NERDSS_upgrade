@@ -191,6 +191,76 @@ public:
 
     return pirr / previous_survival / pfree;
   }
+
+  static double SurvivalProbabilityIntegrand2D(double x, double binding_radius,
+                                               double diffusion_total,
+                                               double association_rate,
+                                               double initial_radius,
+                                               double time) {
+    const double pi { 3.141592653589793238462643383279502884 };
+    const double infinite_rate { 1.0 / 0.0 };
+
+    if (association_rate < infinite_rate) {
+      const double h { 2.0 * pi * binding_radius * diffusion_total };
+      const double scaled_radius { x * binding_radius };
+      const double alpha {
+          h * x * j1(scaled_radius) + association_rate * j0(scaled_radius) };
+      const double beta {
+          h * x * y1(scaled_radius) + association_rate * y0(scaled_radius) };
+      const double denominator { alpha * alpha + beta * beta };
+      const double bessel_product {
+          j0(scaled_radius) * y1(scaled_radius)
+          - j1(scaled_radius) * y0(scaled_radius) };
+      const double transfer {
+          (j0(x * initial_radius) * beta - y0(x * initial_radius) * alpha)
+          / denominator };
+
+      return transfer * bessel_product
+             * (1.0 - std::exp(-diffusion_total * time * x * x))
+             * binding_radius * association_rate;
+    }
+
+    const double alpha { j0(x * binding_radius) };
+    const double beta { y0(x * binding_radius) };
+    const double denominator { alpha * alpha + beta * beta };
+    const double bessel_product {
+        j0(x * binding_radius) * y0(x * initial_radius)
+        - j0(x * initial_radius) * y0(x * binding_radius) };
+
+    return (2.0 / pi) * bessel_product
+           * std::exp(-diffusion_total * time * x * x) / x / denominator;
+  }
+
+  static double IrreversibleProbabilityIntegrand2D(
+      double x, double binding_radius, double diffusion_total,
+      double association_rate, double initial_radius, double current_radius,
+      double time) {
+    const double pi { 3.141592653589793238462643383279502884 };
+    const double infinite_rate { 1.0 / 0.0 };
+
+    const double scaled_radius { x * binding_radius };
+    double alpha {};
+    double beta {};
+    if (association_rate < infinite_rate) {
+      const double h { 2.0 * pi * binding_radius * diffusion_total };
+      alpha = h * x * j1(scaled_radius) + association_rate * j0(scaled_radius);
+      beta = h * x * y1(scaled_radius) + association_rate * y0(scaled_radius);
+    } else {
+      alpha = j0(scaled_radius);
+      beta = y0(scaled_radius);
+    }
+
+    const double denominator { std::sqrt(alpha * alpha + beta * beta) };
+    const double current_projection {
+        (j0(x * current_radius) * beta - y0(x * current_radius) * alpha)
+        / denominator };
+    const double initial_projection {
+        (j0(x * initial_radius) * beta - y0(x * initial_radius) * alpha)
+        / denominator };
+
+    return x * std::exp(-diffusion_total * time * x * x) * current_projection
+           * initial_projection / (2.0 * pi);
+  }
 };
 
 } // namespace core
