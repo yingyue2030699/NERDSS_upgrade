@@ -67,6 +67,7 @@ unit_ctest.stdout.txt
 unit_ctest.stderr.txt
 regression.stdout.txt
 regression.stderr.txt
+regression_report.json
 benchmarks.stdout.txt
 benchmarks.stderr.txt
 validation_report.json
@@ -78,6 +79,9 @@ The JSON report includes:
 - step command, working directory, runtime, exit code, skipped flag, and log
   paths;
 - aggregate `passed` or `failed` status.
+
+When regression validation runs, `regression_report.json` contains the detailed
+case-level pass/fail report from `tests/regression/run_regression.py`.
 
 Keep generated validation output directories out of commits. Attach them as CI
 artifacts or local run artifacts when reviewing behavior-sensitive changes.

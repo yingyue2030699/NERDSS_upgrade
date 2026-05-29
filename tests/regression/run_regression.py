@@ -637,6 +637,9 @@ def write_json_report(path: Path | None, report: dict[str, Any]) -> None:
 
 
 def run_with_temp_root(args: argparse.Namespace, fn: Any) -> int:
+    if args.tmp_root:
+        args.tmp_root.mkdir(parents=True, exist_ok=True)
+
     if args.keep_temp:
         root = Path(
             tempfile.mkdtemp(

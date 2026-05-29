@@ -316,6 +316,8 @@ def main() -> int:
                     str(args.binary),
                     "--tmp-root",
                     str(regression_tmp),
+                    "--json-output",
+                    str(output_dir / "regression_report.json"),
                 ],
                 REPO_ROOT,
                 output_dir,

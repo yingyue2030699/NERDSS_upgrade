@@ -139,3 +139,16 @@ the regression harness, and optional benchmark cases, then writes a single
 
 This runner is intended as the standard local command before behavior-sensitive
 refactors and as the future CI entry point once workflow pushes are available.
+
+## Workflow Follow-Up
+
+The first unified validation run exposed nondeterministic `DATA/restart.dat`
+output in `implicit_lipid_fresh_small`: the serialized `membrane` line could
+write an uninitialized `Membrane::No_protein` value. The `Membrane` primitive
+fields are now default-initialized so fresh fixed-seed runs produce stable
+restart metadata.
+
+The regression harness also now creates the parent directory passed through
+`--tmp-root`, and the unified validation runner asks the regression harness to
+write `regression_report.json` alongside the top-level
+`validation_report.json`.

@@ -38,6 +38,9 @@ Use `--json-output <path>` with `--list`, `--dry-run`, or a real run to emit a
 machine-readable report containing selected cases, planned commands, run
 directories, stochastic summaries, threshold status, and failures.
 
+Use `--tmp-root <path>` to choose the parent directory for temporary runs. The
+harness creates this parent directory when needed.
+
 ## Default validation coverage
 
 The default manifest keeps runtime short by patching long validation samples down
