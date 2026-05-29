@@ -22,6 +22,7 @@ double pirr_pfree_ratio_psF_1D(
     double ka, double ps_prev);
 double get_prevNorm(gsl_matrix* normMatrix, double RStepSize, double r0, double bindRadius);
 double get_prevSurv(const gsl_matrix* survMatrix, double Dtot, double deltaT, double r0, double bindRadius);
+double calc_pirr(gsl_matrix* pirMatrix, gsl_matrix* survMatrix, double RStepSize, double r, double r0, double a);
 bool areSameAngle(double ang1, double ang2);
 bool areParallel(const double& angle);
 bool angleSignIsCorrect(const Vector& vec1, const Vector& vec2);
@@ -342,6 +343,24 @@ void test_probability_engine_facade()
     require_close(
         nerdss::core::ProbabilityEngine::TableStepSize2D(1.0, 0.01), 0.002,
         "2D table step helper should preserve legacy sqrt(Dt)/50 relation");
+
+    gsl_matrix* pir_matrix = gsl_matrix_alloc(100, 100);
+    for (size_t row = 0; row < 100; ++row) {
+        for (size_t column = 0; column < 100; ++column) {
+            gsl_matrix_set(pir_matrix, row, column, 0.01 * static_cast<double>(row + column + 1));
+        }
+    }
+    require_close(
+        nerdss::core::ProbabilityEngine::IrreversibleProbabilityTable2D(
+            pir_matrix, lookup_matrix, 0.1, 0.95, 0.85, 0.7),
+        calc_pirr(pir_matrix, lookup_matrix, 0.1, 0.95, 0.85, 0.7),
+        "2D pir table facade should match legacy lookup");
+    require_close(
+        nerdss::core::ProbabilityEngine::IrreversibleProbabilityTable2D(
+            pir_matrix, lookup_matrix, 0.1, 0.85, 0.85, 0.7),
+        calc_pirr(pir_matrix, lookup_matrix, 0.1, 0.85, 0.85, 0.7),
+        "2D pir table facade should match legacy diagonal lookup");
+    gsl_matrix_free(pir_matrix);
     gsl_matrix_free(lookup_matrix);
 
     const double pi = std::acos(-1.0);

@@ -451,3 +451,19 @@ Validation for this slice:
 | Serial build | Passed | Incremental `make serial` rebuilt `get_prevNorm`, `get_prevSurv`, and `bin/nerdss`. |
 | Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
 | Benchmark mode | Passed | `small_homotrimer` wall time `8.474s`, CPU time `8.370s`. |
+
+## 2D PIR Table Interpolation Facade
+
+Moved the legacy `calc_pirr` inverse-distance interpolation kernel behind
+`nerdss::core::ProbabilityEngine::IrreversibleProbabilityTable2D`. The legacy
+function remains a forwarding wrapper for existing rebinding-ratio table
+call sites.
+
+Validation for this slice:
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| CTest unit suite | Passed | Added synthetic GSL matrix coverage for off-diagonal interpolation and diagonal lookup behavior. |
+| Serial build | Passed | Incremental `make serial` rebuilt `calc_pirr` and `bin/nerdss`. |
+| Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
+| Benchmark mode | Passed | `small_homotrimer` wall time `8.675s`, CPU time `8.409s`. |

@@ -89,6 +89,7 @@ if(BUILD_TESTING)
         src/reactions/angleSignIsCorrect.cpp
         src/reactions/areParallel.cpp
         src/reactions/areSameAngle.cpp
+        src/reactions/calc_pirr.cpp
         src/reactions/create_arbitrary_vector.cpp
         src/reactions/requiresSignFlip.cpp
         src/reactions/passocF.cpp

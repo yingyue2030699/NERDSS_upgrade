@@ -337,6 +337,63 @@ public:
         norm_matrix, radius_step_size, radius, binding_radius);
   }
 
+  static double IrreversibleProbabilityTable2D(const gsl_matrix* pir_matrix,
+                                               const gsl_matrix* survival_matrix,
+                                               double radius_step_size,
+                                               double current_radius,
+                                               double initial_radius,
+                                               double binding_radius) {
+    int initial_index {
+        static_cast<int>(std::floor((initial_radius - binding_radius)
+                                    / radius_step_size)) };
+    int current_index {
+        static_cast<int>(std::floor((current_radius - binding_radius)
+                                    / radius_step_size)) };
+    if (initial_index < 0) {
+      initial_index = 0;
+    }
+    if (current_index < 0) {
+      current_index = 0;
+    }
+
+    if (initial_index == current_index) {
+      return gsl_matrix_get(pir_matrix, initial_index, current_index);
+    }
+
+    const double initial_a { gsl_matrix_get(survival_matrix, 0, initial_index) };
+    const double current_a { gsl_matrix_get(survival_matrix, 0, current_index) };
+    const double value_a { gsl_matrix_get(pir_matrix, initial_index, current_index) };
+    const double distance_a {
+        std::sqrt(std::pow(initial_a - initial_radius, 2.0)
+                  + std::pow(current_a - current_radius, 2.0)) };
+
+    const double initial_b { gsl_matrix_get(survival_matrix, 0, initial_index) };
+    const double current_b { gsl_matrix_get(survival_matrix, 0, current_index + 1) };
+    const double value_b { gsl_matrix_get(pir_matrix, initial_index, current_index + 1) };
+    const double distance_b {
+        std::sqrt(std::pow(initial_b - initial_radius, 2.0)
+                  + std::pow(current_b - current_radius, 2.0)) };
+
+    const double initial_c { gsl_matrix_get(survival_matrix, 0, initial_index + 1) };
+    const double current_c { gsl_matrix_get(survival_matrix, 0, current_index + 1) };
+    const double value_c { gsl_matrix_get(pir_matrix, initial_index + 1, current_index + 1) };
+    const double distance_c {
+        std::sqrt(std::pow(initial_c - initial_radius, 2.0)
+                  + std::pow(current_c - current_radius, 2.0)) };
+
+    const double initial_d { gsl_matrix_get(survival_matrix, 0, initial_index + 1) };
+    const double current_d { gsl_matrix_get(survival_matrix, 0, current_index) };
+    const double value_d { gsl_matrix_get(pir_matrix, initial_index + 1, current_index) };
+    const double distance_d {
+        std::sqrt(std::pow(initial_d - initial_radius, 2.0)
+                  + std::pow(current_d - current_radius, 2.0)) };
+
+    return ((value_a / distance_a) + (value_b / distance_b)
+            + (value_c / distance_c) + (value_d / distance_d))
+           / ((1.0 / distance_a) + (1.0 / distance_b)
+              + (1.0 / distance_c) + (1.0 / distance_d));
+  }
+
   static double ImplicitLipidDissociationProbability2D(
       double time, double diffusion_total, double binding_radius,
       double association_rate, double dissociation_rate, int solution_count,
