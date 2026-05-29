@@ -24,6 +24,7 @@ bool areParallel(const double& angle);
 bool angleSignIsCorrect(const Vector& vec1, const Vector& vec2);
 double get_geodesic_distance(Coord intFace1, Coord intFace2);
 Vector create_arbitrary_vector(Vector& vec);
+bool requiresSignFlip(Vector axis, Vector v1, Vector v2);
 
 namespace {
 
@@ -181,6 +182,17 @@ void test_math_engine_facade()
     require_close(arbitrary.y, legacy_arbitrary.y, "arbitrary vector facade y");
     require_close(arbitrary.z, legacy_arbitrary.z, "arbitrary vector facade z");
     require_close(legacy_arbitrary_input.magnitude, 1.0, "legacy arbitrary vector wrapper normalizes input");
+
+    require_true(
+        nerdss::core::MathEngine::RequiresSignFlip(
+            { 0.0, 1.0, 0.0 }, { 1.0, 0.0, 0.0 }, { 0.0, 0.0, 1.0 })
+            == requiresSignFlip({ 0.0, 1.0, 0.0 }, { 1.0, 0.0, 0.0 }, { 0.0, 0.0, 1.0 }),
+        "sign-flip facade should match legacy wrapper for y-axis rotation");
+    require_true(
+        nerdss::core::MathEngine::RequiresSignFlip(
+            { 0.0, 0.0, 1.0 }, { 0.0, 1.0, 0.0 }, { 0.0, 0.0, 1.0 })
+            == requiresSignFlip({ 0.0, 0.0, 1.0 }, { 0.0, 1.0, 0.0 }, { 0.0, 0.0, 1.0 }),
+        "sign-flip facade should match legacy wrapper for x-axis fallback");
 }
 
 void test_diagnostics_trace_stack()

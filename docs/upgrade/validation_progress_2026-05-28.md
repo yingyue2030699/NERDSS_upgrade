@@ -386,3 +386,18 @@ Validation for this slice:
 | Serial build | Passed | Incremental `make serial` rebuilt the legacy wrapper and `bin/nerdss`. |
 | Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
 | Benchmark mode | Passed | `small_homotrimer` wall time `8.074s`, CPU time `7.849s`. |
+
+## Sign-Flip Orientation Facade
+
+Moved the quaternion-backed association orientation predicate behind
+`nerdss::core::MathEngine::RequiresSignFlip`. The legacy `requiresSignFlip`
+function remains as a forwarding wrapper for association rotation code.
+
+Validation for this slice:
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| CTest unit suite | Passed | Added facade-vs-wrapper coverage for the ordinary z-axis projection path and the x-axis fallback path. |
+| Serial build | Passed | Incremental `make serial` rebuilt the legacy wrapper and `bin/nerdss`. |
+| Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
+| Benchmark mode | Passed | `small_homotrimer` wall time `8.060s`, CPU time `7.879s`. |

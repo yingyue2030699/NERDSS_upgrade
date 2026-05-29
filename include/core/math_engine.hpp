@@ -5,6 +5,7 @@
 #pragma once
 
 #include "classes/class_Coord.hpp"
+#include "classes/class_Quat.hpp"
 #include "classes/class_Vector.hpp"
 #include "math/matrix.hpp"
 
@@ -180,6 +181,57 @@ public:
     return (vector.dot_theta(x_axis) != 0.0 && vector.dot_theta(x_axis) != pi)
         ? Vector3(vector).cross(x_axis)
         : Vector3(vector).cross(y_axis);
+  }
+
+  static bool RequiresSignFlip(Vector3 axis, Vector3 vector1,
+                               Vector3 vector2) {
+    Vector3 z_axis { 0.0, 0.0, 1.0 };
+    Vector3 x_axis { 1.0, 0.0, 0.0 };
+    z_axis.magnitude = 1.0;
+    x_axis.magnitude = 1.0;
+    Vector3 rotation_axis { z_axis.cross(axis) };
+    rotation_axis.calc_magnitude();
+    Scalar theta { z_axis.dot_theta(axis) };
+    bool use_x_axis { false };
+    if (std::abs(rotation_axis.x) < 1.0e-8
+        && std::abs(rotation_axis.y) < 1.0e-8
+        && std::abs(rotation_axis.z) < 1.0e-8) {
+      rotation_axis = x_axis.cross(axis);
+      rotation_axis.calc_magnitude();
+      theta = x_axis.dot_theta(axis);
+      use_x_axis = true;
+    }
+
+    Quat rotation(std::cos(theta / 2.0),
+                  std::sin(theta / 2.0) * rotation_axis.x,
+                  std::sin(theta / 2.0) * rotation_axis.y,
+                  std::sin(theta / 2.0) * rotation_axis.z);
+    rotation = rotation.unit();
+    rotation.rotate(vector1);
+    rotation.rotate(vector2);
+    rotation.rotate(axis);
+
+    if ((z_axis.dot_theta(axis) > 0.01 && !use_x_axis)
+        || (use_x_axis && x_axis.dot_theta(axis) < 0.01)) {
+      rotation = rotation.inverse();
+      rotation.rotate(vector1);
+      rotation.rotate(vector2);
+      rotation = Quat(std::cos(-theta / 2.0),
+                      std::sin(-theta / 2.0) * rotation_axis.x,
+                      std::sin(-theta / 2.0) * rotation_axis.y,
+                      std::sin(-theta / 2.0) * rotation_axis.z);
+      rotation.rotate(vector1);
+      rotation.rotate(vector2);
+    }
+
+    if (!use_x_axis) {
+      Vector3 projected1 { vector1.x, vector1.y, 0.0 };
+      Vector3 projected2 { vector2.x, vector2.y, 0.0 };
+      return projected1.cross(projected2).z > 0.0;
+    }
+    Vector3 projected1 { 0.0, vector1.y, vector1.z };
+    Vector3 projected2 { 0.0, vector2.y, vector2.z };
+    return projected1.cross(projected2).x > 0.0;
   }
 };
 

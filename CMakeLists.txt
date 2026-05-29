@@ -82,6 +82,7 @@ if(BUILD_TESTING)
     add_executable(nerdss_unit_tests
         tests/unit/test_vector_coord.cpp
         src/classes/class_Coord.cpp
+        src/classes/class_Quat.cpp
         src/classes/class_Vector.cpp
         src/math/Faddeeva.cpp
         src/math/matrix_functions.cpp
@@ -89,6 +90,7 @@ if(BUILD_TESTING)
         src/reactions/areParallel.cpp
         src/reactions/areSameAngle.cpp
         src/reactions/create_arbitrary_vector.cpp
+        src/reactions/requiresSignFlip.cpp
         src/reactions/passocF.cpp
         src/reactions/passocF_1D.cpp
         src/reactions/pirr_pfree_ratio_psF.cpp
