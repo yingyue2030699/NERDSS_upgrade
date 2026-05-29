@@ -1,5 +1,6 @@
 #include "classes/class_Coord.hpp"
 #include "classes/class_Vector.hpp"
+#include "core/diagnostics.hpp"
 #include "core/math_engine.hpp"
 
 #include <cmath>
@@ -23,6 +24,14 @@ void require_true(bool condition, const std::string& label)
 {
     if (!condition) {
         std::cerr << label << '\n';
+        std::exit(1);
+    }
+}
+
+void require_contains(const std::string& text, const std::string& needle, const std::string& label)
+{
+    if (text.find(needle) == std::string::npos) {
+        std::cerr << label << ": expected to find '" << needle << "' in '" << text << "'\n";
         std::exit(1);
     }
 }
@@ -103,6 +112,30 @@ void test_math_engine_facade()
     require_close(identity[8], 1.0, "facade matrix 8");
 }
 
+void test_diagnostics_trace_stack()
+{
+    nerdss::core::TraceStack<4> stack;
+    require_true(stack.empty(), "trace stack should start empty");
+
+    {
+        nerdss::core::ScopedTraceFrame<4> frame(
+            stack, { "test_function", "test_file.cpp", 42, "while testing" });
+        require_true(stack.size() == 1, "trace stack should contain scoped frame");
+        std::string trace = stack.Format();
+        require_contains(trace, "test_function", "trace includes function");
+        require_contains(trace, "test_file.cpp:42", "trace includes file and line");
+        require_contains(trace, "while testing", "trace includes detail");
+
+        nerdss::core::Diagnostic diagnostic = nerdss::core::MakeDiagnostic(
+            nerdss::error::ErrorCategory::input, "bad input", trace);
+        require_true(
+            diagnostic.exit_code == nerdss::error::ExitCode::input,
+            "diagnostic should use default input exit code");
+    }
+
+    require_true(stack.empty(), "scoped trace frame should pop on destruction");
+}
+
 } // namespace
 
 int main()
@@ -111,5 +144,6 @@ int main()
     test_vector_magnitude_dot_and_normalize();
     test_vector_cross_projection_and_angle();
     test_math_engine_facade();
+    test_diagnostics_trace_stack();
     return 0;
 }

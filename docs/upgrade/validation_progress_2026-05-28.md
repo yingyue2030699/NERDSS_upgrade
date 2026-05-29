@@ -169,3 +169,11 @@ Validation for the first slice:
 | CTest unit suite | Passed | Added coverage for the `MathEngine` facade. |
 | Unified validation runner | Passed | Smoke, unit configure/build/CTest, and 7-case regression passed. |
 | Benchmark mode | Passed | `small_homotrimer` wall time `8.738s`, CPU time `8.559s`. |
+
+## Diagnostics Boundary Start
+
+Added the first low-cost diagnostics boundary in `include/core/diagnostics.hpp`.
+It provides fixed-capacity trace stacks, scoped frames, and structured
+diagnostics that map to the existing error category and exit-code model. The
+header does not allocate or format strings unless a diagnostic is explicitly
+formatted, and trace scopes remain compile-time gated for future hot-loop use.
