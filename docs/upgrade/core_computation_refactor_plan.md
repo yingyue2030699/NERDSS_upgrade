@@ -39,7 +39,8 @@ trajectory math, restart semantics, or legacy input/output compatibility.
 2. Add unit coverage proving the facade delegates to legacy `Coord`, `Vector`,
    and matrix behavior.
 3. Move pure probability functions behind explicit service names while keeping
-   legacy functions as forwarding wrappers.
+   legacy functions as forwarding wrappers. The first slice moves the 1D and 3D
+   association probability kernels behind `nerdss::core::ProbabilityEngine`.
 4. Separate mutable topology operations from probability calculations.
 5. Introduce backend-neutral data-shape documentation for future GPU work:
    structure-of-arrays candidates, batchable kernels, and RNG constraints.
@@ -81,4 +82,3 @@ python3 tools/run_upgrade_validation.py \
 
 Any observed nondeterminism must be fixed or documented before extraction
 continues.
-

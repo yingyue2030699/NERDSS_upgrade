@@ -83,7 +83,10 @@ if(BUILD_TESTING)
         tests/unit/test_vector_coord.cpp
         src/classes/class_Coord.cpp
         src/classes/class_Vector.cpp
+        src/math/Faddeeva.cpp
         src/math/matrix_functions.cpp
+        src/reactions/passocF.cpp
+        src/reactions/passocF_1D.cpp
     )
     target_include_directories(nerdss_unit_tests PRIVATE include)
     add_test(NAME nerdss_unit_tests COMMAND nerdss_unit_tests)

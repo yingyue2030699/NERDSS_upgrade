@@ -2,11 +2,15 @@
 #include "classes/class_Vector.hpp"
 #include "core/diagnostics.hpp"
 #include "core/math_engine.hpp"
+#include "core/probability_engine.hpp"
 
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
 #include <string>
+
+double passocF(double r0, double tCurr, double Dtot, double bindRadius, double alpha, double cof);
+double passocF_1D(double r0, double tCurr, double Dtot, double bindRadius, double ka);
 
 namespace {
 
@@ -136,6 +140,32 @@ void test_diagnostics_trace_stack()
     require_true(stack.empty(), "scoped trace frame should pop on destruction");
 }
 
+void test_probability_engine_facade()
+{
+    const double passoc3d = nerdss::core::ProbabilityEngine::AssociationProbability3D(
+        2.0, 0.1, 1.5, 0.7, 0.25, 0.9);
+    require_close(
+        passoc3d, passocF(2.0, 0.1, 1.5, 0.7, 0.25, 0.9),
+        "3D association facade should match legacy wrapper");
+
+    const double passoc1d = nerdss::core::ProbabilityEngine::AssociationProbability1D(
+        2.0, 0.1, 1.5, 0.7, 0.25);
+    require_close(
+        passoc1d, passocF_1D(2.0, 0.1, 1.5, 0.7, 0.25),
+        "1D association facade should match legacy wrapper");
+
+    require_close(
+        nerdss::core::ProbabilityEngine::AssociationProbability1D(
+            2.0, 0.1, 0.0, 0.7, 0.25),
+        0.0,
+        "1D zero-diffusion separated reactants cannot associate");
+    require_close(
+        nerdss::core::ProbabilityEngine::AssociationProbability1D(
+            0.7, 0.1, 0.0, 0.7, 0.25),
+        1.0,
+        "1D zero-diffusion touching reactants associate");
+}
+
 } // namespace
 
 int main()
@@ -145,5 +175,6 @@ int main()
     test_vector_cross_projection_and_angle();
     test_math_engine_facade();
     test_diagnostics_trace_stack();
+    test_probability_engine_facade();
     return 0;
 }

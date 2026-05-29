@@ -177,3 +177,19 @@ It provides fixed-capacity trace stacks, scoped frames, and structured
 diagnostics that map to the existing error category and exit-code model. The
 header does not allocate or format strings unless a diagnostic is explicitly
 formatted, and trace scopes remain compile-time gated for future hot-loop use.
+
+## Probability Engine Start
+
+Started moving pure probability kernels behind core service interfaces by adding
+`include/core/probability_engine.hpp`. The 3D and 1D association probability
+formulas now live behind `nerdss::core::ProbabilityEngine`, while the legacy
+`passocF` and `passocF_1D` functions remain as forwarding wrappers so existing
+reaction call sites and validation baselines stay unchanged.
+
+Validation for this slice:
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| CTest unit suite | Passed | Added facade-vs-wrapper checks for 1D and 3D association probability. |
+| Unified validation runner | Passed | Smoke, unit configure/build/CTest, and 7-case regression passed. |
+| Benchmark mode | Passed | `small_homotrimer` wall time `8.655s`, CPU time `8.518s`. |
