@@ -152,3 +152,20 @@ The regression harness also now creates the parent directory passed through
 `--tmp-root`, and the unified validation runner asks the regression harness to
 write `regression_report.json` alongside the top-level
 `validation_report.json`.
+
+## Core Refactor Start
+
+Started the core-computation refactor track with
+`docs/upgrade/core_computation_refactor_plan.md` and the first
+`nerdss::core::MathEngine` CPU scalar facade. This is a boundary-only slice:
+existing `Coord`, `Vector`, and matrix algorithms remain the implementation of
+record, while the new facade gives future probability, trajectory, and
+GPU-oriented work a clear place to attach.
+
+Validation for the first slice:
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| CTest unit suite | Passed | Added coverage for the `MathEngine` facade. |
+| Unified validation runner | Passed | Smoke, unit configure/build/CTest, and 7-case regression passed. |
+| Benchmark mode | Passed | `small_homotrimer` wall time `8.738s`, CPU time `8.559s`. |

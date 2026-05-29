@@ -1,5 +1,6 @@
 #include "classes/class_Coord.hpp"
 #include "classes/class_Vector.hpp"
+#include "core/math_engine.hpp"
 
 #include <cmath>
 #include <cstdlib>
@@ -78,6 +79,30 @@ void test_vector_cross_projection_and_angle()
     require_close(x_axis.dot_theta(y_axis), std::acos(0.0), "right angle between axes");
 }
 
+void test_math_engine_facade()
+{
+    require_true(
+        nerdss::core::MathEngine::backend() == nerdss::core::MathBackend::kCpuScalar,
+        "math engine should default to CPU scalar backend");
+
+    nerdss::core::Vector3 x_axis { 1.0, 0.0, 0.0 };
+    nerdss::core::Vector3 y_axis { 0.0, 1.0, 0.0 };
+    require_close(nerdss::core::MathEngine::Dot(x_axis, y_axis), 0.0, "facade dot");
+
+    nerdss::core::Vector3 cross = nerdss::core::MathEngine::Cross(x_axis, y_axis);
+    require_close(cross.x, 0.0, "facade cross x");
+    require_close(cross.y, 0.0, "facade cross y");
+    require_close(cross.z, 1.0, "facade cross z");
+
+    nerdss::core::Coordinate3 coordinate { 2.0, 3.0, 6.0 };
+    require_close(nerdss::core::MathEngine::Magnitude(coordinate), 7.0, "facade magnitude");
+
+    nerdss::core::Matrix3 identity = nerdss::core::MathEngine::CreateEulerRotationMatrix(0.0, 0.0, 0.0);
+    require_close(identity[0], 1.0, "facade matrix 0");
+    require_close(identity[4], 1.0, "facade matrix 4");
+    require_close(identity[8], 1.0, "facade matrix 8");
+}
+
 } // namespace
 
 int main()
@@ -85,5 +110,6 @@ int main()
     test_coord_rounding_and_colinearity();
     test_vector_magnitude_dot_and_normalize();
     test_vector_cross_projection_and_angle();
+    test_math_engine_facade();
     return 0;
 }
