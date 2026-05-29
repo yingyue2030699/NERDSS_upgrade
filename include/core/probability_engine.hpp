@@ -350,6 +350,61 @@ public:
 
     return 1.0 - std::exp(-effective_dissociation_rate * time);
   }
+
+  static double ImplicitLipidBindingProbability3D(double separation,
+                                                  double time,
+                                                  double diffusion_total,
+                                                  double binding_radius,
+                                                  double association_rate) {
+    const double pi { 3.141592653589793238462643383279502884 };
+    if (association_rate < 1.0e-15) {
+      return 0.0;
+    }
+
+    const double diffusion_limited_rate {
+        4.0 * pi * binding_radius * diffusion_total };
+    const double alpha {
+        std::sqrt(diffusion_total) / binding_radius
+        * (1.0 + association_rate / diffusion_limited_rate) };
+
+    if (separation > binding_radius) {
+      const double denominator {
+          association_rate + diffusion_limited_rate };
+      const double coefficient {
+          2.0 * pi * binding_radius * binding_radius * association_rate
+          * diffusion_limited_rate / denominator / denominator };
+      const double a {
+          (separation - binding_radius)
+          / std::sqrt(4.0 * diffusion_total * time) };
+      const double b { alpha * std::sqrt(time) };
+      const double exponent { 2.0 * a * b + b * b };
+
+      if (std::isinf(std::exp(exponent))) {
+        return coefficient
+               * (std::exp(-a * a) / std::sqrt(pi) / (a + b)
+                  - (2.0 * a * b + 1.0) * std::erfc(a)
+                  + 2.0 * alpha * std::sqrt(time / pi) * std::exp(-a * a));
+      }
+      return coefficient
+             * (std::exp(exponent) * std::erfc(a + b)
+                - (2.0 * a * b + 1.0) * std::erfc(a)
+                + 2.0 * alpha * std::sqrt(time / pi) * std::exp(-a * a));
+    }
+
+    const double coefficient {
+        2.0 * pi * binding_radius * association_rate
+        * std::sqrt(diffusion_total) / alpha
+        / (association_rate + diffusion_limited_rate) };
+    const double b { alpha * std::sqrt(time) };
+    if (std::isinf(std::exp(b * b))) {
+      return coefficient
+             * (1.0 / std::sqrt(pi) / b - 1.0
+                + 2.0 * alpha * std::sqrt(time / pi));
+    }
+    return coefficient
+           * (std::exp(b * b) * std::erfc(b) - 1.0
+              + 2.0 * alpha * std::sqrt(time / pi));
+  }
 };
 
 } // namespace core

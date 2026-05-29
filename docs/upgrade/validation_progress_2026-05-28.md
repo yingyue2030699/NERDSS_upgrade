@@ -275,3 +275,19 @@ Validation for this slice:
 | Serial build | Passed | Incremental `make serial` rebuilt `bin/nerdss`. |
 | Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
 | Benchmark mode | Passed | `small_homotrimer` wall time `8.687s`, CPU time `8.529s`. |
+
+## Implicit-Lipid 3D Binding Facade
+
+Moved the closed-form 3D implicit-lipid binding probability behind
+`nerdss::core::ProbabilityEngine::ImplicitLipidBindingProbability3D`. The
+legacy `pimplicitlipid_3D` wrapper remains in place and now adapts `paramsIL`
+to scalar service arguments.
+
+Validation for this slice:
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| CTest unit suite | Passed | Added facade-vs-wrapper checks for separated and contact-distance branches. |
+| Serial build | Passed | Incremental `make serial` rebuilt `bin/nerdss`. |
+| Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
+| Benchmark mode | Passed | `small_homotrimer` wall time `8.684s`, CPU time `8.583s`. |

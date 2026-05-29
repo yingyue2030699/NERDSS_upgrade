@@ -147,38 +147,9 @@ double dissociate3D(double h, double D, double sigma, double ka, double kbsecond
 // binding probability, but must time the lipid density
 double pimplicitlipid_3D(double z, paramsIL& parameters3D)
 {
-    double h = parameters3D.dt;
-    double D = parameters3D.Dtot;
-    double sigma = parameters3D.sigma;
-    double ka = parameters3D.ka;
-    if (ka < 1E-15) {
-        return 0.0;
-    }
-
-    double out;
-    if (z > sigma) {
-        double alpha = sqrt(D) / sigma * (1.0 + ka / (4.0 * M_PI * sigma * D));
-        double conf = 2.0 * M_PI * sigma * sigma * ka * (4.0 * M_PI * sigma * D) / (ka + 4.0 * M_PI * sigma * D) / (ka + 4.0 * M_PI * sigma * D);
-        double a = (z - sigma) / sqrt(4.0 * D * h);
-        double b = alpha * sqrt(h);
-        if (std::isinf(exp(2.0 * a * b + b * b))) {
-            out = conf * (exp(-a * a) / sqrt(M_PI) / (a + b) - (2.0 * a * b + 1.0) * erfc(a) + 2.0 * alpha * sqrt(h / M_PI) * exp(-a * a));
-        } else {
-            out = conf * (exp(2.0 * a * b + b * b) * erfc(a + b) - (2.0 * a * b + 1.0) * erfc(a) + 2.0 * alpha * sqrt(h / M_PI) * exp(-a * a));
-        }
-    } else {
-        z = sigma;
-        double alpha = sqrt(D) / sigma * (1.0 + ka / (4.0 * M_PI * sigma * D));
-        double conf = 2.0 * M_PI * sigma * ka * sqrt(D) / alpha / (ka + 4.0 * M_PI * sigma * D);
-        double a = 0;
-        double b = alpha * sqrt(h);
-        if (std::isinf(exp(b * b))) {
-            out = conf * (1.0 / sqrt(M_PI) / b - 1.0 + 2.0 * alpha * sqrt(h / M_PI));
-        } else {
-            out = conf * (exp(b * b) * erfc(b) - 1.0 + 2.0 * alpha * sqrt(h / M_PI));
-        }
-    }
-    return out;
+    return nerdss::core::ProbabilityEngine::ImplicitLipidBindingProbability3D(
+        z, parameters3D.dt, parameters3D.Dtot, parameters3D.sigma,
+        parameters3D.ka);
 }
 
 // for the droplet (compartment)

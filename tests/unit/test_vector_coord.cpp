@@ -258,6 +258,18 @@ void test_probability_engine_facade()
             0.1, 1.5, 0.7, 0.25, 2.5),
         dissociate3D(0.1, 1.5, 0.7, 0.25, 2.5),
         "3D implicit-lipid dissociation facade should match legacy wrapper");
+    require_close(
+        nerdss::core::ProbabilityEngine::ImplicitLipidBindingProbability3D(
+            0.9, implicit_lipid_params.dt, implicit_lipid_params.Dtot,
+            implicit_lipid_params.sigma, implicit_lipid_params.ka),
+        pimplicitlipid_3D(0.9, implicit_lipid_params),
+        "3D implicit-lipid separated binding facade should match legacy wrapper");
+    require_close(
+        nerdss::core::ProbabilityEngine::ImplicitLipidBindingProbability3D(
+            0.5, implicit_lipid_params.dt, implicit_lipid_params.Dtot,
+            implicit_lipid_params.sigma, implicit_lipid_params.ka),
+        pimplicitlipid_3D(0.5, implicit_lipid_params),
+        "3D implicit-lipid contact binding facade should match legacy wrapper");
 }
 
 } // namespace
