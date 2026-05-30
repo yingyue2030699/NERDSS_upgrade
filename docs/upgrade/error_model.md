@@ -95,4 +95,35 @@ provides:
 - `to_string(ExitCode)`
 - `default_exit_code(ErrorCategory)`
 
-The header is not wired into existing simulation code yet.
+The error-code header is still mostly a compatibility vocabulary. The
+diagnostics boundary below is the first production use of those categories in
+human-facing error text.
+
+## Diagnostics Formatting Boundary
+
+`include/core/diagnostics.hpp` now also provides `FormatDiagnostic(...)`, which
+formats a structured diagnostic as:
+
+```text
+ERROR [category] (exit_code=name(status)): message
+Trace:
+#0 function (file:line): detail
+```
+
+Trace output is omitted when the diagnostic has no trace string. The formatter
+does not run in hot loops; it is intended for parser, setup, file I/O, and
+other boundary failures after an error has already been detected.
+
+The first production call site is command-line argument validation in
+`src/parser/parse_command.cpp`. Usage errors now retain the existing input exit
+status (`2`) and usage text while adding a single trace frame for the
+command-line parser boundary.
+
+## Remaining Traceback Gaps
+
+- Most parser, setup, and file I/O failures still call `exit(...)`,
+  `error(...)`, or write ad hoc `std::cerr` messages directly.
+- MPI-aware errors still rely on legacy rank text and have not been migrated to
+  structured diagnostics.
+- Core simulation loops should remain compile-time gated through
+  `NERDSS_TRACE_SCOPE`; this slice does not enable hot-loop trace collection.

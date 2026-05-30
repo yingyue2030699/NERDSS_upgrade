@@ -1,5 +1,5 @@
 #include "classes/class_Parameters.hpp"
-#include "error/error_codes.hpp"
+#include "core/diagnostics.hpp"
 #include <cstdlib>
 #include <iostream>
 #include <sstream>
@@ -14,8 +14,19 @@ void print_usage(const char *executable) {
             << "       " << executable << " -r <restart.dat> [-s <seed>]\n";
 }
 
+std::string format_command_line_diagnostic(const std::string &message) {
+  nerdss::core::TraceStack<4> trace_stack;
+  trace_stack.Push(
+      {__func__, __FILE__, __LINE__, "command-line parser boundary"});
+  const nerdss::core::Diagnostic diagnostic = nerdss::core::MakeDiagnostic(
+      nerdss::error::ErrorCategory::input, message.c_str(),
+      trace_stack.Format());
+  return nerdss::core::FormatDiagnostic(diagnostic);
+}
+
 void exit_with_usage_error(const std::string &message, const char *executable) {
-  std::cerr << "\nERROR [input]: " << message << '\n';
+  std::cout << '\n' << std::flush;
+  std::cerr << format_command_line_diagnostic(message) << '\n';
   print_usage(executable);
   std::exit(nerdss::error::to_exit_status(nerdss::error::ExitCode::input));
 }

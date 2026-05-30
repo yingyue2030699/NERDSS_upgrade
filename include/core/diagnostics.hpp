@@ -103,6 +103,18 @@ inline Diagnostic MakeDiagnostic(error::ErrorCategory category,
   return {category, error::default_exit_code(category), message, trace};
 }
 
+inline std::string FormatDiagnostic(const Diagnostic& diagnostic) {
+  std::ostringstream stream;
+  stream << "ERROR [" << error::to_string(diagnostic.category)
+         << "] (exit_code=" << error::to_string(diagnostic.exit_code) << "("
+         << error::to_exit_status(diagnostic.exit_code) << ")): "
+         << (diagnostic.message ? diagnostic.message : "");
+  if (!diagnostic.trace.empty()) {
+    stream << "\nTrace:\n" << diagnostic.trace;
+  }
+  return stream.str();
+}
+
 } // namespace core
 } // namespace nerdss
 
