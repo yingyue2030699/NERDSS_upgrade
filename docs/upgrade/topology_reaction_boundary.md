@@ -42,7 +42,7 @@ Validation for this slice:
 | CTest unit suite | Passed | Existing unit executable rebuilt and passed. |
 | Serial build | Passed | `make serial` rebuilt `bin/nerdss`. |
 | Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
-| Benchmark mode | Passed | `small_homotrimer` wall time `9.321s`, CPU time `8.965s`. |
+| Benchmark mode | Passed | `small_homotrimer` wall time `9.384s`, CPU time `8.982s`. |
 
 ## Follow-Up Slices
 
