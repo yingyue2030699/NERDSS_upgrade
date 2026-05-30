@@ -500,3 +500,18 @@ Validation for this slice:
 | Serial build | Passed | Incremental `make serial` rebuilt `size_lookup` and `bin/nerdss`. |
 | Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
 | Benchmark mode | Passed | `small_homotrimer` wall time `9.308s`, CPU time `8.745s`. |
+
+## Spherical Association Position Facade
+
+Moved the `find_position_after_association` spherical arc-position formula
+behind `nerdss::core::MathEngine::AssociationPositionOnSphere`. The legacy
+function remains a forwarding wrapper and keeps its existing NaN error guard.
+
+Validation for this slice:
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| CTest unit suite | Passed | Added direct `MathEngine` coverage proving the new point stays on the sphere and moves by the requested arc length. |
+| Serial build | Passed | Incremental `make serial` rebuilt `functions_for_spherical_system` and `bin/nerdss`. |
+| Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
+| Benchmark mode | Passed | `small_homotrimer` wall time `8.871s`, CPU time `8.593s`. |

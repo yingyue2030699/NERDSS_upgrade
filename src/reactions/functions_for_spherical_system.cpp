@@ -46,70 +46,8 @@ Coord angle_plus(Coord angle1, Coord angle2)
 
 Coord find_position_after_association(double arc1, Coord Iface1, Coord Iface2, double arc_total, double bindRadius)
 {
-    double x1 = Iface1.x;
-    double y1 = Iface1.y;
-    double z1 = Iface1.z;
-    double x2 = Iface2.x;
-    double y2 = Iface2.y;
-    double z2 = Iface2.z;
-
-    double R = radius(Iface1);
-    // define the unit vector of the plane, Origin-Iface1-Iface2;
-    double nx = 1.0;
-    double ny = (x2 * z1 - x1 * z2) / (y1 * z2 - y2 * z1);
-    double nz = (x2 * y1 - x1 * y2) / (z1 * y2 - z2 * y1);
-    double mag = sqrt(nx * nx + ny * ny + nz * nz);
-    nx = nx / mag;
-    ny = ny / mag;
-    nz = nz / mag;
-    /////////////////////////////////////////////////////////
-    /* calculate the new position of Iface1.*/
-    arc1 = std::abs(arc1);
-    double a1 = nz * x1 - nx * z1;
-    double a11 = R * R * nz * cos(arc1 / R);
-    double a2 = ny * x1 - nx * y1;
-    double a22 = R * R * ny * cos(arc1 / R);
-    double a3 = ny * z1 - nz * y1;
-    // function: A*x^2 + B*x + C = 0;
-    double A = a1 * a1 + a2 * a2 + a3 * a3;
-    double B = -2.0 * (a1 * a11 + a2 * a22);
-    double C = a11 * a11 + a22 * a22 - a3 * a3 * R * R;
-    double delta = B * B - 4.0 * A * C;
-    if (delta < 0.0)
-        delta = 0.0;
-    // solution1
-    double X1 = 0.5 / A * (-B + sqrt(delta));
-    double Y1 = (a1 * X1 - a11) / a3;
-    double Z1 = -(a2 * X1 - a22) / a3;
-    double distance1 = sqrt(pow(X1 - x2, 2.0) + pow(Y1 - y2, 2.0) + pow(Z1 - z2, 2.0));
-    // solution2
-    double X2 = 0.5 / A * (-B - sqrt(delta));
-    double Y2 = (a1 * X2 - a11) / a3;
-    double Z2 = -(a2 * X2 - a22) / a3;
-    double distance2 = sqrt(pow(X2 - x2, 2.0) + pow(Y2 - y2, 2.0) + pow(Z2 - z2, 2.0));
-    // determine which solution is correct
-    Coord new_position1;
-    if (bindRadius < arc_total) {
-        if (distance1 < distance2) {
-            new_position1.x = X1;
-            new_position1.y = Y1;
-            new_position1.z = Z1;
-        } else {
-            new_position1.x = X2;
-            new_position1.y = Y2;
-            new_position1.z = Z2;
-        }
-    } else {
-        if (distance1 > distance2) {
-            new_position1.x = X1;
-            new_position1.y = Y1;
-            new_position1.z = Z1;
-        } else {
-            new_position1.x = X2;
-            new_position1.y = Y2;
-            new_position1.z = Z2;
-        }
-    }
+    Coord new_position1 = nerdss::core::MathEngine::AssociationPositionOnSphere(
+        arc1, Iface1, Iface2, arc_total, bindRadius);
     if (std::isnan(new_position1.x) || std::isnan(new_position1.y)) {
         std::cout << "WRONG: non position is generated in 'find_position_after_association'...EXIT! " << std::endl;
         exit(1);

@@ -157,6 +157,18 @@ void test_math_engine_facade()
         nerdss::core::MathEngine::BindingRadiusOnSphere(1.0, { 0.0, 0.0, 2.0 }),
         4.0 * std::asin(0.25),
         "facade spherical binding radius");
+    Coord association_position =
+        nerdss::core::MathEngine::AssociationPositionOnSphere(
+            0.2, { 2.0, 0.0, 0.0 }, { 1.0, 1.0, 1.4142135623730951 },
+            0.8, 0.1);
+    require_close(
+        nerdss::core::MathEngine::Radius(association_position), 2.0,
+        "association position should stay on sphere");
+    require_close(
+        nerdss::core::MathEngine::GeodesicDistance(
+            { 2.0, 0.0, 0.0 }, association_position),
+        0.2,
+        "association position should move requested arc length");
     require_close(
         nerdss::core::MathEngine::GeodesicDistance({ 2.0, 0.0, 0.0 }, { 0.0, 2.0, 0.0 }),
         pi,

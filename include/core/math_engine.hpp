@@ -138,6 +138,68 @@ public:
     return radius * 2.0 * std::asin((0.5 * binding_radius) / radius);
   }
 
+  static Coordinate3 AssociationPositionOnSphere(Scalar arc,
+                                                 Coordinate3 interface1,
+                                                 Coordinate3 interface2,
+                                                 Scalar total_arc,
+                                                 Scalar binding_radius) {
+    const Scalar radius { Radius(interface1) };
+    Scalar normal_x { 1.0 };
+    Scalar normal_y {
+        (interface2.x * interface1.z - interface1.x * interface2.z)
+        / (interface1.y * interface2.z - interface2.y * interface1.z) };
+    Scalar normal_z {
+        (interface2.x * interface1.y - interface1.x * interface2.y)
+        / (interface1.z * interface2.y - interface2.z * interface1.y) };
+    const Scalar normal_magnitude {
+        std::sqrt(normal_x * normal_x + normal_y * normal_y
+                  + normal_z * normal_z) };
+    normal_x /= normal_magnitude;
+    normal_y /= normal_magnitude;
+    normal_z /= normal_magnitude;
+
+    arc = std::abs(arc);
+    const Scalar a1 { normal_z * interface1.x - normal_x * interface1.z };
+    const Scalar a11 { radius * radius * normal_z * std::cos(arc / radius) };
+    const Scalar a2 { normal_y * interface1.x - normal_x * interface1.y };
+    const Scalar a22 { radius * radius * normal_y * std::cos(arc / radius) };
+    const Scalar a3 { normal_y * interface1.z - normal_z * interface1.y };
+    const Scalar quadratic_a { a1 * a1 + a2 * a2 + a3 * a3 };
+    const Scalar quadratic_b { -2.0 * (a1 * a11 + a2 * a22) };
+    const Scalar quadratic_c {
+        a11 * a11 + a22 * a22 - a3 * a3 * radius * radius };
+    Scalar discriminant {
+        quadratic_b * quadratic_b - 4.0 * quadratic_a * quadratic_c };
+    if (discriminant < 0.0) {
+      discriminant = 0.0;
+    }
+
+    const Scalar sqrt_discriminant { std::sqrt(discriminant) };
+    const Scalar x1 {
+        0.5 / quadratic_a * (-quadratic_b + sqrt_discriminant) };
+    const Scalar y1 { (a1 * x1 - a11) / a3 };
+    const Scalar z1 { -(a2 * x1 - a22) / a3 };
+    const Scalar distance1 {
+        std::sqrt(std::pow(x1 - interface2.x, 2.0)
+                  + std::pow(y1 - interface2.y, 2.0)
+                  + std::pow(z1 - interface2.z, 2.0)) };
+
+    const Scalar x2 {
+        0.5 / quadratic_a * (-quadratic_b - sqrt_discriminant) };
+    const Scalar y2 { (a1 * x2 - a11) / a3 };
+    const Scalar z2 { -(a2 * x2 - a22) / a3 };
+    const Scalar distance2 {
+        std::sqrt(std::pow(x2 - interface2.x, 2.0)
+                  + std::pow(y2 - interface2.y, 2.0)
+                  + std::pow(z2 - interface2.z, 2.0)) };
+
+    if ((binding_radius < total_arc && distance1 < distance2)
+        || (binding_radius >= total_arc && distance1 > distance2)) {
+      return { x1, y1, z1 };
+    }
+    return { x2, y2, z2 };
+  }
+
   static Scalar GeodesicDistance(Coordinate3 first, Coordinate3 second) {
     const Scalar first_radius { Radius(first) };
     const Scalar second_radius { Radius(second) };
