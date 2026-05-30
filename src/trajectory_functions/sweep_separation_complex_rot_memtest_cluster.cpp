@@ -1,4 +1,5 @@
 #include "boundary_conditions/reflect_functions.hpp"
+#include "core/trajectory_engine.hpp"
 #include "math/matrix.hpp"
 #include "math/rand_gsl.hpp"
 #include "tracing.hpp"
@@ -8,10 +9,9 @@ void sweep_separation_complex_rot_memtest_cluster(int simItr, int pro1Index, Par
     std::vector<Complex>& complexList, const std::vector<ForwardRxn>& forwardRxns, const std::vector<MolTemplate>& molTemplateList, const Membrane& membraneObject)
 {
     // TRACE();
-    if (membraneObject.isSphere)
-        sweep_separation_complex_rot_memtest_cluster_sphere(simItr, pro1Index, params, moleculeList, complexList, forwardRxns, molTemplateList, membraneObject);
-    else
-        sweep_separation_complex_rot_memtest_cluster_box(simItr, pro1Index, params, moleculeList, complexList, forwardRxns, molTemplateList, membraneObject);
+    nerdss::core::TrajectoryEngine::SweepSeparationComplexRotationMembraneCluster(
+        simItr, pro1Index, params, moleculeList, complexList, forwardRxns,
+        molTemplateList, membraneObject);
 }
 
 // #include "boundary_conditions/reflect_functions.hpp"

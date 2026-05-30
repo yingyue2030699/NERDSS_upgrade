@@ -3,6 +3,7 @@
 #include "core/diagnostics.hpp"
 #include "core/math_engine.hpp"
 #include "core/probability_engine.hpp"
+#include "core/trajectory_engine.hpp"
 #include "reactions/bimolecular/2D_reaction_table_functions.hpp"
 #include "reactions/implicitlipid/implicitlipid_reactions.hpp"
 
@@ -272,6 +273,27 @@ void test_diagnostics_trace_stack()
     require_true(stack.empty(), "scoped trace frame should pop on destruction");
 }
 
+void test_trajectory_engine_boundary_selector()
+{
+    Membrane membrane;
+    require_true(
+        nerdss::core::TrajectoryEngine::BoundaryGeometryFor(membrane)
+            == nerdss::core::BoundaryGeometry::kBox,
+        "trajectory engine should default to box boundary");
+    require_true(
+        !nerdss::core::TrajectoryEngine::UsesSphericalBoundary(membrane),
+        "trajectory engine should report non-spherical default boundary");
+
+    membrane.isSphere = true;
+    require_true(
+        nerdss::core::TrajectoryEngine::BoundaryGeometryFor(membrane)
+            == nerdss::core::BoundaryGeometry::kSphere,
+        "trajectory engine should select sphere boundary");
+    require_true(
+        nerdss::core::TrajectoryEngine::UsesSphericalBoundary(membrane),
+        "trajectory engine should report spherical boundary");
+}
+
 void test_probability_engine_facade()
 {
     const double passoc3d = nerdss::core::ProbabilityEngine::AssociationProbability3D(
@@ -483,6 +505,7 @@ int main()
     test_vector_cross_projection_and_angle();
     test_math_engine_facade();
     test_diagnostics_trace_stack();
+    test_trajectory_engine_boundary_selector();
     test_probability_engine_facade();
     return 0;
 }

@@ -28,7 +28,7 @@ trajectory math, restart semantics, or legacy input/output compatibility.
 | `nerdss::core` | Shared core vocabulary and behavior-preserving facades over legacy primitives. | Math engine facade and validation hooks. |
 | Math engine | Pure geometry, vector, matrix, probability-table, and special-function kernels. | Header-only CPU scalar facade over existing `Coord`, `Vector`, and matrix functions. |
 | Reaction engine | Candidate discovery, probability evaluation, and reaction execution split into separate services. | Probability calculations before topology mutation. |
-| Trajectory engine | Propagation vectors, rotations, reflection, overlap/resampling, and boundary dispatch. | Boundary dispatch wrappers with unchanged call order. |
+| Trajectory engine | Propagation vectors, rotations, reflection, overlap/resampling, and boundary dispatch. | Boundary dispatch wrappers now forward through `nerdss::core::TrajectoryEngine` with unchanged call order. |
 | Topology editor | Molecule/complex binding, splitting, creation/destruction, freelists, and counters. | Destroyed-slot and complex compaction helpers after validation guards. |
 | Diagnostics | Structured errors, trace context, and low-cost logging surfaces. | Parser/setup/I/O errors first; hot-loop tracing only under compile-time flags. |
 
@@ -50,6 +50,19 @@ trajectory math, restart semantics, or legacy input/output compatibility.
 4. Separate mutable topology operations from probability calculations.
 5. Introduce backend-neutral data-shape documentation for future GPU work:
    structure-of-arrays candidates, batchable kernels, and RNG constraints.
+
+## Trajectory Engine Roadmap
+
+1. Start with behavior-preserving boundary dispatch. The first slice moves the
+   `sweep_separation_complex_rot`, `sweep_separation_complex_rot_memtest`, and
+   `sweep_separation_complex_rot_memtest_cluster` sphere/box selection behind
+   `nerdss::core::TrajectoryEngine`; the legacy entry points remain forwarding
+   wrappers.
+2. Keep overlap loops, resampling, reflection calls, and RNG draws in the
+   existing implementations until each path has targeted regression coverage.
+3. Next candidates are small trajectory-coordinate transforms whose inputs and
+   outputs can be compared directly before extracting mutation-heavy reflection
+   or complex-resampling logic.
 
 ## Error Handling And Tracebacks
 
