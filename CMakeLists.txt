@@ -103,6 +103,7 @@ if(BUILD_TESTING)
         src/reactions/get_prevSurv.cpp
         src/reactions/norm_function.cpp
         src/reactions/pir_function.cpp
+        src/reactions/size_lookup.cpp
         src/reactions/survival_function.cpp
     )
     target_include_directories(nerdss_unit_tests PRIVATE include)

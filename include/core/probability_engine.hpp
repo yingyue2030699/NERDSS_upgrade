@@ -8,6 +8,7 @@
 
 #include <cmath>
 #include <complex>
+#include <cstddef>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_sf_bessel.h>
 
@@ -298,6 +299,18 @@ public:
 
   static double TableStepSize2D(double diffusion_total, double time) {
     return std::sqrt(diffusion_total * time) / 50.0;
+  }
+
+  static std::size_t TableSize2D(double binding_radius, double diffusion_total,
+                                 double time, double max_radius) {
+    std::size_t count { 0 };
+    const double step_size { TableStepSize2D(diffusion_total, time) };
+    double radius { binding_radius };
+    while (radius <= max_radius + step_size) {
+      ++count;
+      radius += step_size;
+    }
+    return count;
   }
 
   static double InterpolateMatrixRow2D(const gsl_matrix* matrix,

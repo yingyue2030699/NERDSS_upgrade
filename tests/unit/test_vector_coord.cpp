@@ -25,6 +25,7 @@ double get_prevSurv(const gsl_matrix* survMatrix, double Dtot, double deltaT, do
 double calc_pirr(gsl_matrix* pirMatrix, gsl_matrix* survMatrix, double RStepSize, double r, double r0, double a);
 double DDpirr_pfree_ratio_ps(gsl_matrix* pirMatrix, gsl_matrix* survMatrix, gsl_matrix* normMatrix,
     double r, double Dtot, double deltaT, double r0, double ps_prev, double rTol, double bindRadius);
+size_t size_lookup(double bindRadius, double Dtot, const Parameters& params, double Rmax);
 bool areSameAngle(double ang1, double ang2);
 bool areParallel(const double& angle);
 bool angleSignIsCorrect(const Vector& vec1, const Vector& vec2);
@@ -345,6 +346,12 @@ void test_probability_engine_facade()
     require_close(
         nerdss::core::ProbabilityEngine::TableStepSize2D(1.0, 0.01), 0.002,
         "2D table step helper should preserve legacy sqrt(Dt)/50 relation");
+    Parameters lookup_params;
+    lookup_params.timeStep = 0.01;
+    require_true(
+        nerdss::core::ProbabilityEngine::TableSize2D(0.7, 1.0, 0.01, 0.71)
+            == size_lookup(0.7, 1.0, lookup_params, 0.71),
+        "2D table size facade should match legacy wrapper");
 
     gsl_matrix* pir_matrix = gsl_matrix_alloc(100, 100);
     for (size_t row = 0; row < 100; ++row) {

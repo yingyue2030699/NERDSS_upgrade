@@ -44,8 +44,8 @@ trajectory math, restart semantics, or legacy input/output compatibility.
 3. Move pure probability functions behind explicit service names while keeping
    legacy functions as forwarding wrappers. The first slices move the 1D/3D
    association, rebinding-ratio, 2D table-integrand, 2D table interpolation,
-   2D PIR table interpolation, 2D table rebinding-ratio, and implicit-lipid
-   probability kernels behind `nerdss::core::ProbabilityEngine`.
+   2D PIR table interpolation, 2D table rebinding-ratio, 2D table sizing, and
+   implicit-lipid probability kernels behind `nerdss::core::ProbabilityEngine`.
 4. Separate mutable topology operations from probability calculations.
 5. Introduce backend-neutral data-shape documentation for future GPU work:
    structure-of-arrays candidates, batchable kernels, and RNG constraints.

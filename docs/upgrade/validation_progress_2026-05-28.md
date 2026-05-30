@@ -484,3 +484,19 @@ Validation for this slice:
 | Serial build | Passed | Incremental `make serial` rebuilt `DDpirr_pfree_ratio_ps` and `bin/nerdss`. |
 | Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
 | Benchmark mode | Passed | `small_homotrimer` wall time `8.623s`, CPU time `8.381s`. |
+
+## 2D Table Size Facade
+
+Moved the legacy `size_lookup` table-count kernel behind
+`nerdss::core::ProbabilityEngine::TableSize2D`. The legacy wrapper still
+accepts `Parameters` for existing callers and forwards the timestep into the
+core service.
+
+Validation for this slice:
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| CTest unit suite | Passed | Added facade-vs-wrapper coverage for the 2D table count calculation. |
+| Serial build | Passed | Incremental `make serial` rebuilt `size_lookup` and `bin/nerdss`. |
+| Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
+| Benchmark mode | Passed | `small_homotrimer` wall time `9.308s`, CPU time `8.745s`. |
