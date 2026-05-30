@@ -85,3 +85,11 @@ case-level pass/fail report from `tests/regression/run_regression.py`.
 
 Keep generated validation output directories out of commits. Attach them as CI
 artifacts or local run artifacts when reviewing behavior-sensitive changes.
+
+## GitHub Actions
+
+The upgrade CI workflow lives at `.github/workflows/upgrade-validation.yml`.
+It runs the default validation stack on pull requests and on pushes to `main`
+or `codex/**` branches. A separate coverage job builds `nerdss_unit_tests` with
+GCC coverage flags and summarizes project line coverage through
+`tools/collect_gcov_coverage.py`.

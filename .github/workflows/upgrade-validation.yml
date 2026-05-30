@@ -1,0 +1,87 @@
+name: Upgrade validation
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - "codex/**"
+
+concurrency:
+  group: upgrade-validation-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validation:
+    name: Build, unit, smoke, and regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends build-essential cmake libgsl-dev
+
+      - name: Run upgrade validation stack
+        run: |
+          python3 -B tools/run_upgrade_validation.py \
+            --output-dir validation-results \
+            --fail-fast
+
+      - name: Upload validation artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: upgrade-validation-results
+          path: validation-results
+          if-no-files-found: warn
+
+  coverage:
+    name: Unit coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends build-essential cmake libgsl-dev
+
+      - name: Configure coverage build
+        run: |
+          cmake -S . -B build-coverage \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_CXX_COMPILER=g++ \
+            -DCMAKE_CXX_FLAGS="--coverage" \
+            -DCMAKE_EXE_LINKER_FLAGS="--coverage"
+
+      - name: Build unit test target
+        run: cmake --build build-coverage --target nerdss_unit_tests --parallel 2
+
+      - name: Run unit tests
+        run: ctest --test-dir build-coverage --output-on-failure
+
+      - name: Collect coverage summary
+        run: |
+          mkdir -p coverage-results
+          python3 -B tools/collect_gcov_coverage.py \
+            --root . \
+            --build-dir build-coverage \
+            --output coverage-results/coverage-summary.json \
+            --text-output coverage-results/coverage-summary.txt
+          cat coverage-results/coverage-summary.txt
+
+      - name: Upload coverage artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-coverage-results
+          path: coverage-results
+          if-no-files-found: warn
