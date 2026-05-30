@@ -531,3 +531,18 @@ Validation for this slice:
 | Serial build | Passed | Incremental `make serial` rebuilt `conservedMags`, `conservedRigid`, and `bin/nerdss`. |
 | Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
 | Benchmark mode | Passed | `small_homotrimer` wall time `9.134s`, CPU time `8.735s`. |
+
+## I/O Standard-Format Helper Slice
+
+Added an additive C++ helper for standard CSV row escaping and deterministic
+run-manifest JSON generation. This is intentionally not wired into existing
+runtime writers yet, so legacy `.dat`, `.xyz`, `.psf`, restart, and PDB outputs
+remain unchanged while future I/O branches can migrate writers incrementally.
+
+Validation for this slice:
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| Focused I/O helper test | Passed | `python3 tests/io/run_standard_format_tests.py` compiled and ran CSV escaping plus manifest JSON tests. |
+| Serial build | Passed | `make serial` rebuilt `standard_formats` and `bin/nerdss`. |
+| Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed; benchmarks intentionally skipped by the standard runner. |
