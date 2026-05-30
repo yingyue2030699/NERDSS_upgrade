@@ -40,6 +40,22 @@ public:
     return coordinate.get_magnitude();
   }
 
+  static bool HaveEqualRoundedMagnitudes(Vector3 vector1, Vector3 vector2) {
+    vector1.calc_magnitude();
+    vector2.calc_magnitude();
+    return roundv(vector1.magnitude) == roundv(vector2.magnitude);
+  }
+
+  static bool HaveEqualRoundedAngles(Vector3 reference1, Vector3 vector1,
+                                     Vector3 reference2, Vector3 vector2) {
+    reference1.calc_magnitude();
+    vector1.calc_magnitude();
+    reference2.calc_magnitude();
+    vector2.calc_magnitude();
+    return roundv(reference1.dot_theta(vector1))
+           == roundv(reference2.dot_theta(vector2));
+  }
+
   static Matrix3 CreateEulerRotationMatrix(Scalar x, Scalar y, Scalar z) {
     return ::create_euler_rotation_matrix(x, y, z);
   }

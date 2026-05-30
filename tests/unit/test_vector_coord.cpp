@@ -130,6 +130,15 @@ void test_math_engine_facade()
 
     nerdss::core::Coordinate3 coordinate { 2.0, 3.0, 6.0 };
     require_close(nerdss::core::MathEngine::Magnitude(coordinate), 7.0, "facade magnitude");
+    require_true(
+        nerdss::core::MathEngine::HaveEqualRoundedMagnitudes(
+            { 3.0, 4.0, 0.0 }, { 0.0, 5.0, 0.0 }),
+        "facade rounded magnitude conservation");
+    require_true(
+        nerdss::core::MathEngine::HaveEqualRoundedAngles(
+            { 1.0, 0.0, 0.0 }, { 0.0, 1.0, 0.0 },
+            { 0.0, 0.0, 1.0 }, { 1.0, 0.0, 0.0 }),
+        "facade rounded angle conservation");
 
     nerdss::core::Matrix3 identity = nerdss::core::MathEngine::CreateEulerRotationMatrix(0.0, 0.0, 0.0);
     require_close(identity[0], 1.0, "facade matrix 0");

@@ -515,3 +515,19 @@ Validation for this slice:
 | Serial build | Passed | Incremental `make serial` rebuilt `functions_for_spherical_system` and `bin/nerdss`. |
 | Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
 | Benchmark mode | Passed | `small_homotrimer` wall time `8.871s`, CPU time `8.593s`. |
+
+## Rounded Conservation Predicate Facade
+
+Moved the rounded vector magnitude and angle comparisons used by
+`conservedMags` and `conservedRigid` behind `nerdss::core::MathEngine`. The
+legacy functions still own the molecule/complex iteration and now delegate only
+the pure vector predicates.
+
+Validation for this slice:
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| CTest unit suite | Passed | Added direct `MathEngine` coverage for rounded magnitude and angle conservation predicates. |
+| Serial build | Passed | Incremental `make serial` rebuilt `conservedMags`, `conservedRigid`, and `bin/nerdss`. |
+| Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
+| Benchmark mode | Passed | `small_homotrimer` wall time `9.134s`, CPU time `8.735s`. |
