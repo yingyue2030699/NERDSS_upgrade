@@ -17,11 +17,29 @@ void require_true(bool condition, const std::string& label)
     }
 }
 
-void require_equal(unsigned actual, unsigned expected, const std::string& label)
+void require_equal(long long actual, long long expected, const std::string& label)
 {
     if (actual != expected) {
         std::cerr << label << ": expected " << expected << ", got " << actual
                   << '\n';
+        std::exit(1);
+    }
+}
+
+void require_vector_equal(
+    const std::vector<int>& actual, const std::vector<int>& expected,
+    const std::string& label)
+{
+    if (actual != expected) {
+        std::cerr << label << ": expected";
+        for (int value : expected) {
+            std::cerr << ' ' << value;
+        }
+        std::cerr << ", got";
+        for (int value : actual) {
+            std::cerr << ' ' << value;
+        }
+        std::cerr << '\n';
         std::exit(1);
     }
 }
@@ -130,6 +148,71 @@ void test_release_returns_reused_reservation_to_empty_list()
         "release should return the reused slot index");
 }
 
+void test_restore_dissociation_reactants_to_parent_complex()
+{
+    std::vector<Molecule> molecules(4);
+    molecules[0].myComIndex = 2;
+    molecules[1].myComIndex = 3;
+    molecules[2].myComIndex = 4;
+    molecules[3].myComIndex = 5;
+
+    nerdss::reactions::topology::RestoreDissociationReactantsToParentComplex(
+        1, 3, 7, molecules);
+
+    require_equal(
+        molecules[0].myComIndex, 2,
+        "restore should not touch non-reactant molecule before first reactant");
+    require_equal(
+        molecules[1].myComIndex, 7,
+        "restore should put first reactant back on parent complex");
+    require_equal(
+        molecules[2].myComIndex, 4,
+        "restore should not touch non-reactant molecule between reactants");
+    require_equal(
+        molecules[3].myComIndex, 7,
+        "restore should put second reactant back on parent complex");
+}
+
+void test_apply_dissociation_parent_complex_reassignment()
+{
+    std::vector<Molecule> molecules(5);
+    std::vector<Complex> complexes(3);
+    complexes[1].memberList = { 9 };
+    complexes[2].memberList = { 8 };
+    complexes[2].index = 99;
+
+    std::vector<int> parent_members { 4, 0, 2 };
+    std::vector<int> new_members { 3, 1 };
+
+    nerdss::reactions::topology::ApplyDissociationParentComplexReassignment(
+        1, 2, parent_members, new_members, molecules, complexes);
+
+    require_vector_equal(
+        complexes[1].memberList, { 0, 2, 4 },
+        "apply should sort reassigned parent members");
+    require_vector_equal(
+        complexes[2].memberList, { 1, 3 },
+        "apply should sort reassigned new-complex members");
+    require_equal(
+        complexes[2].index, 2,
+        "apply should update the new complex index to its list slot");
+    require_equal(
+        molecules[0].myComIndex, 1,
+        "apply should point parent member 0 to parent complex");
+    require_equal(
+        molecules[2].myComIndex, 1,
+        "apply should point parent member 2 to parent complex");
+    require_equal(
+        molecules[4].myComIndex, 1,
+        "apply should point parent member 4 to parent complex");
+    require_equal(
+        molecules[1].myComIndex, 2,
+        "apply should point new member 1 to new complex");
+    require_equal(
+        molecules[3].myComIndex, 2,
+        "apply should point new member 3 to new complex");
+}
+
 } // namespace
 
 int main()
@@ -139,6 +222,8 @@ int main()
     test_reserve_appends_when_latest_empty_slot_entry_is_stale();
     test_release_removes_appended_reservation();
     test_release_returns_reused_reservation_to_empty_list();
+    test_restore_dissociation_reactants_to_parent_complex();
+    test_apply_dissociation_parent_complex_reassignment();
 
     std::cout << "topology_operations tests passed\n";
     return 0;
