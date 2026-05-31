@@ -18,7 +18,7 @@ order.
 
 ## First Boundary Slice
 
-`include/reactions/topology/topology_operations.hpp` introduces two
+`include/reactions/topology/topology_operations.hpp` introduces small
 behavior-preserving helpers:
 
 - `ReserveDissociationComplexSlot(...)` reserves the complex slot that
@@ -26,6 +26,12 @@ behavior-preserving helpers:
 - `ReleaseReservedComplexSlot(...)` undoes that reservation when loop
   correction cancels dissociation or when the dissociated molecules remain in a
   closed loop.
+- `RestoreDissociationReactantsToParentComplex(...)` restores both dissociating
+  molecules to the original parent complex when loop detection cancels the
+  split.
+- `ApplyDissociationParentComplexReassignment(...)` applies the already
+  computed split member lists, preserves the legacy sort order, updates the new
+  complex index, and rewrites member `myComIndex` values.
 
 The helpers intentionally preserve the legacy behavior:
 
@@ -34,6 +40,9 @@ The helpers intentionally preserve the legacy behavior:
 - append a new empty `Complex` otherwise;
 - return an appended slot with `pop_back()`;
 - return a reused slot by pushing the index back into `Complex::emptyComList`.
+- keep the parent-complex split decision in `determine_parent_complex(...)`;
+- preserve the legacy sorted member lists produced by non-implicit-lipid
+  dissociation reassignment.
 
 Validation for this slice:
 

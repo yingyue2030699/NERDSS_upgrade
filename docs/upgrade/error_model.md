@@ -113,6 +113,9 @@ Trace:
 Trace output is omitted when the diagnostic has no trace string. The formatter
 does not run in hot loops; it is intended for parser, setup, file I/O, and
 other boundary failures after an error has already been detected.
+`WriteDiagnostic(...)` emits the same stable rendering to a caller-provided
+stream, and `ExitWithDiagnostic(...)` writes the diagnostic before exiting with
+the structured status.
 
 The first production call site is command-line argument validation in
 `src/parser/parse_command.cpp`. Usage errors now retain the existing input exit

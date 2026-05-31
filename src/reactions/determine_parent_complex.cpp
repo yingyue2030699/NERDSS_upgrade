@@ -1,4 +1,5 @@
 #include "reactions/unimolecular/unimolecular_reactions.hpp"
+#include "reactions/topology/topology_operations.hpp"
 #include "tracing.hpp"
 
 bool determine_parent_complex(int pro1Index, int pro2Index, int newComIndex, std::vector<Molecule>& moleculeList,
@@ -36,8 +37,8 @@ bool determine_parent_complex(int pro1Index, int pro2Index, int newComIndex, std
     }
 
     if (boundTwice) {
-        moleculeList[pro1Index].myComIndex = c1;
-        moleculeList[pro2Index].myComIndex = c1;
+        nerdss::reactions::topology::RestoreDissociationReactantsToParentComplex(
+            pro1Index, pro2Index, c1, moleculeList);
         return true;
     } else {
         std::vector<int> tmpc1 { pro1Index };
@@ -110,8 +111,8 @@ bool determine_parent_complex(int pro1Index, int pro2Index, int newComIndex, std
                         }
                         if (com_flag > 1) {
                             // if both pro1Index and pro2Index are found, com_flag > 1 and its a closed loop
-                            moleculeList[pro1Index].myComIndex = c1;
-                            moleculeList[pro2Index].myComIndex = c1;
+                            nerdss::reactions::topology::RestoreDissociationReactantsToParentComplex(
+                                pro1Index, pro2Index, c1, moleculeList);
                             return true;
                         } else if (com_flag == 0) {
                             // neither pro1Index or pro2Index found, move to the next set of test subjects
@@ -154,16 +155,16 @@ bool determine_parent_complex(int pro1Index, int pro2Index, int newComIndex, std
         // Check for shared members between the old complex and new one
         for (auto& mp : tmpc1) {
             if (find(tmpc2.begin(), tmpc2.end(), mp) != tmpc2.end()) {
-                moleculeList[pro1Index].myComIndex = c1;
-                moleculeList[pro2Index].myComIndex = c1;
+                nerdss::reactions::topology::RestoreDissociationReactantsToParentComplex(
+                    pro1Index, pro2Index, c1, moleculeList);
                 return true;
             }
 
             for (auto& ppart : moleculeList[mp].bndpartner) {
                 if (find(tmpc2.begin(), tmpc2.end(), ppart) != tmpc2.end()) {
                     // std::cout << "Complex is a closed loop.\n";
-                    moleculeList[pro1Index].myComIndex = c1;
-                    moleculeList[pro2Index].myComIndex = c1;
+                    nerdss::reactions::topology::RestoreDissociationReactantsToParentComplex(
+                        pro1Index, pro2Index, c1, moleculeList);
                     return true;
                 }
             }
@@ -189,16 +190,8 @@ bool determine_parent_complex(int pro1Index, int pro2Index, int newComIndex, std
             exit(1);
         }
 
-        complexList[c1].memberList.swap(tmpc1);
-        complexList[newComIndex].memberList.swap(tmpc2);
-        complexList[newComIndex].index = newComIndex;
-        std::sort(complexList[c1].memberList.begin(), complexList[c1].memberList.end());
-        std::sort(complexList[newComIndex].memberList.begin(), complexList[newComIndex].memberList.end());
-
-        for (auto& mp : complexList[c1].memberList)
-            moleculeList[mp].myComIndex = c1;
-        for (auto& mp : complexList[newComIndex].memberList)
-            moleculeList[mp].myComIndex = newComIndex;
+        nerdss::reactions::topology::ApplyDissociationParentComplexReassignment(
+            c1, newComIndex, tmpc1, tmpc2, moleculeList, complexList);
     }
 
     return false;

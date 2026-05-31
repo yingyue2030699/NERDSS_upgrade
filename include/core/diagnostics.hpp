@@ -117,8 +117,12 @@ inline std::string FormatDiagnostic(const Diagnostic& diagnostic) {
   return stream.str();
 }
 
+inline void WriteDiagnostic(std::ostream& stream, const Diagnostic& diagnostic) {
+  stream << FormatDiagnostic(diagnostic) << '\n';
+}
+
 inline void ExitWithDiagnostic(const Diagnostic& diagnostic) {
-  std::cerr << FormatDiagnostic(diagnostic) << '\n';
+  WriteDiagnostic(std::cerr, diagnostic);
   std::exit(error::to_exit_status(diagnostic.exit_code));
 }
 

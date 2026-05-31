@@ -12,6 +12,7 @@
 #include <cstdlib>
 #include <gsl/gsl_matrix.h>
 #include <iostream>
+#include <sstream>
 #include <string>
 
 double passocF(double r0, double tCurr, double Dtot, double bindRadius, double alpha, double cof);
@@ -248,6 +249,7 @@ void test_math_engine_facade()
             { 0.0, 0.0, 1.0 }, { 0.0, 1.0, 0.0 }, { 0.0, 0.0, 1.0 })
             == requiresSignFlip({ 0.0, 0.0, 1.0 }, { 0.0, 1.0, 0.0 }, { 0.0, 0.0, 1.0 }),
         "sign-flip facade should match legacy wrapper for x-axis fallback");
+
 }
 
 void test_diagnostics_trace_stack()
@@ -310,8 +312,12 @@ void test_parser_file_open_diagnostic()
         "parser file-open diagnostic should name role and path");
 
     const std::string text = nerdss::core::FormatDiagnostic(diagnostic);
+    std::ostringstream rendered;
+    nerdss::core::WriteDiagnostic(rendered, diagnostic);
+    const std::string stream_text = rendered.str();
     require_contains(text, "ERROR [file_io]", "rendered diagnostic should include category");
     require_contains(text, "exit_code=file_io(9)", "rendered diagnostic should include exit code");
+    require_contains(stream_text, text, "stream diagnostic should match formatted diagnostic");
 }
 
 void test_probability_engine_facade()
