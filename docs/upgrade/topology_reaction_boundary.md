@@ -39,6 +39,7 @@ Validation for this slice:
 
 | Check | Result | Notes |
 | --- | --- | --- |
+| Standalone topology helper tests | Passed | `tests/topology/run_topology_tests.sh` covers append reservation, valid empty-slot reuse, stale empty-list entries, and release rollback behavior. |
 | CTest unit suite | Passed | Existing unit executable rebuilt and passed. |
 | Serial build | Passed | `make serial` rebuilt `bin/nerdss`. |
 | Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
@@ -46,8 +47,8 @@ Validation for this slice:
 
 ## Follow-Up Slices
 
-1. Add a small topology unit harness that can exercise slot reservation,
-   parent-complex reassignment, and empty-slot compaction without constructing a
+1. Extend the standalone topology harness beyond slot reservation to cover
+   parent-complex reassignment and empty-slot compaction without constructing a
    full simulation.
 2. Move `determine_parent_complex_IL` and `determine_parent_complex` behind a
    `TopologyEditor`-style interface after adding tests for loop and split
