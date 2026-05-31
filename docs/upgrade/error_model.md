@@ -130,6 +130,15 @@ molecule config file open failures. These failures report category `file_io`,
 render through the shared diagnostic formatter, include the failed path and
 file role, and exit with `ExitCode::file_io`.
 
+## Parser Invalid-Keyword Diagnostics
+
+The molecule config parser now uses
+`nerdss::parser::MakeInvalidKeywordDiagnostic` and
+`ExitWithInvalidKeywordDiagnostic` for unknown top-level `.mol` keywords. This
+replaces the previous stdout plus `exit(1)` path with a structured `input`
+diagnostic, includes the invalid keyword and molecule config path, and exits
+with `ExitCode::input`.
+
 ## Remaining Traceback Gaps
 
 - Diagnostics unit coverage is now part of the normal CMake/CTest path through
@@ -145,7 +154,9 @@ file role, and exit with `ExitCode::file_io`.
   `src/parser/parse_input_array.cpp`,
   `src/parser/parse_input_for_a_new_simulation.cpp`,
   `src/parser/parse_input_for_a_restart_simulation.cpp`, and
-  `src/parser/parse_input_for_add_file.cpp`.
+  `src/parser/parse_input_for_add_file.cpp`. Other `parse_molFile` semantic
+  validation failures, such as malformed coordinate, state, bond, or numeric
+  values, are not yet fully migrated.
 - Setup failures and warnings with direct text/exit behavior remain in
   `src/system_setup/initialize_states.cpp`,
   `src/system_setup/generate_coordinates.cpp`, and

@@ -24,10 +24,11 @@ MolTemplate parse_molFile(std::string& mol)
         { "outsidecompartment", MolKeyword::outsideCompartment },
         { "insidecompartment", MolKeyword::insideCompartment }};
 
-    std::cout << mol + ".mol" << '\n';
-    std::ifstream molFile { mol + ".mol" };
+    const std::string molPath = mol + ".mol";
+    std::cout << molPath << '\n';
+    std::ifstream molFile { molPath };
     if (!molFile) {
-        nerdss::parser::ExitWithFileOpenDiagnostic(mol + ".mol", "molecule config");
+        nerdss::parser::ExitWithFileOpenDiagnostic(molPath, "molecule config");
     }
 
     MolTemplate tmpTemplate;
@@ -60,8 +61,7 @@ MolTemplate parse_molFile(std::string& mol)
             else if (*lineItr == '=') {
                 auto keyFind = molKeywords.find(buffer);
                 if (keyFind == molKeywords.end()) {
-                    std::cout << buffer + " is an invalid argument.";
-                    exit(1);
+                    nerdss::parser::ExitWithInvalidKeywordDiagnostic(buffer, "molecule config", molPath);
                 }
 
                 line.erase(line.begin(), lineItr + 1); // + 1 removes the '=' sign. could make this erase(remove_if)

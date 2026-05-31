@@ -1,4 +1,5 @@
 #include "core/diagnostics.hpp"
+#include "parser/parser_diagnostics.hpp"
 
 #include <cstdlib>
 #include <iostream>
@@ -62,10 +63,30 @@ void test_diagnostic_format_without_trace() {
                "diagnostic without trace should omit trace heading");
 }
 
+void test_parser_invalid_keyword_diagnostic() {
+  const nerdss::core::Diagnostic diagnostic =
+      nerdss::parser::MakeInvalidKeywordDiagnostic("diffusionx",
+                                                   "molecule config", "A.mol");
+  const std::string formatted = nerdss::core::FormatDiagnostic(diagnostic);
+
+  require_true(diagnostic.category == nerdss::error::ErrorCategory::input,
+               "invalid parser keyword should use input category");
+  require_true(diagnostic.exit_code == nerdss::error::ExitCode::input,
+               "invalid parser keyword should use input exit code");
+  require_contains(diagnostic.message,
+                   "invalid molecule config keyword 'diffusionx' in 'A.mol'",
+                   "invalid parser keyword message includes context and path");
+  require_contains(formatted, "ERROR [input]",
+                   "invalid parser keyword rendering includes category");
+  require_contains(formatted, "exit_code=input(2)",
+                   "invalid parser keyword rendering includes exit code");
+}
+
 } // namespace
 
 int main() {
   test_diagnostic_format_with_trace();
   test_diagnostic_format_without_trace();
+  test_parser_invalid_keyword_diagnostic();
   return 0;
 }
