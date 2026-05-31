@@ -10,14 +10,13 @@
  * ### TODO List
  * ***
  */
+#include "core/math_engine.hpp"
 #include "math/matrix.hpp"
 #include <cmath>
 
 Vector matrix_rotate(Vector& vec, std::array<double, 9>& M)
 {
-    return { M[0] * vec.x + M[1] * vec.y + M[2] * vec.z,
-             M[3] * vec.x + M[4] * vec.y + M[5] * vec.z,
-             M[6] * vec.x + M[7] * vec.y + M[8] * vec.z };
+    return nerdss::core::MathEngine::RotateVector(vec, M);
 }
 
 std::array<double, 9> create_euler_rotation_matrix(double x, double y, double z)
