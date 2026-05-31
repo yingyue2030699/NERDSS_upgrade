@@ -95,4 +95,54 @@ provides:
 - `to_string(ExitCode)`
 - `default_exit_code(ErrorCategory)`
 
-The header is not wired into existing simulation code yet.
+The error-code header is still mostly a compatibility vocabulary. The
+diagnostics boundary below is the first production use of those categories in
+human-facing error text.
+
+## Diagnostics Formatting Boundary
+
+`include/core/diagnostics.hpp` now also provides `FormatDiagnostic(...)`, which
+formats a structured diagnostic as:
+
+```text
+ERROR [category] (exit_code=name(status)): message
+Trace:
+#0 function (file:line): detail
+```
+
+Trace output is omitted when the diagnostic has no trace string. The formatter
+does not run in hot loops; it is intended for parser, setup, file I/O, and
+other boundary failures after an error has already been detected.
+
+The first production call site is command-line argument validation in
+`src/parser/parse_command.cpp`. Usage errors now retain the existing input exit
+status (`2`) and usage text while adding a single trace frame for the
+command-line parser boundary.
+
+## Remaining Traceback Gaps
+
+- Diagnostics unit coverage is now part of the normal CMake/CTest path through
+  the `nerdss_diagnostics_tests` target and CTest entry. The older standalone
+  `g++ -std=c++11 -Iinclude tests/unit/test_diagnostics.cpp ...` check is no
+  longer required for routine validation.
+- Parser failures that still call `exit(...)`, `error(...)`, throw ad hoc
+  exceptions, or write direct `std::cerr` messages include
+  `src/parser/parse_input.cpp`, `src/parser/parse_reaction.cpp`,
+  `src/parser/parse_molFile.cpp`, `src/parser/parse_states.cpp`,
+  `src/parser/parse_observable.cpp`, `src/parser/parse_molecule_bngl.cpp`,
+  `src/parser/check_for_valid_states.cpp`, `src/parser/read_boolean.cpp`,
+  `src/parser/parse_input_array.cpp`,
+  `src/parser/parse_input_for_a_new_simulation.cpp`,
+  `src/parser/parse_input_for_a_restart_simulation.cpp`, and
+  `src/parser/parse_input_for_add_file.cpp`.
+- Setup failures and warnings with direct text/exit behavior remain in
+  `src/system_setup/initialize_states.cpp`,
+  `src/system_setup/generate_coordinates.cpp`, and
+  `src/system_setup/determine_shape_molecule.cpp`.
+- File I/O failures with direct text/exit behavior remain in restart and
+  optional artifact writers, notably `src/io/read_restart.cpp`,
+  `src/io/write_pdb.cpp`, and `src/io/write_bonded_complex_json.cpp`.
+- MPI-aware errors still rely on legacy rank text and have not been migrated to
+  structured diagnostics.
+- Core simulation loops should remain compile-time gated through
+  `NERDSS_TRACE_SCOPE`; this slice does not enable hot-loop trace collection.
