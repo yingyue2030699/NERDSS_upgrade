@@ -1,4 +1,5 @@
 #include "boundary_conditions/reflect_functions.hpp"
+#include "core/trajectory_engine.hpp"
 #include "math/matrix.hpp"
 #include "math/rand_gsl.hpp"
 #include "trajectory_functions/trajectory_functions.hpp"
@@ -7,10 +8,9 @@ void sweep_separation_complex_rot(int simItr, int pro1Index, Parameters& params,
     std::vector<Molecule>& moleculeList, std::vector<Complex>& complexList, const std::vector<ForwardRxn>& forwardRxns,
     const std::vector<MolTemplate>& molTemplateList, const Membrane& membraneObject)
 {
-    if (membraneObject.isSphere)
-        sweep_separation_complex_rot_sphere(simItr, pro1Index, params, moleculeList, complexList, forwardRxns, molTemplateList, membraneObject);
-    else
-        sweep_separation_complex_rot_box(simItr, pro1Index, params, moleculeList, complexList, forwardRxns, molTemplateList, membraneObject);
+    nerdss::core::TrajectoryEngine::SweepSeparationComplexRotation(
+        simItr, pro1Index, params, moleculeList, complexList, forwardRxns,
+        molTemplateList, membraneObject);
 
     // /*
     //   In this version, complex com1Index is on the membrane.
