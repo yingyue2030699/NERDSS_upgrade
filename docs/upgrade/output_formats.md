@@ -86,9 +86,13 @@ The helper does not change any existing writer output. Existing `.dat`, `.xyz`,
 runtime adoption routes the legacy `copy_numbers_time.dat` and
 `observables_time.dat` data rows through `WriteCsvRow`, preserving the current
 comma-separated bytes for ordinary numeric rows while centralizing CSV row
-emission. Future output modernization can migrate additional writers or emit
-`DATA/run_manifest.json` from runtime metadata without changing the legacy file
-names consumed by notebooks and downstream scripts.
+emission. The MPI adoption applies the same row helper to rank-local
+`DATA/copy_numbers_time_<rank>.dat` rows and the merged
+`mergeOUT/copy_numbers_time.dat` rows while keeping the legacy file names,
+headers, and numeric row bytes unchanged. Future output modernization can
+migrate additional writers or emit `DATA/run_manifest.json` from runtime
+metadata without changing the legacy file names consumed by notebooks and
+downstream scripts.
 
 ## Helper script
 

@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <vector>
 #include "io/io.hpp"
+#include "io/standard_formats.hpp"
 
 struct ComplexKey {
   std::string components;
@@ -25,6 +26,19 @@ struct hash<ComplexKey> {
   }
 };
 }  // namespace std
+
+namespace {
+
+template <typename T> std::string format_csv_field(std::ostream& formatSource, const T& value)
+{
+  std::ostringstream field;
+  field.copyfmt(formatSource);
+  field << value;
+  formatSource.width(0);
+  return field.str();
+}
+
+}  // namespace
 
 void processFile(const std::string& filename,
                  std::map<double, std::unordered_map<ComplexKey, int>>& data) {
@@ -187,11 +201,13 @@ void merge_outputs(int totalrank, int molTemplateNum) {
     }
     if (end_of_files) break;
     for (const auto& entry : summed_values) {
-      output_file << entry.first;
+      std::vector<std::string> fields;
+      fields.reserve(entry.second.size() + 1);
+      fields.push_back(format_csv_field(output_file, entry.first));
       for (const auto& sum : entry.second) {
-        output_file << "," << sum;
+        fields.push_back(format_csv_field(output_file, sum));
       }
-      output_file << std::endl;
+      nerdss::io::WriteCsvRow(output_file, fields);
     }
   }
   for (auto& file : input_files) {

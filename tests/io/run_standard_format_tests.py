@@ -26,6 +26,7 @@ def main() -> int:
             str(repo_root / "src/io/standard_formats.cpp"),
             str(repo_root / "src/io/write_all_species.cpp"),
             str(repo_root / "src/io/write_observables.cpp"),
+            str(repo_root / "src/io_mpi/merge_outputs.cpp"),
             "-o",
             str(test_binary),
         ]

@@ -5,9 +5,26 @@
  * ### Created on 2019-06-05 by Matthew Varga
  */
 #include "io/io.hpp"
+#include "io/standard_formats.hpp"
 #include "tracing.hpp"
 #include "debug/debug.hpp"
 #include "mpi/mpi_function.hpp"
+#include <sstream>
+#include <string>
+#include <vector>
+
+namespace {
+
+template <typename T> std::string format_csv_field(std::ostream& formatSource, const T& value)
+{
+    std::ostringstream field;
+    field.copyfmt(formatSource);
+    field << value;
+    formatSource.width(0);
+    return field.str();
+}
+
+}  // namespace
 
 void write_all_species(double simTime, std::vector<Molecule>& moleculeList,
                        std::ofstream& speciesFile, copyCounters& counterArrays,
@@ -61,15 +78,19 @@ void write_all_species(double simTime, std::vector<Molecule>& moleculeList,
     }  // end all interfaces
   }    // end all current molecules
 
-  speciesFile << simTime;
+  std::vector<std::string> fields;
+  fields.reserve(counterArrays.copyNumSpecies.size() + 1);
+  fields.push_back(format_csv_field(speciesFile, simTime));
   for (auto i = 0; i < counterArrays.copyNumSpecies.size(); i++) {
     if (counterArrays.singleDouble[i] == 2 &&
         counterArrays.implicitDouble[i] == false) {
       // product state, contains two proteins, so will be double counted above.
-      speciesFile << ',' << counterArrays.copyNumSpecies[i] * 0.5;
+      fields.push_back(
+          format_csv_field(speciesFile, counterArrays.copyNumSpecies[i] * 0.5));
     } else {
-      speciesFile << ',' << counterArrays.copyNumSpecies[i];
+      fields.push_back(format_csv_field(speciesFile,
+                                        counterArrays.copyNumSpecies[i]));
     }
   }
-  speciesFile << std::endl;
+  nerdss::io::WriteCsvRow(speciesFile, fields);
 }
