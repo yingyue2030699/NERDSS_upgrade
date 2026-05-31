@@ -10,6 +10,9 @@
 #include <string>
 #include <vector>
 
+#include <sys/stat.h>
+#include <unistd.h>
+
 namespace {
 
 void require_equal(const std::string& actual, const std::string& expected, const std::string& label)
@@ -83,6 +86,20 @@ std::string read_file(const std::string& path)
     return contents.str();
 }
 
+void write_file(const std::string& path, const std::string& contents)
+{
+    std::ofstream out(path.c_str());
+    out << contents;
+}
+
+void require_mkdir(const std::string& path)
+{
+    if (mkdir(path.c_str(), 0777) != 0) {
+        std::cerr << "failed to create directory: " << path << '\n';
+        std::exit(1);
+    }
+}
+
 void test_runtime_csv_writer_adoption(const std::string& tmp_dir)
 {
     {
@@ -124,6 +141,47 @@ void test_runtime_csv_writer_adoption(const std::string& tmp_dir)
     }
 }
 
+void test_mpi_csv_merge_adoption(const std::string& tmp_dir)
+{
+    require_mkdir(join_path(tmp_dir, "DATA"));
+    require_mkdir(join_path(tmp_dir, "mergeOUT"));
+    require_mkdir(join_path(tmp_dir, "PDB"));
+    require_mkdir(join_path(tmp_dir, "mergePDB"));
+
+    write_file(join_path(tmp_dir, "DATA/copy_numbers_time_0.dat"),
+        "Time (s),A,B\n"
+        "0,1,2\n"
+        "0.5,3,4\n");
+    write_file(join_path(tmp_dir, "DATA/copy_numbers_time_1.dat"),
+        "Time (s),A,B\n"
+        "0,10,20\n"
+        "0.5,30,40\n");
+    write_file(join_path(tmp_dir, "DATA/histogram_complexes_time_0.dat"), "");
+    write_file(join_path(tmp_dir, "DATA/histogram_complexes_time_1.dat"), "");
+
+    std::vector<char> cwd_buffer(4096);
+    if (getcwd(&cwd_buffer[0], cwd_buffer.size()) == NULL) {
+        std::cerr << "failed to capture working directory\n";
+        std::exit(1);
+    }
+
+    if (chdir(tmp_dir.c_str()) != 0) {
+        std::cerr << "failed to enter MPI merge test directory\n";
+        std::exit(1);
+    }
+    merge_outputs(2, 0);
+    if (chdir(&cwd_buffer[0]) != 0) {
+        std::cerr << "failed to restore working directory\n";
+        std::exit(1);
+    }
+
+    require_equal(read_file(join_path(tmp_dir, "mergeOUT/copy_numbers_time.dat")),
+        "Time (s),A,B\n"
+        "0,11,22\n"
+        "0.5,33,44\n",
+        "MPI merged copy-number rows preserve legacy CSV bytes");
+}
+
 } // namespace
 
 int main(int argc, char** argv)
@@ -136,5 +194,6 @@ int main(int argc, char** argv)
     test_csv_escaping();
     test_run_manifest_json();
     test_runtime_csv_writer_adoption(argv[1]);
+    test_mpi_csv_merge_adoption(argv[1]);
     return 0;
 }
