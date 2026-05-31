@@ -1,6 +1,6 @@
 # NERDSS output format modernization
 
-This page documents the first Phase 4 output-modernization slices: a run manifest schema and a small helper for inventorying existing outputs or writing `DATA/run_manifest.json`. It is intentionally metadata-only. The current C++ simulation writers continue to emit the same legacy files and directory layout.
+This page documents the first Phase 4 output-modernization slices: a run manifest schema, a small helper for inventorying existing outputs or writing `DATA/run_manifest.json`, and a C++ helper for writing standard CSV rows and manifest JSON. It is intentionally metadata-only. The current C++ simulation writers continue to emit the same legacy files and directory layout.
 
 ## Current legacy outputs
 
@@ -65,6 +65,31 @@ The `files` array is the central compatibility layer. Each entry has at least:
 
 Future phases can add structured schemas for individual output files while keeping this manifest as the stable inventory. Until then, `role` and `format` deliberately describe the current legacy text formats instead of promising normalized contents.
 
+## C++ standard-format helpers
+
+This slice adds a small, behavior-preserving helper under:
+
+```text
+include/io/standard_formats.hpp
+src/io/standard_formats.cpp
+```
+
+The helper provides:
+
+- `EscapeCsvField` and `WriteCsvRow` for RFC-4180-compatible quoting of comma,
+  quote, newline, carriage-return, and empty fields.
+- `BuildRunManifestJson` and `WriteRunManifestJson` for deterministic
+  `nerdss-run-manifest` JSON text from already-known legacy output metadata.
+
+The helper does not change any existing writer output. Existing `.dat`, `.xyz`,
+`.psf`, restart, and PDB files remain the compatibility contract. The first
+runtime adoption routes the legacy `copy_numbers_time.dat` and
+`observables_time.dat` data rows through `WriteCsvRow`, preserving the current
+comma-separated bytes for ordinary numeric rows while centralizing CSV row
+emission. Future output modernization can migrate additional writers or emit
+`DATA/run_manifest.json` from runtime metadata without changing the legacy file
+names consumed by notebooks and downstream scripts.
+
 ## Helper script
 
 The helper is stdlib-only and lives at:
@@ -111,6 +136,8 @@ This PR does not change C++ output behavior. It only adds:
 
 - A schema for a future run manifest.
 - Documentation describing the manifest and current legacy files.
-- A helper that reads existing outputs and prints JSON metadata or writes `DATA/run_manifest.json`.
+- A Python helper that reads existing outputs and prints JSON metadata or writes
+  `DATA/run_manifest.json`.
+- A C++ helper for standard CSV row writing and run-manifest JSON generation.
 
 Existing notebooks, validation data, and post-processing scripts should continue to consume the legacy files directly.

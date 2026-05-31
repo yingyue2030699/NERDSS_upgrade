@@ -78,6 +78,14 @@ This keeps the modernization path additive. A future Phase 4 slice can add a C++
 JSON reader that translates the schema into the existing parser data structures
 while retaining the legacy `.inp` path as a supported frontend.
 
+## Current implementation boundary
+
+The runtime parser still reads legacy `.inp`, `.mol`, and reaction text files.
+This branch does not route simulation startup through JSON and does not change
+the BNGL-like reaction grammar. The active implementation work in this slice is
+on output helpers, so JSON input remains schema/documentation plus inspection
+tooling until a later parser-owned branch adds a native reader.
+
 ## Helper usage
 
 Inspect a sample and write JSON:
