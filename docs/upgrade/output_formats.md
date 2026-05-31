@@ -82,8 +82,11 @@ The helper provides:
   `nerdss-run-manifest` JSON text from already-known legacy output metadata.
 
 The helper does not change any existing writer output. Existing `.dat`, `.xyz`,
-`.psf`, restart, and PDB files remain the compatibility contract. Future output
-modernization can migrate one writer at a time to `WriteCsvRow` or emit
+`.psf`, restart, and PDB files remain the compatibility contract. The first
+runtime adoption routes the legacy `copy_numbers_time.dat` and
+`observables_time.dat` data rows through `WriteCsvRow`, preserving the current
+comma-separated bytes for ordinary numeric rows while centralizing CSV row
+emission. Future output modernization can migrate additional writers or emit
 `DATA/run_manifest.json` from runtime metadata without changing the legacy file
 names consumed by notebooks and downstream scripts.
 

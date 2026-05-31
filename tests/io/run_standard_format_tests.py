@@ -24,11 +24,13 @@ def main() -> int:
             str(repo_root / "include"),
             str(repo_root / "tests/io/test_standard_formats.cpp"),
             str(repo_root / "src/io/standard_formats.cpp"),
+            str(repo_root / "src/io/write_all_species.cpp"),
+            str(repo_root / "src/io/write_observables.cpp"),
             "-o",
             str(test_binary),
         ]
         subprocess.run(compile_cmd, cwd=repo_root, check=True)
-        subprocess.run([str(test_binary)], cwd=repo_root, check=True)
+        subprocess.run([str(test_binary), tmp_dir], cwd=repo_root, check=True)
     return 0
 
 

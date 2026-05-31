@@ -1,8 +1,11 @@
 #include "io/standard_formats.hpp"
+#include "io/io.hpp"
 #include "json.hpp"
 
 #include <cstdlib>
+#include <fstream>
 #include <iostream>
+#include <map>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -64,11 +67,74 @@ void test_run_manifest_json()
     require_true(!out.str().empty() && out.str()[out.str().size() - 1] == '\n', "manifest stream newline");
 }
 
+std::string join_path(const std::string& dir, const std::string& filename)
+{
+    if (!dir.empty() && dir[dir.size() - 1] == '/') {
+        return dir + filename;
+    }
+    return dir + "/" + filename;
+}
+
+std::string read_file(const std::string& path)
+{
+    std::ifstream in(path.c_str());
+    std::ostringstream contents;
+    contents << in.rdbuf();
+    return contents.str();
+}
+
+void test_runtime_csv_writer_adoption(const std::string& tmp_dir)
+{
+    {
+        const std::string path = join_path(tmp_dir, "observables_multi.dat");
+        std::ofstream out(path.c_str());
+        std::map<std::string, int> observables;
+        observables["alpha"] = 3;
+        observables["beta"] = 5;
+
+        write_observables(0.25, out, observables);
+        out.close();
+
+        require_equal(read_file(path), "0.25,3,5\n", "observable row writer preserves legacy CSV row");
+    }
+
+    {
+        const std::string path = join_path(tmp_dir, "observables_single.dat");
+        std::ofstream out(path.c_str());
+        std::map<std::string, int> observables;
+        observables["only"] = 7;
+
+        write_observables(1.5, out, observables);
+        out.close();
+
+        require_equal(read_file(path), "1.5,7\n", "single observable row writer preserves legacy CSV row");
+    }
+
+    {
+        const std::string path = join_path(tmp_dir, "copy_numbers_time.dat");
+        std::ofstream out(path.c_str());
+        copyCounters counter_arrays;
+        counter_arrays.copyNumSpecies.push_back(4);
+        counter_arrays.copyNumSpecies.push_back(8);
+
+        write_all_species(2.0, out, counter_arrays);
+        out.close();
+
+        require_equal(read_file(path), "2,4,8\n", "copy-number row writer preserves legacy CSV row");
+    }
+}
+
 } // namespace
 
-int main()
+int main(int argc, char** argv)
 {
+    if (argc != 2) {
+        std::cerr << "usage: test_standard_formats <tmp-dir>\n";
+        return 2;
+    }
+
     test_csv_escaping();
     test_run_manifest_json();
+    test_runtime_csv_writer_adoption(argv[1]);
     return 0;
 }
