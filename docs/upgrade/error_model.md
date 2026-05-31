@@ -95,4 +95,14 @@ provides:
 - `to_string(ExitCode)`
 - `default_exit_code(ErrorCategory)`
 
-The header is not wired into existing simulation code yet.
+`include/core/diagnostics.hpp` defines `Diagnostic`, `TraceStack`, scoped trace
+frames, and a minimal renderer/exit helper. Diagnostics allocate and format
+only when a migrated boundary explicitly creates one.
+
+## Parser File-Open Diagnostics
+
+The parser file-open boundary now uses `nerdss::parser::MakeFileOpenDiagnostic`
+and `ExitWithFileOpenDiagnostic` for the main input file, add input file, and
+molecule config file open failures. These failures report category `file_io`,
+render a stable diagnostic prefix, include the failed path and file role, and
+exit with `ExitCode::file_io`.
