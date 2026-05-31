@@ -1,4 +1,5 @@
 #include "math/rand_gsl.hpp"
+#include "reactions/topology/topology_operations.hpp"
 #include "reactions/unimolecular/unimolecular_reactions.hpp"
 #include "tracing.hpp"
 
@@ -30,20 +31,13 @@ bool break_interaction(long long int iter, size_t relIface1, size_t relIface2, M
 
     bool keepSameComplex;
 
-    // construct the new complex that will be created
-    unsigned newComIndex = complexList.size();
+    // Reserve the new complex slot before parent-complex reassignment, matching
+    // the legacy mutation order for loop-correction cancellation.
     // std::cout << "empty complexes: " << Complex::emptyComList.size() << "\nMembers:";
     // for (auto com : Complex::emptyComList)
     //     std::cout << ' ' << com;
     // std::cout << '\n';
-    if (Complex::emptyComList.size() != 0 && complexList[Complex::emptyComList.back()].isEmpty) {
-        // if there is an empty complex slot, make the new Complex in it
-        newComIndex = Complex::emptyComList.back();
-        Complex::emptyComList.pop_back(); // remove the index from the list
-    } else {
-        // if we're making a new Complex, create an empty one at the end (index complexList.size())
-        complexList.emplace_back();
-    }
+    unsigned newComIndex = nerdss::reactions::topology::ReserveDissociationComplexSlot(complexList);
     // std::cout << "New Com Index: " << newComIndex << '\n';
 
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -178,10 +172,7 @@ bool break_interaction(long long int iter, size_t relIface1, size_t relIface2, M
         reactMol2.bndpartner.push_back(reactMol1.index);
 
         // reset empty complexList
-        if (newComIndex + 1 == complexList.size())
-            complexList.pop_back();
-        else
-            Complex::emptyComList.push_back(newComIndex);
+        nerdss::reactions::topology::ReleaseReservedComplexSlot(newComIndex, complexList);
 
         return true;
     } else {
@@ -379,10 +370,7 @@ bool break_interaction(long long int iter, size_t relIface1, size_t relIface2, M
             */
             // reset empty complexList
             breakLinkComplex = true;
-            if (newComIndex + 1 == complexList.size())
-                complexList.pop_back();
-            else
-                Complex::emptyComList.push_back(newComIndex);
+            nerdss::reactions::topology::ReleaseReservedComplexSlot(newComIndex, complexList);
         }
         //------------------------START UPDATE MONOMERLIST-------------------------
         // update oneTemp.monomerList when oneTemp.canDestroy is true and mol is monomer, add to monomerList if new monomer produced
