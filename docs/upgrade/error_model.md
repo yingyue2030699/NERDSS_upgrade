@@ -121,8 +121,27 @@ command-line parser boundary.
 
 ## Remaining Traceback Gaps
 
-- Most parser, setup, and file I/O failures still call `exit(...)`,
-  `error(...)`, or write ad hoc `std::cerr` messages directly.
+- Diagnostics unit coverage is now part of the normal CMake/CTest path through
+  the `nerdss_diagnostics_tests` target and CTest entry. The older standalone
+  `g++ -std=c++11 -Iinclude tests/unit/test_diagnostics.cpp ...` check is no
+  longer required for routine validation.
+- Parser failures that still call `exit(...)`, `error(...)`, throw ad hoc
+  exceptions, or write direct `std::cerr` messages include
+  `src/parser/parse_input.cpp`, `src/parser/parse_reaction.cpp`,
+  `src/parser/parse_molFile.cpp`, `src/parser/parse_states.cpp`,
+  `src/parser/parse_observable.cpp`, `src/parser/parse_molecule_bngl.cpp`,
+  `src/parser/check_for_valid_states.cpp`, `src/parser/read_boolean.cpp`,
+  `src/parser/parse_input_array.cpp`,
+  `src/parser/parse_input_for_a_new_simulation.cpp`,
+  `src/parser/parse_input_for_a_restart_simulation.cpp`, and
+  `src/parser/parse_input_for_add_file.cpp`.
+- Setup failures and warnings with direct text/exit behavior remain in
+  `src/system_setup/initialize_states.cpp`,
+  `src/system_setup/generate_coordinates.cpp`, and
+  `src/system_setup/determine_shape_molecule.cpp`.
+- File I/O failures with direct text/exit behavior remain in restart and
+  optional artifact writers, notably `src/io/read_restart.cpp`,
+  `src/io/write_pdb.cpp`, and `src/io/write_bonded_complex_json.cpp`.
 - MPI-aware errors still rely on legacy rank text and have not been migrated to
   structured diagnostics.
 - Core simulation loops should remain compile-time gated through

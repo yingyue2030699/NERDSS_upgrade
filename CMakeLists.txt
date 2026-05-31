@@ -109,4 +109,11 @@ if(BUILD_TESTING)
     target_include_directories(nerdss_unit_tests PRIVATE include)
     target_link_libraries(nerdss_unit_tests PRIVATE GSL::gsl GSL::gslcblas)
     add_test(NAME nerdss_unit_tests COMMAND nerdss_unit_tests)
+
+    add_executable(nerdss_diagnostics_tests
+        tests/unit/test_diagnostics.cpp
+    )
+    target_include_directories(nerdss_diagnostics_tests PRIVATE include)
+    add_dependencies(nerdss_unit_tests nerdss_diagnostics_tests)
+    add_test(NAME nerdss_diagnostics_tests COMMAND nerdss_diagnostics_tests)
 endif()
