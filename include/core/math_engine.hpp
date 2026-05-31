@@ -64,6 +64,45 @@ public:
     return ::create_euler_rotation_matrix(angles);
   }
 
+  static long double Factorial(unsigned n) {
+    return n == 0 ? 1.0L : n * Factorial(n - 1);
+  }
+
+  static Scalar LogGammaNumericalRecipes(Scalar n) {
+    Scalar x { 0.0 };
+    Scalar y { 0.0 };
+    Scalar tmp { 0.0 };
+    Scalar ser { 0.0 };
+    static Scalar cof[6] = { 76.18009172947146, -86.50532032941677,
+                             24.01409824083091, -1.231739572450155,
+                             0.1208650973866179e-2,
+                             -0.5395239384953e-5 };
+    y = x = n;
+    tmp = x + 5.5;
+    tmp -= (x + 0.5) * std::log(tmp);
+    ser = 1.000000000190015;
+    for (int j { 0 }; j <= 5; j++) {
+      ser += cof[j] / ++y;
+    }
+    return -tmp + std::log(2.5066282746310005 * ser / x);
+  }
+
+  static Scalar GammaFactorial(unsigned n) {
+    static int ntop = 4;
+    static float a[33] = { 1.0, 1.0, 2.0, 6.0, 24.0 };
+
+    if (n > 32) {
+      return std::exp(LogGammaNumericalRecipes(n + 1.0));
+    }
+
+    while (static_cast<unsigned>(ntop) < n) {
+      const int j { ntop++ };
+      a[ntop] = a[j] * ntop;
+    }
+
+    return a[n];
+  }
+
   static Scalar Radius(Coordinate3 coordinate) {
     return std::sqrt(coordinate.x * coordinate.x + coordinate.y * coordinate.y
                      + coordinate.z * coordinate.z);
