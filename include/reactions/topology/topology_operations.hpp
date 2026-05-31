@@ -64,6 +64,18 @@ inline void ApplyDissociationParentComplexReassignment(
     }
 }
 
+inline void ApplyComplexSlotCompactionMove(
+    int target_complex_index, int source_complex_index,
+    std::vector<Molecule>& molecule_list, std::vector<Complex>& complex_list)
+{
+    complex_list[target_complex_index] = complex_list[source_complex_index];
+    complex_list[target_complex_index].index = target_complex_index;
+
+    for (auto& mol_index : complex_list[target_complex_index].memberList) {
+        molecule_list[mol_index].myComIndex = target_complex_index;
+    }
+}
+
 } // namespace topology
 } // namespace reactions
 } // namespace nerdss

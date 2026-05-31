@@ -148,6 +148,38 @@ void test_release_returns_reused_reservation_to_empty_list()
         "release should return the reused slot index");
 }
 
+void test_multiple_appended_reservations_release_by_tail_compaction()
+{
+    reset_empty_complexes();
+    std::vector<Complex> complexes(2);
+
+    unsigned first_reserved_index =
+        nerdss::reactions::topology::ReserveDissociationComplexSlot(complexes);
+    unsigned second_reserved_index =
+        nerdss::reactions::topology::ReserveDissociationComplexSlot(complexes);
+
+    require_equal(first_reserved_index, 2, "first reserve should append at tail");
+    require_equal(second_reserved_index, 3, "second reserve should append at tail");
+    require_equal(
+        static_cast<unsigned>(complexes.size()), 4,
+        "two reservations should append two complex slots");
+
+    nerdss::reactions::topology::ReleaseReservedComplexSlot(
+        second_reserved_index, complexes);
+    require_equal(
+        static_cast<unsigned>(complexes.size()), 3,
+        "release should compact the most recent appended reservation");
+
+    nerdss::reactions::topology::ReleaseReservedComplexSlot(
+        first_reserved_index, complexes);
+    require_equal(
+        static_cast<unsigned>(complexes.size()), 2,
+        "release should compact the remaining appended reservation");
+    require_true(
+        Complex::emptyComList.empty(),
+        "tail compaction should not add entries to the empty-list");
+}
+
 void test_restore_dissociation_reactants_to_parent_complex()
 {
     std::vector<Molecule> molecules(4);
@@ -213,6 +245,127 @@ void test_apply_dissociation_parent_complex_reassignment()
         "apply should point new member 3 to new complex");
 }
 
+void test_apply_dissociation_reassignment_for_larger_split()
+{
+    std::vector<Molecule> molecules(10);
+    for (int index = 0; index < static_cast<int>(molecules.size()); ++index) {
+        molecules[index].myComIndex = 9;
+    }
+
+    std::vector<Complex> complexes(6);
+    complexes[2].memberList = { 99 };
+    complexes[5].memberList = { 42 };
+    complexes[5].index = 1234;
+
+    std::vector<int> parent_members { 8, 0, 6, 2 };
+    std::vector<int> new_members { 9, 7, 5, 3, 1 };
+
+    nerdss::reactions::topology::ApplyDissociationParentComplexReassignment(
+        2, 5, parent_members, new_members, molecules, complexes);
+
+    require_vector_equal(
+        complexes[2].memberList, { 0, 2, 6, 8 },
+        "large apply should sort parent-side members");
+    require_vector_equal(
+        complexes[5].memberList, { 1, 3, 5, 7, 9 },
+        "large apply should sort new-complex members");
+    require_equal(
+        complexes[5].index, 5,
+        "large apply should update the new complex index");
+
+    for (int member : complexes[2].memberList) {
+        require_equal(
+            molecules[member].myComIndex, 2,
+            "large apply should update every parent-side molecule");
+    }
+    for (int member : complexes[5].memberList) {
+        require_equal(
+            molecules[member].myComIndex, 5,
+            "large apply should update every new-complex molecule");
+    }
+    require_equal(
+        molecules[4].myComIndex, 9,
+        "large apply should leave non-member molecules untouched");
+}
+
+void test_reused_empty_slot_can_receive_dissociation_reassignment()
+{
+    reset_empty_complexes();
+    std::vector<Molecule> molecules(6);
+    std::vector<Complex> complexes(5);
+
+    complexes[4].isEmpty = true;
+    complexes[4].memberList = { -1 };
+    Complex::emptyComList.push_back(4);
+
+    unsigned new_complex_index =
+        nerdss::reactions::topology::ReserveDissociationComplexSlot(complexes);
+
+    std::vector<int> parent_members { 0, 2, 4 };
+    std::vector<int> new_members { 1, 3, 5 };
+
+    nerdss::reactions::topology::ApplyDissociationParentComplexReassignment(
+        1, new_complex_index, parent_members, new_members, molecules,
+        complexes);
+
+    require_equal(
+        new_complex_index, 4,
+        "dissociation should reuse the latest valid empty complex slot");
+    require_equal(
+        static_cast<unsigned>(complexes.size()), 5,
+        "reused empty slot should not grow the complex list");
+    require_true(
+        Complex::emptyComList.empty(),
+        "reused empty slot should be consumed before reassignment");
+    require_vector_equal(
+        complexes[4].memberList, { 1, 3, 5 },
+        "reused empty slot should receive the new split members");
+    for (int member : complexes[4].memberList) {
+        require_equal(
+            molecules[member].myComIndex, 4,
+            "reused empty slot should own its reassigned molecules");
+    }
+}
+
+void test_complex_slot_compaction_move_updates_members()
+{
+    std::vector<Molecule> molecules(7);
+    for (int index = 0; index < static_cast<int>(molecules.size()); ++index) {
+        molecules[index].myComIndex = 99;
+    }
+    molecules[1].myComIndex = 5;
+    molecules[3].myComIndex = 5;
+    molecules[6].myComIndex = 5;
+
+    std::vector<Complex> complexes(6);
+    complexes[1].isEmpty = true;
+    complexes[1].index = 1;
+    complexes[5].index = 5;
+    complexes[5].id = 77;
+    complexes[5].memberList = { 6, 1, 3 };
+
+    nerdss::reactions::topology::ApplyComplexSlotCompactionMove(
+        1, 5, molecules, complexes);
+
+    require_equal(
+        complexes[1].index, 1,
+        "compaction move should rewrite moved complex index");
+    require_equal(
+        complexes[1].id, 77,
+        "compaction move should preserve moved complex metadata");
+    require_vector_equal(
+        complexes[1].memberList, { 6, 1, 3 },
+        "compaction move should preserve moved complex members");
+    for (int member : complexes[1].memberList) {
+        require_equal(
+            molecules[member].myComIndex, 1,
+            "compaction move should repoint moved member molecules");
+    }
+    require_equal(
+        molecules[0].myComIndex, 99,
+        "compaction move should leave non-members untouched");
+}
+
 } // namespace
 
 int main()
@@ -222,8 +375,12 @@ int main()
     test_reserve_appends_when_latest_empty_slot_entry_is_stale();
     test_release_removes_appended_reservation();
     test_release_returns_reused_reservation_to_empty_list();
+    test_multiple_appended_reservations_release_by_tail_compaction();
     test_restore_dissociation_reactants_to_parent_complex();
     test_apply_dissociation_parent_complex_reassignment();
+    test_apply_dissociation_reassignment_for_larger_split();
+    test_reused_empty_slot_can_receive_dissociation_reassignment();
+    test_complex_slot_compaction_move_updates_members();
 
     std::cout << "topology_operations tests passed\n";
     return 0;
