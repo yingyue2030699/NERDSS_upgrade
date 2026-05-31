@@ -1,5 +1,6 @@
 #include "classes/class_Membrane.hpp"
 #include "io/io.hpp"
+#include "parser/parser_diagnostics.hpp"
 #include "parser/parser_functions.hpp"
 #include "system_setup/system_setup.hpp"
 
@@ -113,8 +114,7 @@ void parse_input(std::string& fileName, Parameters& params, std::map<std::string
     bool hasParsedMol = false;
     std::ifstream inputFile { fileName };
     if (!inputFile) {
-        std::cerr << "Reaction file cannot be opened. Exiting..." << std::endl;
-        exit(1);
+        nerdss::parser::ExitWithFileOpenDiagnostic(fileName, "reaction input");
     }
 
     std::vector<std::string> providedObs {};
@@ -403,8 +403,7 @@ void parse_input_for_add(std::string& fileName, Parameters& params, std::map<std
 
     std::ifstream inputFile { fileName };
     if (!inputFile) {
-        std::cerr << "Add reaction file cannot be opened. Exiting..." << std::endl;
-        exit(1);
+        nerdss::parser::ExitWithFileOpenDiagnostic(fileName, "add reaction input");
     }
 
     std::vector<std::string> providedObs {};

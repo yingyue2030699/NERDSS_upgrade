@@ -3,6 +3,7 @@
 #include "core/diagnostics.hpp"
 #include "core/math_engine.hpp"
 #include "core/probability_engine.hpp"
+#include "parser/parser_diagnostics.hpp"
 #include "reactions/bimolecular/2D_reaction_table_functions.hpp"
 #include "reactions/implicitlipid/implicitlipid_reactions.hpp"
 
@@ -272,6 +273,25 @@ void test_diagnostics_trace_stack()
     require_true(stack.empty(), "scoped trace frame should pop on destruction");
 }
 
+void test_parser_file_open_diagnostic()
+{
+    nerdss::core::Diagnostic diagnostic =
+        nerdss::parser::MakeFileOpenDiagnostic("missing/parms.inp", "reaction input");
+    require_true(
+        diagnostic.category == nerdss::error::ErrorCategory::file_io,
+        "parser file-open diagnostic should use file_io category");
+    require_true(
+        diagnostic.exit_code == nerdss::error::ExitCode::file_io,
+        "parser file-open diagnostic should use file_io exit code");
+    require_contains(
+        diagnostic.message, "cannot open reaction input file 'missing/parms.inp'",
+        "parser file-open diagnostic should name role and path");
+
+    const std::string text = nerdss::core::FormatDiagnostic(diagnostic);
+    require_contains(text, "ERROR [file_io]", "rendered diagnostic should include category");
+    require_contains(text, "exit_code=file_io(9)", "rendered diagnostic should include exit code");
+}
+
 void test_probability_engine_facade()
 {
     const double passoc3d = nerdss::core::ProbabilityEngine::AssociationProbability3D(
@@ -483,6 +503,7 @@ int main()
     test_vector_cross_projection_and_angle();
     test_math_engine_facade();
     test_diagnostics_trace_stack();
+    test_parser_file_open_diagnostic();
     test_probability_engine_facade();
     return 0;
 }
