@@ -85,6 +85,7 @@ if(BUILD_TESTING)
         src/classes/class_Quat.cpp
         src/classes/class_Vector.cpp
         src/math/Faddeeva.cpp
+        src/math/math_functions.cpp
         src/math/matrix_functions.cpp
         src/reactions/angleSignIsCorrect.cpp
         src/reactions/areParallel.cpp

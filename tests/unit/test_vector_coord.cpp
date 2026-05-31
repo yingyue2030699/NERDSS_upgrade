@@ -3,6 +3,7 @@
 #include "core/diagnostics.hpp"
 #include "core/math_engine.hpp"
 #include "core/probability_engine.hpp"
+#include "math/math_functions.hpp"
 #include "reactions/bimolecular/2D_reaction_table_functions.hpp"
 #include "reactions/implicitlipid/implicitlipid_reactions.hpp"
 
@@ -246,6 +247,23 @@ void test_math_engine_facade()
             { 0.0, 0.0, 1.0 }, { 0.0, 1.0, 0.0 }, { 0.0, 0.0, 1.0 })
             == requiresSignFlip({ 0.0, 0.0, 1.0 }, { 0.0, 1.0, 0.0 }, { 0.0, 0.0, 1.0 }),
         "sign-flip facade should match legacy wrapper for x-axis fallback");
+
+    require_close(
+        static_cast<double>(nerdss::core::MathEngine::Factorial(10)),
+        static_cast<double>(MathFuncs::factorial(10)),
+        "factorial facade should match legacy wrapper");
+    require_close(
+        nerdss::core::MathEngine::LogGammaNumericalRecipes(7.5),
+        MathFuncs::gammln(7.5),
+        "log-gamma facade should match legacy wrapper");
+    require_close(
+        nerdss::core::MathEngine::GammaFactorial(12),
+        MathFuncs::gammFactorial(12),
+        "gamma-factorial facade should match legacy wrapper");
+    require_close(
+        nerdss::core::MathEngine::GammaFactorial(40),
+        MathFuncs::gammFactorial(40),
+        "large gamma-factorial facade should match legacy wrapper");
 }
 
 void test_diagnostics_trace_stack()
