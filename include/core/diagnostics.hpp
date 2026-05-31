@@ -8,6 +8,8 @@
 
 #include <array>
 #include <cstddef>
+#include <cstdlib>
+#include <iostream>
 #include <sstream>
 #include <string>
 
@@ -93,12 +95,12 @@ private:
 struct Diagnostic {
   error::ErrorCategory category;
   error::ExitCode exit_code;
-  const char* message;
+  std::string message;
   std::string trace;
 };
 
 inline Diagnostic MakeDiagnostic(error::ErrorCategory category,
-                                 const char* message,
+                                 const std::string& message,
                                  const std::string& trace) {
   return {category, error::default_exit_code(category), message, trace};
 }
@@ -108,11 +110,16 @@ inline std::string FormatDiagnostic(const Diagnostic& diagnostic) {
   stream << "ERROR [" << error::to_string(diagnostic.category)
          << "] (exit_code=" << error::to_string(diagnostic.exit_code) << "("
          << error::to_exit_status(diagnostic.exit_code) << ")): "
-         << (diagnostic.message ? diagnostic.message : "");
+         << diagnostic.message;
   if (!diagnostic.trace.empty()) {
     stream << "\nTrace:\n" << diagnostic.trace;
   }
   return stream.str();
+}
+
+inline void ExitWithDiagnostic(const Diagnostic& diagnostic) {
+  std::cerr << FormatDiagnostic(diagnostic) << '\n';
+  std::exit(error::to_exit_status(diagnostic.exit_code));
 }
 
 } // namespace core

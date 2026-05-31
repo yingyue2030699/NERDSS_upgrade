@@ -119,6 +119,14 @@ The first production call site is command-line argument validation in
 status (`2`) and usage text while adding a single trace frame for the
 command-line parser boundary.
 
+## Parser File-Open Diagnostics
+
+The parser file-open boundary now uses `nerdss::parser::MakeFileOpenDiagnostic`
+and `ExitWithFileOpenDiagnostic` for the main input file, add input file, and
+molecule config file open failures. These failures report category `file_io`,
+render through the shared diagnostic formatter, include the failed path and
+file role, and exit with `ExitCode::file_io`.
+
 ## Remaining Traceback Gaps
 
 - Diagnostics unit coverage is now part of the normal CMake/CTest path through
@@ -126,9 +134,9 @@ command-line parser boundary.
   `g++ -std=c++11 -Iinclude tests/unit/test_diagnostics.cpp ...` check is no
   longer required for routine validation.
 - Parser failures that still call `exit(...)`, `error(...)`, throw ad hoc
-  exceptions, or write direct `std::cerr` messages include
+  exceptions, or write direct `std::cerr` messages include remaining paths in
   `src/parser/parse_input.cpp`, `src/parser/parse_reaction.cpp`,
-  `src/parser/parse_molFile.cpp`, `src/parser/parse_states.cpp`,
+  `src/parser/parse_states.cpp`,
   `src/parser/parse_observable.cpp`, `src/parser/parse_molecule_bngl.cpp`,
   `src/parser/check_for_valid_states.cpp`, `src/parser/read_boolean.cpp`,
   `src/parser/parse_input_array.cpp`,

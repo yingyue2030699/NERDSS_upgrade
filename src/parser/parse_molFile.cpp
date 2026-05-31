@@ -1,3 +1,4 @@
+#include "parser/parser_diagnostics.hpp"
 #include "parser/parser_functions.hpp"
 
 MolTemplate parse_molFile(std::string& mol)
@@ -26,8 +27,7 @@ MolTemplate parse_molFile(std::string& mol)
     std::cout << mol + ".mol" << '\n';
     std::ifstream molFile { mol + ".mol" };
     if (!molFile) {
-        std::cout << "Cannot open molecule config file for molecule " << mol << '\n';
-        exit(1);
+        nerdss::parser::ExitWithFileOpenDiagnostic(mol + ".mol", "molecule config");
     }
 
     MolTemplate tmpTemplate;
