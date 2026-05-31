@@ -32,6 +32,10 @@ behavior-preserving helpers:
 - `ApplyDissociationParentComplexReassignment(...)` applies the already
   computed split member lists, preserves the legacy sort order, updates the new
   complex index, and rewrites member `myComIndex` values.
+- `ApplyComplexSlotCompactionMove(...)` copies a live complex into an earlier
+  empty slot and rewrites the moved members' `myComIndex` values. It mirrors the
+  complex-side move performed during empty-slot compaction without changing the
+  main-loop compaction call site yet.
 
 The helpers intentionally preserve the legacy behavior:
 
@@ -43,6 +47,23 @@ The helpers intentionally preserve the legacy behavior:
 - keep the parent-complex split decision in `determine_parent_complex(...)`;
 - preserve the legacy sorted member lists produced by non-implicit-lipid
   dissociation reassignment.
+- preserve the moved complex member order during empty-slot compaction, while
+  updating only the moved members' complex index.
+
+## Behavior Tests
+
+The standalone topology harness now covers:
+
+- empty-slot reservation through append, valid reuse, stale entry retention,
+  reused-slot rollback, and repeated tail-reservation release;
+- restoring dissociating reactants to their parent complex after loop
+  cancellation;
+- small and larger dissociation member reassignment, including sorted split
+  member lists and untouched non-member molecules;
+- reassignment into a reused empty complex slot without growing
+  `complexList`;
+- the complex-side empty-slot compaction move that rewrites the moved complex
+  index and moved members' `myComIndex` values.
 
 Validation for this slice:
 
