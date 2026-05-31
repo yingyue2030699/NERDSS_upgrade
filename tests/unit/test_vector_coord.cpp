@@ -6,6 +6,7 @@
 #include "core/trajectory_engine.hpp"
 #include "parser/parser_diagnostics.hpp"
 #include "math/math_functions.hpp"
+#include "math/matrix.hpp"
 #include "reactions/bimolecular/2D_reaction_table_functions.hpp"
 #include "reactions/implicitlipid/implicitlipid_reactions.hpp"
 
@@ -144,15 +145,25 @@ void test_math_engine_facade()
             { 0.0, 0.0, 1.0 }, { 1.0, 0.0, 0.0 }),
         "facade rounded angle conservation");
 
+    const double pi = std::acos(-1.0);
     nerdss::core::Matrix3 identity = nerdss::core::MathEngine::CreateEulerRotationMatrix(0.0, 0.0, 0.0);
     require_close(identity[0], 1.0, "facade matrix 0");
     require_close(identity[4], 1.0, "facade matrix 4");
     require_close(identity[8], 1.0, "facade matrix 8");
+    nerdss::core::Matrix3 quarter_turn = nerdss::core::MathEngine::CreateEulerRotationMatrix(0.0, 0.0, pi / 2.0);
+    nerdss::core::Vector3 rotated = nerdss::core::MathEngine::RotateVector(x_axis, quarter_turn);
+    Vector legacy_rotated_input { 1.0, 0.0, 0.0 };
+    Vector legacy_rotated = matrix_rotate(legacy_rotated_input, quarter_turn);
+    require_close(rotated.x, 0.0, "facade matrix-vector rotation x");
+    require_close(rotated.y, 1.0, "facade matrix-vector rotation y");
+    require_close(rotated.z, 0.0, "facade matrix-vector rotation z");
+    require_close(rotated.x, legacy_rotated.x, "matrix-vector rotation facade should match legacy x");
+    require_close(rotated.y, legacy_rotated.y, "matrix-vector rotation facade should match legacy y");
+    require_close(rotated.z, legacy_rotated.z, "matrix-vector rotation facade should match legacy z");
 
     nerdss::core::Coordinate3 radius_coordinate { 3.0, 4.0, 12.0 };
     require_close(nerdss::core::MathEngine::Radius(radius_coordinate), 13.0, "facade spherical radius");
 
-    const double pi = std::acos(-1.0);
     nerdss::core::Coordinate3 spherical { pi / 2.0, 0.0, 2.0 };
     nerdss::core::Coordinate3 cartesian = nerdss::core::MathEngine::CartesianFromSpherical(spherical);
     require_close(cartesian.x, 2.0, "facade spherical-to-cartesian x");

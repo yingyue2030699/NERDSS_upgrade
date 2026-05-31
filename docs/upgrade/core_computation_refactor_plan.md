@@ -36,9 +36,9 @@ trajectory math, restart semantics, or legacy input/output compatibility.
 
 1. Add a `nerdss::core::MathEngine` CPU scalar facade that groups numeric
    primitives under a single header. Current slices cover vector/matrix helpers
-   plus rounded conservation predicates, spherical coordinate,
-   geodesic-distance, angular wrapping, association-angle predicate, spherical
-   association-position, signed projected-angle, angular-displacement,
+   plus matrix-vector rotation, rounded conservation predicates, spherical
+   coordinate, geodesic-distance, angular wrapping, association-angle predicate,
+   spherical association-position, signed projected-angle, angular-displacement,
    arbitrary orthogonal-vector, sign-flip orientation kernels, factorial,
    Numerical Recipes log-gamma, and gamma-factorial kernels.
 2. Add unit coverage proving the facade delegates to legacy `Coord`, `Vector`,

@@ -14,6 +14,8 @@
 
 #include "classes/class_Vector.hpp"
 
+#include <array>
+
 /*!
  * \brief Rotate a vector using a rotation matrix (LEGACY).
  */
