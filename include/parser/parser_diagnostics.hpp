@@ -19,9 +19,27 @@ inline core::Diagnostic MakeFileOpenDiagnostic(const std::string& path,
   return core::MakeDiagnostic(error::ErrorCategory::file_io, message.str(), "");
 }
 
+inline core::Diagnostic MakeInvalidKeywordDiagnostic(const std::string& keyword,
+                                                     const char* context,
+                                                     const std::string& path) {
+  std::ostringstream message;
+  message << "invalid " << context << " keyword '" << keyword << "'";
+  if (!path.empty()) {
+    message << " in '" << path << "'";
+  }
+  return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
+}
+
 inline void ExitWithFileOpenDiagnostic(const std::string& path,
                                        const char* role) {
   core::ExitWithDiagnostic(MakeFileOpenDiagnostic(path, role));
+}
+
+inline void ExitWithInvalidKeywordDiagnostic(const std::string& keyword,
+                                             const char* context,
+                                             const std::string& path) {
+  core::ExitWithDiagnostic(
+      MakeInvalidKeywordDiagnostic(keyword, context, path));
 }
 
 } // namespace parser
