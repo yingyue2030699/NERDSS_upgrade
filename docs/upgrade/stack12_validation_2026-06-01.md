@@ -10,8 +10,9 @@ branches:
 ## Changes
 
 - Opted the GitHub Actions workflow into Node 24 with
-  `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24` to remove the Node 20 runner warning
-  without changing the build or validation commands.
+  `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24` and updated official action versions to
+  `actions/checkout@v6.0.2` and `actions/upload-artifact@v7.0.1` to address
+  the Node 20 runner warning without changing the build or validation commands.
 - Replaced the missing coordinate-file exit path with the structured file I/O
   diagnostic helper and added smoke-runner coverage for
   `--coordinate missing_coords.pdb`.
@@ -36,9 +37,11 @@ branches:
 - `python3 -B tools/run_upgrade_validation.py --skip-build --binary bin/nerdss --skip-smoke --skip-unit --skip-regression --benchmarks --benchmark-case small_homotrimer --output-dir /tmp/nerdss-stack12-small-benchmark`:
   passed.
 
-The standalone `codex/ci-node24-actions` branch also completed remote GitHub
-Actions validation successfully: unit coverage and the full build/unit/smoke
-regression job both passed.
+The first pushed `codex/validation-integration-stack-12` CI run completed
+successfully: unit coverage and the full build/unit/smoke regression job both
+passed. GitHub still annotated the v4 actions as Node 20 actions forced onto
+Node 24, so this stack was updated again to use the latest checked official
+action releases.
 
 ## Benchmark Snapshot
 
