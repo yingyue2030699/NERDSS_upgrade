@@ -1,5 +1,6 @@
 #include "core/diagnostics.hpp"
 #include "parser/parser_diagnostics.hpp"
+#include "system_setup/setup_diagnostics.hpp"
 
 #include <cstdlib>
 #include <iostream>
@@ -123,6 +124,30 @@ void test_parser_invalid_boolean_diagnostic() {
                    "invalid parser boolean rendering includes exit code");
 }
 
+void test_setup_invalid_state_character_diagnostic() {
+  const nerdss::core::Diagnostic diagnostic =
+      nerdss::setup::MakeInvalidStateCharacterDiagnostic('@', "Lipid",
+                                                         "site@A");
+  const std::string formatted = nerdss::core::FormatDiagnostic(diagnostic);
+
+  require_true(diagnostic.category == nerdss::error::ErrorCategory::input,
+               "setup invalid state character should use input category");
+  require_true(diagnostic.exit_code == nerdss::error::ExitCode::input,
+               "setup invalid state character should use input exit code");
+  require_contains(diagnostic.message,
+                   "invalid starting copy-number state character '@' in "
+                   "'site@A' for molecule 'Lipid'",
+                   "setup invalid state character message includes context");
+  require_contains(
+      diagnostic.message,
+      "expected alphanumeric interface/state tokens separated by '~' and ','",
+      "setup invalid state character message includes accepted separators");
+  require_contains(formatted, "ERROR [input]",
+                   "setup invalid state character rendering includes category");
+  require_contains(formatted, "exit_code=input(2)",
+                   "setup invalid state character rendering includes exit code");
+}
+
 } // namespace
 
 int main() {
@@ -131,5 +156,6 @@ int main() {
   test_parser_invalid_keyword_diagnostic();
   test_parser_section_order_diagnostic();
   test_parser_invalid_boolean_diagnostic();
+  test_setup_invalid_state_character_diagnostic();
   return 0;
 }

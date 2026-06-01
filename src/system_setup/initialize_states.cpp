@@ -1,4 +1,5 @@
 #include "system_setup/system_setup.hpp"
+#include "system_setup/setup_diagnostics.hpp"
 
 void initialize_states(std::vector<Molecule>& moleculeList, std::vector<MolTemplate>& molTemplateList, Membrane& membraneObject)
 {
@@ -45,8 +46,7 @@ void initialize_states(std::vector<Molecule>& moleculeList, std::vector<MolTempl
                                 break;
                             }
                             default: {
-                                std::cerr << "ERROR: Character " << *molIterator << " is not valid in starting copy numbers for each state. Exiting...\n.";
-                                exit(1);
+                                nerdss::setup::ExitWithInvalidStateCharacterDiagnostic(*molIterator, tmpMol.molName, oneLine);
                             }
                             }
                         }
@@ -96,8 +96,7 @@ void initialize_states(std::vector<Molecule>& moleculeList, std::vector<MolTempl
                                 break;
                             }
                             default: {
-                                std::cerr << "ERROR: Character " << *molIterator << " is not valid in starting copy numbers for each state. Exiting...\n.";
-                                exit(1);
+                                nerdss::setup::ExitWithInvalidStateCharacterDiagnostic(*molIterator, tmpMol.molName, oneLine);
                             }
                             }
                         }
