@@ -200,7 +200,7 @@ void parse_input(std::string& fileName, Parameters& params, std::map<std::string
                             line.erase(line.begin(), lineItr + 1); // + 1 removes the ':' sign. could make this erase(remove_if)
                             // find the value type from the keyword and then set that parameter
                             ParsedMolNumState tmpMolNumState {};
-                            tmpMolNumState = parse_number_bngl(line);
+                            tmpMolNumState = parse_number_bngl(line, providedMols.back());
                             providedNums.emplace_back(tmpMolNumState.totalCopyNumbers);
                             providedNumState.emplace_back(tmpMolNumState);
                             gotValue = true;
@@ -208,8 +208,7 @@ void parse_input(std::string& fileName, Parameters& params, std::map<std::string
                         }
                     }
                     if (gotValue == false) {
-                        std::cout << "Please provide the copy number of each molecule in INP file in this format-- molName:100" << std::endl;
-                        exit(0);
+                        nerdss::parser::ExitWithInvalidMoleculeCountDiagnostic("", line, "missing ':' separator");
                     }
                 }
             }
@@ -490,7 +489,7 @@ void parse_input_for_add(std::string& fileName, Parameters& params, std::map<std
                             line.erase(line.begin(), lineItr + 1); // + 1 removes the ':' sign. could make this erase(remove_if)
                             // find the value type from the keyword and then set that parameter
                             ParsedMolNumState tmpMolNumState {};
-                            tmpMolNumState = parse_number_bngl(line);
+                            tmpMolNumState = parse_number_bngl(line, providedMols.back());
                             providedNums.emplace_back(tmpMolNumState.totalCopyNumbers);
                             providedNumState.emplace_back(tmpMolNumState);
                             gotValue = true;
@@ -498,8 +497,7 @@ void parse_input_for_add(std::string& fileName, Parameters& params, std::map<std
                         }
                     }
                     if (gotValue == false) {
-                        std::cout << "Please provide the copy number of each molecule in INP file in this format-- molName:100" << std::endl;
-                        exit(0);
+                        nerdss::parser::ExitWithInvalidMoleculeCountDiagnostic("", line, "missing ':' separator");
                     }
                 }
             }

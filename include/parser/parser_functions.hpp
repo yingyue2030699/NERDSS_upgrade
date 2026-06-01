@@ -198,7 +198,8 @@ ParsedMol parse_molecule_bngl(int& totSpecies, bool isProductSide, std::pair<std
  *
  * - Format of input line  will be 100 (interface~state1), 100 (interface~state2)
  */
-ParsedMolNumState parse_number_bngl(std::string oneLine);
+ParsedMolNumState parse_number_bngl(std::string oneLine,
+    const std::string& moleculeName = "");
 
 /*!\ingroup Parser
  * \brief This function determines the reaction type and reversibility, and parses the reaction file accordingly

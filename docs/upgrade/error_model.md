@@ -171,6 +171,17 @@ number and is not one of the legacy aliases `pi`, `m_pi`, or `nan`. This
 replaces the previous ad hoc thrown string path with a structured `input`
 diagnostic while preserving the accepted token set and `ExitCode::input`.
 
+## Parser Molecule Copy-Number Diagnostics
+
+The main input and add-file `startMolecules` sections now use
+`nerdss::parser::MakeInvalidMoleculeCountDiagnostic` and
+`ExitWithInvalidMoleculeCountDiagnostic` for malformed molecule copy-number
+syntax. Lines without the required `:` separator now produce a structured
+`input` diagnostic instead of printing help text and exiting successfully.
+Invalid characters and malformed state count tokens in `parse_number_bngl`
+also report the same stable diagnostic while preserving accepted legacy count
+syntax.
+
 ## Setup State Diagnostics
 
 The state setup path now uses
@@ -250,9 +261,10 @@ of exiting, matching the previous optional-artifact behavior.
 - Parser failures that still call `exit(...)`, `error(...)`, throw ad hoc
   exceptions, or write direct `std::cerr` messages include remaining paths in
   `src/parser/parse_input.cpp` outside the migrated file-open, molecule
-  keyword, and section-order checks, `src/parser/parse_reaction.cpp` outside
-  the migrated too-many-reactants check,
-  `src/parser/parse_molecule_bngl.cpp`,
+  keyword, section-order, and molecule copy-number checks,
+  `src/parser/parse_reaction.cpp` outside the migrated too-many-reactants
+  check, `src/parser/parse_molecule_bngl.cpp` outside the migrated starting
+  molecule copy-number parser,
   `src/parser/parse_input_for_a_new_simulation.cpp`,
   `src/parser/parse_input_for_a_restart_simulation.cpp`, and
   `src/parser/parse_input_for_add_file.cpp`. Other `parse_molFile` semantic
