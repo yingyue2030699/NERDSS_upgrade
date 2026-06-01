@@ -210,6 +210,16 @@ previous direct `std::cout` plus `exit(1)` path in `parse_states` to a
 structured `input` diagnostic and `ExitCode::input` while preserving accepted
 state declarations and state-token normalization.
 
+## Parser Reaction State Validation Diagnostics
+
+Reaction molecule state validation now uses structured parser diagnostics for
+hard semantic failures in `check_for_valid_states`: unknown molecule templates,
+unknown interfaces on a declared molecule template, and unknown states on a
+declared template interface. This migrates the previous direct `std::cerr` or
+`std::cout` plus `exit(...)` paths to shared `input` diagnostics and
+`ExitCode::input` while preserving accepted reaction molecules, interfaces,
+states, and legacy informational parsing output.
+
 ## Optional I/O Artifact Diagnostics
 
 The serial PDB and bonded-complex JSON artifact writers now use
@@ -233,7 +243,6 @@ of exiting, matching the previous optional-artifact behavior.
   keyword, and section-order checks, `src/parser/parse_reaction.cpp` outside
   the migrated too-many-reactants check,
   `src/parser/parse_molecule_bngl.cpp`,
-  `src/parser/check_for_valid_states.cpp`,
   `src/parser/parse_input_for_a_new_simulation.cpp`,
   `src/parser/parse_input_for_a_restart_simulation.cpp`, and
   `src/parser/parse_input_for_add_file.cpp`. Other `parse_molFile` semantic
