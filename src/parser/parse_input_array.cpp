@@ -1,13 +1,17 @@
+#include "parser/parser_diagnostics.hpp"
 #include "parser/parser_functions.hpp"
 
 std::vector<double> parse_input_array(std::string& line)
 {
+    const std::string originalLine { line };
+
     // remove the brackets
     std::vector<char> brackets { '[', ']', '(', ')' };
     for (auto& elem : brackets) {
         auto bracketPos = line.find(elem);
-        if (bracketPos != std::string::npos)
+        if (bracketPos != std::string::npos) {
             line.erase(bracketPos, 1);
+        }
     }
 
     // parse the comma delimited values
@@ -28,15 +32,14 @@ std::vector<double> parse_input_array(std::string& line)
             std::transform(tmpValue.begin(), tmpValue.end(), tmpValue.begin(), ::tolower);
             bool isPi { tmpValue == "m_pi" || tmpValue == "pi" };
             bool isNull { tmpValue == "nan" };
-            if (isPi)
+            if (isPi) {
                 tmpVals.emplace_back(M_PI);
-            else if (isNull)
+            } else if (isNull) {
                 tmpVals.emplace_back(std::numeric_limits<double>::quiet_NaN());
-            else
-                throw "Error, cannot read angles value " + value;
-        } catch (const std::string& msg) {
-            std::cout << msg << '\n';
-            exit(1);
+            } else {
+                nerdss::parser::ExitWithInvalidNumericArrayTokenDiagnostic(
+                    value, originalLine);
+            }
         }
     }
 
