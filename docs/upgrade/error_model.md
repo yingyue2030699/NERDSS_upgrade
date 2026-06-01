@@ -157,10 +157,21 @@ The shared parser boolean reader now uses
 `exit(1)` path to a structured `input` diagnostic and exits with
 `ExitCode::input`.
 
+## Optional I/O Artifact Diagnostics
+
+The serial PDB and bonded-complex JSON artifact writers now use
+`nerdss::io::MakeArtifactWriteOpenDiagnostic` and
+`WriteArtifactWriteOpenDiagnostic` when their output file cannot be opened.
+These failures report category `file_io` and render through the shared
+diagnostic formatter while preserving the legacy human-readable message text
+inside the diagnostic payload. The writers still return to the caller instead
+of exiting, matching the previous optional-artifact behavior.
+
 ## Remaining Traceback Gaps
 
 - Diagnostics unit coverage is now part of the normal CMake/CTest path through
-  the `nerdss_diagnostics_tests` target and CTest entry. The older standalone
+  the `nerdss_diagnostics_tests` and `nerdss_io_diagnostics_tests` targets and
+  CTest entries. The older standalone
   `g++ -std=c++11 -Iinclude tests/unit/test_diagnostics.cpp ...` check is no
   longer required for routine validation.
 - Parser failures that still call `exit(...)`, `error(...)`, throw ad hoc
@@ -179,9 +190,8 @@ The shared parser boolean reader now uses
   `src/system_setup/initialize_states.cpp`,
   `src/system_setup/generate_coordinates.cpp`, and
   `src/system_setup/determine_shape_molecule.cpp`.
-- File I/O failures with direct text/exit behavior remain in restart and
-  optional artifact writers, notably `src/io/read_restart.cpp`,
-  `src/io/write_pdb.cpp`, and `src/io/write_bonded_complex_json.cpp`.
+- File I/O failures with direct text/exit behavior remain in restart and other
+  artifact paths, notably `src/io/read_restart.cpp` and MPI output writers.
 - MPI-aware errors still rely on legacy rank text and have not been migrated to
   structured diagnostics.
 - Core simulation loops should remain compile-time gated through

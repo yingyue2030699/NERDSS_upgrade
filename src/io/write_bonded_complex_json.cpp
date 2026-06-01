@@ -1,4 +1,5 @@
 #include "io/io.hpp"
+#include "io/io_diagnostics.hpp"
 #include "json.hpp"
 #include <fstream>
 #include <iomanip>
@@ -22,7 +23,8 @@ void write_bonded_complex_json(const std::string filename,
 {
     std::ofstream out(filename);
     if (!out.is_open()) {
-        std::cerr << "Error: Unable to open JSON file for writing: " << filename << std::endl;
+        nerdss::io::WriteArtifactWriteOpenDiagnostic(std::cerr, filename,
+                                                     "JSON");
         return;
     }
 

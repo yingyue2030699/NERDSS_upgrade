@@ -117,4 +117,11 @@ if(BUILD_TESTING)
     target_include_directories(nerdss_diagnostics_tests PRIVATE include)
     add_dependencies(nerdss_unit_tests nerdss_diagnostics_tests)
     add_test(NAME nerdss_diagnostics_tests COMMAND nerdss_diagnostics_tests)
+
+    add_executable(nerdss_io_diagnostics_tests
+        tests/io/test_io_diagnostics.cpp
+    )
+    target_include_directories(nerdss_io_diagnostics_tests PRIVATE include)
+    add_dependencies(nerdss_unit_tests nerdss_io_diagnostics_tests)
+    add_test(NAME nerdss_io_diagnostics_tests COMMAND nerdss_io_diagnostics_tests)
 endif()
