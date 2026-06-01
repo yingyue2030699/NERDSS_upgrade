@@ -151,6 +151,34 @@ void test_math_engine_facade()
 
     nerdss::core::Coordinate3 coordinate { 2.0, 3.0, 6.0 };
     require_close(nerdss::core::MathEngine::Magnitude(coordinate), 7.0, "facade magnitude");
+    require_close(
+        nerdss::core::MathEngine::SquaredCoordinateDistance(
+            { 1.0, -2.0, 3.0 }, { -3.0, 4.0, -5.0 }),
+        116.0,
+        "facade coordinate squared distance");
+    require_close(
+        nerdss::core::MathEngine::CoordinateDistance(
+            { 1.0, -2.0, 3.0 }, { -3.0, 4.0, -5.0 }),
+        std::sqrt(116.0),
+        "facade coordinate distance");
+    require_close(
+        nerdss::core::MathEngine::CoordinateDistance(
+            { 1.0, -2.0, 3.0 }, { -3.0, 4.0, -5.0 }),
+        Coord { 4.0, -6.0, 8.0 }.get_magnitude(),
+        "coordinate distance facade should match legacy magnitude");
+    require_close(
+        nerdss::core::MathEngine::PlanarDistanceXY(
+            { 1.0, -2.0, 3.0 }, { -3.0, 4.0, -5.0 }),
+        std::sqrt(52.0),
+        "facade planar coordinate distance");
+    require_close(
+        nerdss::core::MathEngine::DistanceToSphereSurface({ 3.0, 4.0, 12.0 }, 10.0),
+        3.0,
+        "facade sphere-surface distance");
+    require_close(
+        nerdss::core::MathEngine::DistanceToPlaneZ({ 3.0, 4.0, 12.0 }, 15.0),
+        3.0,
+        "facade z-plane distance");
     require_true(
         nerdss::core::MathEngine::HaveEqualRoundedMagnitudes(
             { 3.0, 4.0, 0.0 }, { 0.0, 5.0, 0.0 }),

@@ -49,6 +49,33 @@ public:
     return coordinate.get_magnitude();
   }
 
+  static Scalar SquaredCoordinateDistance(Coordinate3 first,
+                                          Coordinate3 second) {
+    const Scalar dx { first.x - second.x };
+    const Scalar dy { first.y - second.y };
+    const Scalar dz { first.z - second.z };
+    return dx * dx + dy * dy + dz * dz;
+  }
+
+  static Scalar CoordinateDistance(Coordinate3 first, Coordinate3 second) {
+    return std::sqrt(SquaredCoordinateDistance(first, second));
+  }
+
+  static Scalar PlanarDistanceXY(Coordinate3 first, Coordinate3 second) {
+    const Scalar dx { first.x - second.x };
+    const Scalar dy { first.y - second.y };
+    return std::sqrt(dx * dx + dy * dy);
+  }
+
+  static Scalar DistanceToSphereSurface(Coordinate3 coordinate,
+                                        Scalar sphere_radius) {
+    return std::abs(sphere_radius - Magnitude(coordinate));
+  }
+
+  static Scalar DistanceToPlaneZ(Coordinate3 coordinate, Scalar plane_z) {
+    return std::abs(coordinate.z - plane_z);
+  }
+
   static bool HaveEqualRoundedMagnitudes(Vector3 vector1, Vector3 vector2) {
     vector1.calc_magnitude();
     vector2.calc_magnitude();
@@ -250,18 +277,14 @@ public:
     const Scalar y1 { (a1 * x1 - a11) / a3 };
     const Scalar z1 { -(a2 * x1 - a22) / a3 };
     const Scalar distance1 {
-        std::sqrt(std::pow(x1 - interface2.x, 2.0)
-                  + std::pow(y1 - interface2.y, 2.0)
-                  + std::pow(z1 - interface2.z, 2.0)) };
+        CoordinateDistance({ x1, y1, z1 }, interface2) };
 
     const Scalar x2 {
         0.5 / quadratic_a * (-quadratic_b - sqrt_discriminant) };
     const Scalar y2 { (a1 * x2 - a11) / a3 };
     const Scalar z2 { -(a2 * x2 - a22) / a3 };
     const Scalar distance2 {
-        std::sqrt(std::pow(x2 - interface2.x, 2.0)
-                  + std::pow(y2 - interface2.y, 2.0)
-                  + std::pow(z2 - interface2.z, 2.0)) };
+        CoordinateDistance({ x2, y2, z2 }, interface2) };
 
     if ((binding_radius < total_arc && distance1 < distance2)
         || (binding_radius >= total_arc && distance1 > distance2)) {
@@ -289,10 +312,7 @@ public:
     Vector3 k;
     Vector3 v;
 
-    if (std::sqrt(std::pow(center.x - new_center.x, 2.0)
-                  + std::pow(center.y - new_center.y, 2.0)
-                  + std::pow(center.z - new_center.z, 2.0))
-        < 1.0e-8) {
+    if (CoordinateDistance(center, new_center) < 1.0e-8) {
       i = Vector3 { center.x, center.y, center.z };
       i.normalize();
       v = Vector3 { 0.0, 0.0, 1.0 };
@@ -334,10 +354,7 @@ public:
     Vector3 k;
     Vector3 v;
 
-    if (std::sqrt(std::pow(center.x - new_center.x, 2.0)
-                  + std::pow(center.y - new_center.y, 2.0)
-                  + std::pow(center.z - new_center.z, 2.0))
-        < 1.0e-8) {
+    if (CoordinateDistance(center, new_center) < 1.0e-8) {
       i = Vector3 { new_center.x, new_center.y, new_center.z };
       i.normalize();
       v = Vector3 { 0.0, 0.0, 1.0 };
