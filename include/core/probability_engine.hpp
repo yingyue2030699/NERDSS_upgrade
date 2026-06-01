@@ -356,6 +356,41 @@ public:
     return std::sqrt(diffusion_total * time) / 50.0;
   }
 
+  static double QuantizeDiffusionFor2DTable(double diffusion_total) {
+    double scaled_diffusion {};
+    if (diffusion_total < 0.0001) {
+      scaled_diffusion = diffusion_total * 100000.0;
+    } else if (diffusion_total < 0.001) {
+      scaled_diffusion = diffusion_total * 10000.0;
+    } else if (diffusion_total < 0.01) {
+      scaled_diffusion = diffusion_total * 1000.0;
+    } else if (diffusion_total < 0.1) {
+      scaled_diffusion = diffusion_total * 100.0;
+    } else {
+      scaled_diffusion = diffusion_total * 100.0;
+    }
+
+    const int rounded_diffusion {
+        static_cast<int>(std::round(scaled_diffusion)) };
+    double quantized_diffusion {};
+    if (diffusion_total < 0.0001) {
+      quantized_diffusion = rounded_diffusion * 0.00001;
+    } else if (diffusion_total < 0.001) {
+      quantized_diffusion = rounded_diffusion * 0.0001;
+    } else if (diffusion_total < 0.01) {
+      quantized_diffusion = rounded_diffusion * 0.001;
+    } else if (diffusion_total < 0.1) {
+      quantized_diffusion = rounded_diffusion * 0.01;
+    } else {
+      quantized_diffusion = rounded_diffusion * 0.01;
+    }
+
+    if (quantized_diffusion < 1.0e-50) {
+      return 0.0;
+    }
+    return quantized_diffusion;
+  }
+
   static std::size_t TableSize2D(double binding_radius, double diffusion_total,
                                  double time, double max_radius) {
     std::size_t count { 0 };
