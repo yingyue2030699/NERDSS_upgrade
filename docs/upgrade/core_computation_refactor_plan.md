@@ -42,7 +42,10 @@ trajectory math, restart semantics, or legacy input/output compatibility.
    arbitrary orthogonal-vector, sign-flip orientation, spherical inner-coordinate
    frame/translation, spherical frame-axis rotation, factorial, Numerical
    Recipes log-gamma, gamma-factorial, and association rotation-angle partition
-   kernels.
+   kernels. The distance-kernel slice adds shared Euclidean, squared Euclidean,
+   planar XY, sphere-surface, and z-plane distance helpers; legacy interface
+   separation and implicit-lipid surface-distance callers now forward through
+   these pure kernels without changing thresholds or cross-list mutation.
 2. Add unit coverage proving the facade delegates to legacy `Coord`, `Vector`,
    and matrix behavior.
 3. Move pure probability functions behind explicit service names while keeping
