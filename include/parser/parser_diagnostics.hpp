@@ -59,6 +59,14 @@ MakeTooManyReactionReactantsDiagnostic(const std::string& reaction,
   return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
 }
 
+inline core::Diagnostic
+MakeUnknownObservableTypeDiagnostic(const std::string& observable_type) {
+  std::ostringstream message;
+  message << "invalid observable type '" << observable_type
+          << "': expected molecule or complex";
+  return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
+}
+
 inline void ExitWithFileOpenDiagnostic(const std::string& path,
                                        const char* role) {
   core::ExitWithDiagnostic(MakeFileOpenDiagnostic(path, role));
@@ -86,6 +94,12 @@ inline void ExitWithTooManyReactionReactantsDiagnostic(
     const std::string& reaction, std::size_t reactant_count) {
   core::ExitWithDiagnostic(
       MakeTooManyReactionReactantsDiagnostic(reaction, reactant_count));
+}
+
+inline void ExitWithUnknownObservableTypeDiagnostic(
+    const std::string& observable_type) {
+  core::ExitWithDiagnostic(
+      MakeUnknownObservableTypeDiagnostic(observable_type));
 }
 
 } // namespace parser
