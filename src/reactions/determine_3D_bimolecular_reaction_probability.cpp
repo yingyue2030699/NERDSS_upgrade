@@ -80,20 +80,19 @@ void determine_3D_bimolecular_reaction_probability(int simItr, int rxnIndex, int
             /*If one particle (lipid) is bound in the membrane, reaction prob
             is half due to flux across only top half of particle.
             */
-            double kdiff { 4 * M_PI * biMolData.Dtot * forwardRxns[rxnIndex].bindRadius };
             const bool has_surface_reactant {
                 complexList[biMolData.com1Index].OnSurface
                 || complexList[biMolData.com2Index].OnSurface };
             const bool has_fiber_reactant {
                 complexList[biMolData.com1Index].onFiber
                 || complexList[biMolData.com2Index].onFiber };
-            double kact { nerdss::core::ProbabilityEngine::BimolecularAssociationRate3D(
-                forwardRxns[rxnIndex].rateList[rateIndex].rate,
-                forwardRxns[rxnIndex].isSymmetric, has_surface_reactant,
-                has_fiber_reactant) };
-
-            double fact { 1.0 + kact / kdiff };
-            double alpha { fact * sqrt(biMolData.Dtot) / forwardRxns[rxnIndex].bindRadius };
+            const auto association_parameters {
+                nerdss::core::ProbabilityEngine::AssociationParametersFor3D(
+                    biMolData.Dtot, forwardRxns[rxnIndex].bindRadius,
+                    forwardRxns[rxnIndex].rateList[rateIndex].rate,
+                    forwardRxns[rxnIndex].isSymmetric, has_surface_reactant,
+                    has_fiber_reactant) };
+            const double alpha { association_parameters.alpha };
 
             /*Check whether this pair was previously in reaction zone and
             therefore if reweighting should apply.
@@ -156,7 +155,10 @@ void determine_3D_bimolecular_reaction_probability(int simItr, int rxnIndex, int
                 s = moleculeList[proA].prevlist.size();
               }
             }
-            rxnProb = passocF(R1, params.timeStep, biMolData.Dtot, forwardRxns[rxnIndex].bindRadius, alpha, kact / (kact + kdiff));
+            rxnProb = passocF(
+                R1, params.timeStep, biMolData.Dtot,
+                forwardRxns[rxnIndex].bindRadius, alpha,
+                association_parameters.probability_coefficient);
             if (rxnProb > 1.000001) {
                 std::cerr << "WARNING: prob of reaction is: " << rxnProb << " > 1. Avoid this using a smaller time step." << std::endl;
                 //exit(1);

@@ -669,6 +669,37 @@ void test_probability_engine_facade()
             5.0, false, true, true),
         5.0,
         "3D association-rate helper should preserve fiber exception to surface doubling");
+    const double expected_pi { 3.141592653589793238462643383279502884 };
+    require_close(
+        nerdss::core::ProbabilityEngine::DiffusionLimitedAssociationRate3D(
+            1.5, 0.8),
+        4.0 * expected_pi * 1.5 * 0.8,
+        "3D diffusion-limited association-rate helper should preserve legacy kdiff");
+    const auto association_parameters =
+        nerdss::core::ProbabilityEngine::AssociationParametersFor3D(
+            1.5, 0.8, 2.0, false, true, false);
+    const double expected_kdiff { 4.0 * expected_pi * 1.5 * 0.8 };
+    const double expected_kact { 4.0 };
+    require_close(
+        association_parameters.diffusion_limited_rate, expected_kdiff,
+        "3D association parameter helper should expose kdiff");
+    require_close(
+        association_parameters.intrinsic_rate, expected_kact,
+        "3D association parameter helper should expose surface-scaled kact");
+    require_close(
+        association_parameters.alpha,
+        (1.0 + expected_kact / expected_kdiff) * std::sqrt(1.5) / 0.8,
+        "3D association parameter helper should preserve alpha formula");
+    require_close(
+        association_parameters.probability_coefficient,
+        expected_kact / (expected_kact + expected_kdiff),
+        "3D association parameter helper should preserve passoc coefficient");
+    const auto fiber_parameters =
+        nerdss::core::ProbabilityEngine::AssociationParametersFor3D(
+            1.5, 0.8, 2.0, true, true, true);
+    require_close(
+        fiber_parameters.intrinsic_rate, 4.0,
+        "3D association parameter helper should preserve symmetric fiber scaling");
     require_close(
         nerdss::core::ProbabilityEngine::SurfaceAssociationRate3DTo2D(7.0),
         14.0,
