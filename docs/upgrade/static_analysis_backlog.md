@@ -26,16 +26,17 @@ the fix is limited to build configuration or documentation.
   `Parameters::bondedComplexWrite` declaration. Coordinate with that branch
   rather than duplicating source/header fixes in this tooling-only PR.
 
-### P2: clang-tidy is not available in the local validation environment
+### Resolved 2026-06-01: local clang-tidy discovery
 
-- Reproduction: `tools/run_static_analysis.sh src/math`
-- Failure: `clang-tidy was not found on PATH.`
-- Impact:
-  the focused static-analysis runner is present, but local findings cannot be
-  generated until clang-tidy is installed.
-- Suggested next step:
-  install clang-tidy in the developer/CI image, then run:
-  `tools/run_static_analysis.sh src/math src/parser EXEs`
+- Reproduction: `tools/run_static_analysis.sh EXEs/nerdss.cpp`
+- Previous failure: `clang-tidy was not found on PATH.`
+- Resolution:
+  `tools/run_static_analysis.sh` now honors `CLANG_TIDY_BIN`, checks common
+  Homebrew LLVM install locations, and passes the active macOS SDK/libc++ paths
+  to clang-tidy.
+- Remaining work:
+  run focused static-analysis cleanup slices over `src/math`, `src/parser`, and
+  `EXEs` to reduce the existing warning backlog.
 
 ### P3: CMake 4.3 warns about compatibility policy floor
 
