@@ -356,6 +356,26 @@ public:
     return std::sqrt(diffusion_total * time) / 50.0;
   }
 
+  static double RotationalDiffusionDisplacement(double rotational_diffusion_z,
+                                                double time,
+                                                double moment_arm_squared,
+                                                int dimensions) {
+    const double dimension_count { static_cast<double>(dimensions) };
+    const double angular_factor { 2.0 * (dimension_count - 1.0) };
+    const double cosine_term {
+        std::cos(std::sqrt(angular_factor * rotational_diffusion_z * time)) };
+    return 2.0 * moment_arm_squared * (1.0 - cosine_term);
+  }
+
+  static double RotationalDiffusionContribution(double rotational_diffusion_z,
+                                                double time,
+                                                double moment_arm_squared,
+                                                int dimensions) {
+    return RotationalDiffusionDisplacement(
+               rotational_diffusion_z, time, moment_arm_squared, dimensions)
+           / (2.0 * static_cast<double>(dimensions) * time);
+  }
+
   static double ReactionSearchRadius1D(double diffusion_total, double time,
                                        double binding_radius) {
     return 4.0 * std::sqrt(2.0 * diffusion_total * time) + binding_radius;

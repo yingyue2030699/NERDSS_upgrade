@@ -10,18 +10,10 @@ void determine_2D_implicitlipid_reaction_probability(int simItr, int rxnIndex, i
     const std::vector<BackRxn>& backRxns, std::vector<double>& IL2DbindingVec, std::vector<double>& IL2DUnbindingVec, Membrane& membraneObject, const int& relStateIndex)
 {
     // TRACE();
-    double Dr1 {};
-    {
-        double cf { cos(sqrt(2.0 * complexList[biMolData.com1Index].Dr.z * params.timeStep)) };
-        Dr1 = 2.0 * biMolData.magMol1 * (1.0 - cf);
-    }
-    double Dr2 {};
-    {
-        double cf = cos(sqrt(2.0 * complexList[biMolData.com2Index].Dr.z * params.timeStep));
-        Dr2 = 2.0 * biMolData.magMol2 * (1.0 - cf);
-    }
-
-    biMolData.Dtot += (Dr1 + Dr2) / (4.0 * params.timeStep); // add in contributions from rotation
+    biMolData.Dtot += nerdss::core::ProbabilityEngine::RotationalDiffusionContribution(
+        complexList[biMolData.com1Index].Dr.z, params.timeStep, biMolData.magMol1, 2);
+    biMolData.Dtot += nerdss::core::ProbabilityEngine::RotationalDiffusionContribution(
+        complexList[biMolData.com2Index].Dr.z, params.timeStep, biMolData.magMol2, 2);
 
     // Only allow 2D diffusion at certain intervals to avoid generating too many 2D tables.
     biMolData.Dtot = nerdss::core::ProbabilityEngine::QuantizeDiffusionFor2DTable(biMolData.Dtot);

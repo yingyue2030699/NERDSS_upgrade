@@ -62,7 +62,10 @@ trajectory math, restart semantics, or legacy input/output compatibility.
    one table quantization rule. Reaction search-radius/RMax arithmetic for
    1D, 2D, and 3D candidate checks is also exposed through pure
    `ProbabilityEngine` helpers while legacy reaction paths keep forwarding
-   through the same formulas.
+   through the same formulas. The rotational diffusion contribution used by
+   2D/3D bimolecular and implicit-lipid probability calculations is now a pure
+   `ProbabilityEngine` helper as well, preserving the legacy cosine
+   displacement relation and `2 * dimension * dt` denominator.
 4. Separate mutable topology operations from probability calculations.
 5. Introduce backend-neutral data-shape documentation for future GPU work:
    structure-of-arrays candidates, batchable kernels, and RNG constraints.
