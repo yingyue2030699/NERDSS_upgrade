@@ -30,8 +30,9 @@ void determine_2D_implicitlipid_reaction_probability(int simItr, int rxnIndex, i
             bool probValExists { false };
             int probMatrixIndex { 0 };
 
-            // declare intrinsic binding rate of 2D->2D case.
-            double ktemp { forwardRxns[rxnIndex].rateList[rateIndex].rate / forwardRxns[rxnIndex].length3Dto2D };
+            double ktemp { nerdss::core::ProbabilityEngine::BimolecularAssociationRate2D(
+                forwardRxns[rxnIndex].rateList[rateIndex].rate,
+                forwardRxns[rxnIndex].length3Dto2D, false) };
             //int backIndex = forwardRxns[rxnIndex].conjBackRxnIndex;
             double kb { 0 };
 

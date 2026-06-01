@@ -1,4 +1,5 @@
 #include "boundary_conditions/reflect_functions.hpp"
+#include "core/probability_engine.hpp"
 #include "io/io.hpp"
 #include "math/constants.hpp"
 #include "math/rand_gsl.hpp"
@@ -141,8 +142,8 @@ void check_dissociation_implicitlipid(long long int simItr, const Parameters& pa
 
                 Dtot = 1.0 / 2.0 * (D2_x + DIL_x) + 1.0 / 2.0 * (D2_y + DIL_y);
 
-                // declare intrinsic binding rate of 2D->2D case.
-                double ktemp { ka / forwardRxns[kfIndex].length3Dto2D };
+                double ktemp { nerdss::core::ProbabilityEngine::BimolecularAssociationRate2D(
+                    ka, forwardRxns[kfIndex].length3Dto2D, false) };
 
                 paramsIL params2D {};
                 params2D.R2D = 0.0;

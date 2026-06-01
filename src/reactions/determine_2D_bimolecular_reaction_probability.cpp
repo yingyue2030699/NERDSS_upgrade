@@ -41,9 +41,10 @@ void determine_2D_bimolecular_reaction_probability(int simItr, int rxnIndex, int
             // get_distance, because ncross is > 0 iff R1 < RMax
             /*Evaluate probability of reaction, with reweighting*/
             // Generate 2D tables unless they were not before
-            double ktemp { forwardRxns[rxnIndex].rateList[rateIndex].rate / forwardRxns[rxnIndex].length3Dto2D };
-            if (forwardRxns[rxnIndex].isSymmetric == true)
-                ktemp *= 2.0; // for A(a)+A(a)->A(a!).A(a!) case
+            double ktemp { nerdss::core::ProbabilityEngine::BimolecularAssociationRate2D(
+                forwardRxns[rxnIndex].rateList[rateIndex].rate,
+                forwardRxns[rxnIndex].length3Dto2D,
+                forwardRxns[rxnIndex].isSymmetric) };
 
             for (int l = 0; l < DDTableIndex; ++l) {
                 if (std::abs(tableIDs[l] - ktemp) < 1e-8 && std::abs(tableIDs[params.max2DRxns + l] - biMolData.Dtot) < 1E-4) {
