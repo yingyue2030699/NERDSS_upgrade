@@ -1,3 +1,4 @@
+#include "parser/parser_diagnostics.hpp"
 #include "parser/parser_functions.hpp"
 
 void check_for_valid_states( size_t parsedMolIndex, ParsedMol& targMol, ParsedRxn& parsedRxn, const std::vector<MolTemplate>& molTemplateList)
@@ -9,8 +10,8 @@ void check_for_valid_states( size_t parsedMolIndex, ParsedMol& targMol, ParsedRx
         [&](const MolTemplate& oneTemp) -> bool { return oneTemp.molName == targMol.molName; });
 
     if (tempNameItr == molTemplateList.end()) {
-        std::cerr << "Error, target molecule's type cannot be found in list of templates.";
-        exit(1);
+        nerdss::parser::ExitWithUnknownReactionMoleculeTemplateDiagnostic(
+            targMol.molName);
     }
 
     targMol.molTypeIndex = static_cast<int>(tempNameItr->molTypeIndex);
@@ -22,9 +23,8 @@ void check_for_valid_states( size_t parsedMolIndex, ParsedMol& targMol, ParsedRx
             [&](const Interface& oneTempIface) -> bool { return oneTempIface.name == ifaceItr->ifaceName; });
 
         if (tempIfaceItr == tempNameItr->interfaceList.end()) {
-            std::cout << ifaceItr->ifaceName << " is not a valid interface for molecule template "
-                      << tempNameItr->molName << '\n';
-            exit(120);
+            nerdss::parser::ExitWithUnknownReactionInterfaceDiagnostic(
+                ifaceItr->ifaceName, tempNameItr->molName);
         }
 
         auto tempStateItr = tempIfaceItr->stateList.begin();
@@ -43,18 +43,19 @@ void check_for_valid_states( size_t parsedMolIndex, ParsedMol& targMol, ParsedRx
 
             if (tempStateItr == tempIfaceItr->stateList.end()) {
                 // if it doesn't exist, exit
-                std::cout << ifaceItr->state << " is not a valid state for interface "
-                          << write_mol_iface(targMol.molName, ifaceItr->ifaceName) << '\n';
-                exit(1);
+                nerdss::parser::ExitWithUnknownReactionInterfaceStateDiagnostic(
+                    std::string(1, ifaceItr->state), ifaceItr->ifaceName,
+                    targMol.molName);
             }
 
             // if the state does exist, look for a state change
             if (parsedRxn.rxnType != ReactionType::destruction) {
                 std::cout << "Found state, looking for state change..." << '\n';
                 check_for_state_change(*ifaceItr, targMol, parsedRxn);
-            } else
+            } else {
                 std::cout << "Found state for reactant " << write_mol_iface(targMol.molName, ifaceItr->ifaceName)
                           << '\n';
+            }
         }
     }
 }
