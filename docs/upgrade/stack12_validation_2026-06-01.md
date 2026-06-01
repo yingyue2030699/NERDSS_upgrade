@@ -36,6 +36,7 @@ branches:
   smoke, unit configure/build/CTest, and regression passed.
 - `python3 -B tools/run_upgrade_validation.py --skip-build --binary bin/nerdss --skip-smoke --skip-unit --skip-regression --benchmarks --benchmark-case small_homotrimer --output-dir /tmp/nerdss-stack12-small-benchmark`:
   passed.
+- `bash -n tools/run_static_analysis.sh`: passed.
 
 The first pushed `codex/validation-integration-stack-12` CI run completed
 successfully: unit coverage and the full build/unit/smoke regression job both
@@ -56,5 +57,10 @@ action releases.
   setup file.
 - `tools/run_static_analysis.sh src/reactions/check_compartment_reaction.cpp src/reactions/determine_1D_bimolecular_reaction_probability.cpp src/reactions/determine_2D_bimolecular_reaction_probability.cpp src/reactions/determine_3D_bimolecular_reaction_probability.cpp src/reactions/determine_3D_implicitlipid_reaction_probability.cpp`:
   exited 0; reported existing legacy warnings in the reaction entry points.
-- Running two static-analysis script invocations concurrently is unsafe because
-  they share `build/static-analysis`; sequential runs passed.
+- The static-analysis helper now uses an invocation-specific CMake build
+  directory by default while preserving `NERDSS_STATIC_ANALYSIS_BUILD_DIR` for
+  callers that want a persistent compile database.
+- Parallel smoke of the static-analysis helper passed with independent
+  invocations over `src/reactions/determine_3D_implicitlipid_reaction_probability.cpp`
+  and `src/system_setup/generate_coordinates.cpp`; both exited 0 and reported
+  only the existing legacy warnings above.

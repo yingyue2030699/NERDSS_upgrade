@@ -18,7 +18,13 @@ if [ -z "$clang_tidy_bin" ] || [ ! -x "$clang_tidy_bin" ]; then
   exit 127
 fi
 
-build_dir="${NERDSS_STATIC_ANALYSIS_BUILD_DIR:-build/static-analysis}"
+cleanup_paths=()
+if [ -n "${NERDSS_STATIC_ANALYSIS_BUILD_DIR:-}" ]; then
+  build_dir="$NERDSS_STATIC_ANALYSIS_BUILD_DIR"
+else
+  build_dir="$(mktemp -d "${TMPDIR:-/tmp}/nerdss-static-analysis-build.XXXXXX")"
+  cleanup_paths+=("$build_dir")
+fi
 default_checks="clang-analyzer-*,bugprone-*,performance-*,portability-*"
 
 if [ "$#" -eq 0 ]; then
@@ -32,7 +38,17 @@ cmake \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
 tmp_sources="$(mktemp "${TMPDIR:-/tmp}/nerdss-clang-tidy.XXXXXX")"
-trap 'rm -f "$tmp_sources"' EXIT
+cleanup_paths+=("$tmp_sources")
+cleanup() {
+  for path in "${cleanup_paths[@]}"; do
+    if [ -d "$path" ]; then
+      rm -rf "$path"
+    else
+      rm -f "$path"
+    fi
+  done
+}
+trap cleanup EXIT
 
 for path in "$@"; do
   if [ -d "$path" ]; then
