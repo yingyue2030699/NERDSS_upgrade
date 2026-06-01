@@ -84,6 +84,8 @@ layers should proceed in this order:
 
 1. Parser and CLI errors: no hot-loop cost.
 2. File I/O and restart errors: include path and operation.
+   The serial restart file-open path now uses structured file I/O diagnostics
+   and is covered by the smoke-runner CLI checks.
 3. Setup invariants: include molecule/template/reaction identifiers.
 4. Core-loop diagnostics: compile-time gated trace scopes with zero work when
    disabled.

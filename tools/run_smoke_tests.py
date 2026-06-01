@@ -363,15 +363,22 @@ def run_cli_error_checks(executable: Path) -> List[CommandResult]:
         checks.append(
             run_command([str(executable), "-f", "smoke.inp", "-s"], check_dir, timeout=10.0)
         )
+        checks.append(
+            run_command(
+                [str(executable), "--restart", "missing_restart.dat", "--seed", "1"],
+                check_dir,
+                timeout=10.0,
+            )
+        )
     finally:
         shutil.rmtree(check_dir, ignore_errors=True)
     return checks
 
 
 def cli_error_checks_passed(checks: List[CommandResult]) -> bool:
-    if len(checks) != 3:
+    if len(checks) != 4:
         return False
-    help_check, missing_file, missing_seed = checks
+    help_check, missing_file, missing_seed, missing_restart = checks
     return (
         help_check.exit_code == 0
         and "Usage:" in help_check.stdout
@@ -379,6 +386,9 @@ def cli_error_checks_passed(checks: List[CommandResult]) -> bool:
         and "missing value for -f" in missing_file.stderr
         and missing_seed.exit_code == 2
         and "missing value for -s" in missing_seed.stderr
+        and missing_restart.exit_code == 9
+        and "ERROR [file_io]" in missing_restart.stderr
+        and "cannot open restart file 'missing_restart.dat'" in missing_restart.stderr
     )
 
 
