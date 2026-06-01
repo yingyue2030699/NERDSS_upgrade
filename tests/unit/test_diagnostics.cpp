@@ -215,6 +215,29 @@ void test_setup_implicit_lipid_ordering_diagnostic() {
                    "implicit lipid ordering rendering includes exit code");
 }
 
+void test_setup_implicit_molecule_interface_count_diagnostic() {
+  const nerdss::core::Diagnostic diagnostic =
+      nerdss::setup::MakeImplicitMoleculeInterfaceCountDiagnostic(
+          "Membrane", "site~A,tail~B");
+  const std::string formatted = nerdss::core::FormatDiagnostic(diagnostic);
+
+  require_true(diagnostic.category == nerdss::error::ErrorCategory::input,
+               "implicit molecule interface count should use input category");
+  require_true(diagnostic.exit_code == nerdss::error::ExitCode::input,
+               "implicit molecule interface count should use input exit code");
+  require_contains(
+      diagnostic.message,
+      "invalid implicit molecule starting state 'site~A,tail~B' for molecule "
+      "'Membrane': implicit molecules can only have one interface",
+      "implicit molecule interface count message includes state context");
+  require_contains(formatted, "ERROR [input]",
+                   "implicit molecule interface count rendering includes "
+                   "category");
+  require_contains(formatted, "exit_code=input(2)",
+                   "implicit molecule interface count rendering includes exit "
+                   "code");
+}
+
 void test_setup_sphere_compartment_conflict_diagnostic() {
   const nerdss::core::Diagnostic diagnostic =
       nerdss::setup::MakeSphereCompartmentConflictDiagnostic();
@@ -389,6 +412,7 @@ int main() {
   test_parser_invalid_molecule_count_diagnostic();
   test_setup_invalid_state_character_diagnostic();
   test_setup_implicit_lipid_ordering_diagnostic();
+  test_setup_implicit_molecule_interface_count_diagnostic();
   test_setup_sphere_compartment_conflict_diagnostic();
   test_setup_compartment_water_box_clearance_diagnostic();
   test_parser_too_many_reaction_reactants_diagnostic();

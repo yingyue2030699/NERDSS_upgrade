@@ -42,6 +42,20 @@ inline core::Diagnostic MakeImplicitLipidOrderingDiagnostic(
   return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
 }
 
+inline core::Diagnostic MakeImplicitMoleculeInterfaceCountDiagnostic(
+    const std::string& molecule_name, const std::string& state_expression) {
+  std::ostringstream message;
+  message << "invalid implicit molecule starting state";
+  if (!state_expression.empty()) {
+    message << " '" << state_expression << "'";
+  }
+  if (!molecule_name.empty()) {
+    message << " for molecule '" << molecule_name << "'";
+  }
+  message << ": implicit molecules can only have one interface";
+  return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
+}
+
 inline core::Diagnostic MakeSphereCompartmentConflictDiagnostic() {
   return core::MakeDiagnostic(
       error::ErrorCategory::input,
@@ -73,6 +87,12 @@ inline void ExitWithImplicitLipidOrderingDiagnostic(
     const std::string& molecule_name, int molecule_type_index) {
   core::ExitWithDiagnostic(MakeImplicitLipidOrderingDiagnostic(
       molecule_name, molecule_type_index));
+}
+
+inline void ExitWithImplicitMoleculeInterfaceCountDiagnostic(
+    const std::string& molecule_name, const std::string& state_expression) {
+  core::ExitWithDiagnostic(MakeImplicitMoleculeInterfaceCountDiagnostic(
+      molecule_name, state_expression));
 }
 
 inline void ExitWithSphereCompartmentConflictDiagnostic() {

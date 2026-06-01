@@ -193,6 +193,14 @@ expression contains a character outside the accepted alphanumeric token,
 includes the offending character, state expression, and molecule name, and
 exits with `ExitCode::input`.
 
+Implicit molecule state setup also uses
+`nerdss::setup::MakeImplicitMoleculeInterfaceCountDiagnostic` and
+`ExitWithImplicitMoleculeInterfaceCountDiagnostic` when an implicit molecule
+starting state lists more than one interface. This migrates the previous
+direct `std::cerr` plus `exit(1)` path in `initialize_states` to the shared
+structured formatter, includes the molecule name and state expression, and
+exits with `ExitCode::input`.
+
 ## Parser Reaction Semantic Diagnostics
 
 The reaction parser now uses

@@ -41,8 +41,7 @@ void initialize_states(std::vector<Molecule>& moleculeList, std::vector<MolTempl
                                 break;
                             }
                             case ',': {
-                                std::cerr << "ERROR: Implicit molecule can only have one interface. Exiting...\n.";
-                                exit(1);
+                                nerdss::setup::ExitWithImplicitMoleculeInterfaceCountDiagnostic(tmpMol.molName, oneLine);
                                 break;
                             }
                             default: {
