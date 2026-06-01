@@ -41,7 +41,8 @@ trajectory math, restart semantics, or legacy input/output compatibility.
    spherical association-position, signed projected-angle, angular-displacement,
    arbitrary orthogonal-vector, sign-flip orientation, spherical inner-coordinate
    frame/translation, spherical frame-axis rotation, factorial, Numerical
-   Recipes log-gamma, and gamma-factorial kernels.
+   Recipes log-gamma, gamma-factorial, and association rotation-angle partition
+   kernels.
 2. Add unit coverage proving the facade delegates to legacy `Coord`, `Vector`,
    and matrix behavior.
 3. Move pure probability functions behind explicit service names while keeping
