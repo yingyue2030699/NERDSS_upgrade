@@ -162,6 +162,15 @@ The shared parser boolean reader now uses
 `exit(1)` path to a structured `input` diagnostic and exits with
 `ExitCode::input`.
 
+## Parser Numeric Array Diagnostics
+
+The shared numeric array reader now uses
+`nerdss::parser::MakeInvalidNumericArrayTokenDiagnostic` and
+`ExitWithInvalidNumericArrayTokenDiagnostic` when a value cannot be parsed as a
+number and is not one of the legacy aliases `pi`, `m_pi`, or `nan`. This
+replaces the previous ad hoc thrown string path with a structured `input`
+diagnostic while preserving the accepted token set and `ExitCode::input`.
+
 ## Setup State Diagnostics
 
 The state setup path now uses
@@ -215,7 +224,7 @@ of exiting, matching the previous optional-artifact behavior.
   the migrated too-many-reactants check,
   `src/parser/parse_states.cpp`,
   `src/parser/parse_molecule_bngl.cpp`,
-  `src/parser/check_for_valid_states.cpp`, `src/parser/parse_input_array.cpp`,
+  `src/parser/check_for_valid_states.cpp`,
   `src/parser/parse_input_for_a_new_simulation.cpp`,
   `src/parser/parse_input_for_a_restart_simulation.cpp`, and
   `src/parser/parse_input_for_add_file.cpp`. Other `parse_molFile` semantic
