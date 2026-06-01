@@ -1,3 +1,4 @@
+#include "core/probability_engine.hpp"
 #include "math/rand_gsl.hpp"
 #include "reactions/topology/topology_operations.hpp"
 #include "reactions/unimolecular/unimolecular_reactions.hpp"
@@ -149,14 +150,9 @@ bool break_interaction(long long int iter, size_t relIface1, size_t relIface2, M
             }
         }
         // std::cout << " Performing Dissociation on a CLOSED LOOP, not creating a new complex ! " << std::endl;
-        double c0_nm3 = 0.602; // standard state 1M in units of /nm^3
-        double coop = conjForwardRxn.loopCoopFactor;
-        double rateClose = largestRate * c0_nm3 * coop;
-        // rateClose will be in units of /us (due to ka units), so no need for 1E-6 factor, since timeStep has
-        // units of us
-
-        double poisson = timeStep * rateClose;
-        double correctionRatio{(1 - exp(-poisson)) / poisson};
+        double correctionRatio{
+            nerdss::core::ProbabilityEngine::LoopDissociationCorrectionRatio(
+                timeStep, largestRate, conjForwardRxn.loopCoopFactor)};
 		
 	    //std::cout <<"Correction Ratio: "<<correctionRatio<<std::endl;
 
