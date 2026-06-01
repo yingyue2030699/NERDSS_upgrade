@@ -1,4 +1,5 @@
 #include "boundary_conditions/reflect_functions.hpp"
+#include "core/probability_engine.hpp"
 #include "io/io.hpp"
 #include "math/constants.hpp"
 #include "math/rand_gsl.hpp"
@@ -52,7 +53,8 @@ void check_dissociation(unsigned int simItr, const Parameters& params, SimulVolu
                 */
 
                 double kb { backRxns[mu].rateList[rateItr].rate }; // <- kr[mu]
-                double prob = 1 - exp(-kb * params.timeStep * Constants::usToSeconds);
+                double prob = nerdss::core::ProbabilityEngine::PoissonEventProbability(
+                    kb, params.timeStep, Constants::usToSeconds);
 
                 // make sure that the time step is resonable according to the prob of reaction
                 if (prob > 1.0) {

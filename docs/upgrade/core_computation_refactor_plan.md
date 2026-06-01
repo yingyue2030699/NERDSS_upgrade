@@ -76,7 +76,11 @@ trajectory math, restart semantics, or legacy input/output compatibility.
    table allocation, and warning behavior. The complex displacement guard now
    also forwards the pure Einstein displacement and scaled-threshold arithmetic
    through `ProbabilityEngine`, keeping coordinate mutation and cancellation
-   decisions in the legacy association path.
+   decisions in the legacy association path. The Poisson event-probability
+   helper now centralizes `1 - exp(-lambda)` for unimolecular, dissociation,
+   state-change, and loop-closure probability calculations while preserving
+   RNG draws, counters, topology mutation, warnings, and cancellation in the
+   legacy reaction callers.
 4. Separate mutable topology operations from probability calculations.
 5. Introduce backend-neutral data-shape documentation for future GPU work:
    structure-of-arrays candidates, batchable kernels, and RNG constraints.

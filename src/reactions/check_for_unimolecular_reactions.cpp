@@ -1,3 +1,4 @@
+#include "core/probability_engine.hpp"
 #include "math/constants.hpp"
 //#include "math/math_functions.hpp"
 #include "math/rand_gsl.hpp"
@@ -67,8 +68,9 @@ void check_for_unimolecular_reactions(
                         (!isStateChangeBackRxn)
                             ? forwardRxns[rxnIndex].rateList[rateIndex].rate
                             : backRxns[rxnIndex].rateList[rateIndex].rate};
-                    double prob{1 - exp(-rate * params.timeStep *
-                                        Constants::usToSeconds)};
+                    double prob{
+                        nerdss::core::ProbabilityEngine::PoissonEventProbability(
+                            rate, params.timeStep, Constants::usToSeconds)};
 
                     // make sure that the time step is resonable according to
                     // the prob of reaction
@@ -178,8 +180,9 @@ void check_for_unimolecular_reactions(
                       (!isStateChangeBackRxn)
                           ? forwardRxns[rxnIndex].rateList[rateIndex].rate
                           : backRxns[rxnIndex].rateList[rateIndex].rate};
-                  double prob{1 - exp(-rate * params.timeStep *
-                                      Constants::usToSeconds)};
+                  double prob{
+                      nerdss::core::ProbabilityEngine::PoissonEventProbability(
+                          rate, params.timeStep, Constants::usToSeconds)};
 
                   // make sure that the time step is resonable according to the
                   // prob of reaction
@@ -288,8 +291,10 @@ void check_for_unimolecular_reactions(
                       .numberOfFreeLipidsEachState[tmpImplicitLipidStateIndex];
 
               for (int tmpItr = 0; tmpItr < tmpOneStateLipid; tmpItr++) {
-                double prob{1 - exp(-oneRxn.rateList[0].rate * params.timeStep *
-                                    Constants::usToSeconds)};
+                double prob{
+                    nerdss::core::ProbabilityEngine::PoissonEventProbability(
+                        oneRxn.rateList[0].rate, params.timeStep,
+                        Constants::usToSeconds)};
 
                 // make sure that the time step is resonable according to the
                 // prob of reaction
@@ -345,7 +350,9 @@ void check_for_unimolecular_reactions(
                 // double rNum { 1.0 * rand_gsl() };
                 long double lambda{oneRxn.rateList.at(0).rate *
                                    params.timeStep * Constants::usToSeconds};
-                long double prob{1 - exp(-lambda)};
+                long double prob{
+                    nerdss::core::ProbabilityEngine::PoissonEventProbability(
+                        lambda)};
 
                 // make sure that the time step is resonable according to the
                 // prob of reaction
@@ -399,8 +406,9 @@ void check_for_unimolecular_reactions(
             isReactant(moleculeList[molItr],
                        complexList[moleculeList[molItr].myComIndex], oneRxn,
                        moleculeList)) {
-          double prob{1 - exp(-oneRxn.rateList[0].rate * params.timeStep *
-                              Constants::usToSeconds)};
+          double prob{nerdss::core::ProbabilityEngine::PoissonEventProbability(
+              oneRxn.rateList[0].rate, params.timeStep,
+              Constants::usToSeconds)};
 
           // make sure that the time step is resonable according to the prob of
           // reaction
@@ -475,7 +483,8 @@ void check_for_unimolecular_reactions(
           // double rNum { 1.0 * rand_gsl() };
           long double lambda{oneRxn.rateList.at(0).rate * params.timeStep *
                              Constants::usToSeconds};
-          long double prob{1 - exp(-lambda)};
+          long double prob{
+              nerdss::core::ProbabilityEngine::PoissonEventProbability(lambda)};
 
           // make sure that the time step is resonable according to the prob of
           // reaction

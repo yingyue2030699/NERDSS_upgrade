@@ -1,3 +1,4 @@
+#include "core/probability_engine.hpp"
 #include "math/constants.hpp"
 #include "math/rand_gsl.hpp"
 #include "reactions/implicitlipid/implicitlipid_reactions.hpp"
@@ -40,7 +41,8 @@ void check_for_unimolstatechange_reactions(unsigned simItr, Parameters& params, 
                                     if (rxnIndex != -1 && rateIndex != -1) {
                                         double rate { (!isStateChangeBackRxn) ? forwardRxns[rxnIndex].rateList[rateIndex].rate
                                                                               : backRxns[rxnIndex].rateList[rateIndex].rate };
-                                        double prob { 1 - exp(-rate * params.timeStep * Constants::usToSeconds) };
+                                        double prob { nerdss::core::ProbabilityEngine::PoissonEventProbability(
+                                            rate, params.timeStep, Constants::usToSeconds) };
 
                                         // make sure that the time step is resonable according to the prob of reaction
                                         if (prob > 1.000001) {
@@ -124,7 +126,8 @@ void check_for_unimolstatechange_reactions(unsigned simItr, Parameters& params, 
                                 if (rxnIndex != -1 && rateIndex != -1) {
                                     double rate { (!isStateChangeBackRxn) ? forwardRxns[rxnIndex].rateList[rateIndex].rate
                                                                           : backRxns[rxnIndex].rateList[rateIndex].rate };
-                                    double prob { 1 - exp(-rate * params.timeStep * Constants::usToSeconds) };
+                                    double prob { nerdss::core::ProbabilityEngine::PoissonEventProbability(
+                                        rate, params.timeStep, Constants::usToSeconds) };
 
                                     // make sure that the time step is resonable according to the prob of reaction
                                     if (prob > 1.000001) {
