@@ -272,6 +272,223 @@ public:
     return mean_radius * theta;
   }
 
+  static Matrix3 InnerCoordinateFrame(Coordinate3 center,
+                                      Coordinate3 new_center) {
+    Matrix3 frame {};
+    Vector3 i;
+    Vector3 j;
+    Vector3 k;
+    Vector3 v;
+
+    if (std::sqrt(std::pow(center.x - new_center.x, 2.0)
+                  + std::pow(center.y - new_center.y, 2.0)
+                  + std::pow(center.z - new_center.z, 2.0))
+        < 1.0e-8) {
+      i = Vector3 { center.x, center.y, center.z };
+      i.normalize();
+      v = Vector3 { 0.0, 0.0, 1.0 };
+      if (std::abs(std::abs(center.z) - Magnitude(center)) < 1.0e-8) {
+        v = Vector3 { -1.0, 0.0, 0.0 };
+      }
+      j = v.cross(i);
+      k = i.cross(j);
+    } else {
+      i = Vector3 { center.x, center.y, center.z };
+      i.normalize();
+      v = Vector3 { new_center.x, new_center.y, new_center.z };
+      v.normalize();
+      k = i.cross(v);
+      j = k.cross(i);
+    }
+
+    i.normalize();
+    j.normalize();
+    k.normalize();
+
+    frame[0] = i.x;
+    frame[1] = i.y;
+    frame[2] = i.z;
+    frame[3] = j.x;
+    frame[4] = j.y;
+    frame[5] = j.z;
+    frame[6] = k.x;
+    frame[7] = k.y;
+    frame[8] = k.z;
+    return frame;
+  }
+
+  static Matrix3 UpdatedInnerCoordinateFrame(Coordinate3 center,
+                                             Coordinate3 new_center) {
+    Matrix3 frame {};
+    Vector3 i;
+    Vector3 j;
+    Vector3 k;
+    Vector3 v;
+
+    if (std::sqrt(std::pow(center.x - new_center.x, 2.0)
+                  + std::pow(center.y - new_center.y, 2.0)
+                  + std::pow(center.z - new_center.z, 2.0))
+        < 1.0e-8) {
+      i = Vector3 { new_center.x, new_center.y, new_center.z };
+      i.normalize();
+      v = Vector3 { 0.0, 0.0, 1.0 };
+      if (std::abs(std::abs(new_center.z) - Magnitude(new_center))
+          < 1.0e-8) {
+        v = Vector3 { -1.0, 0.0, 0.0 };
+      }
+      j = v.cross(i);
+      k = i.cross(j);
+    } else {
+      Coordinate3 displacement { new_center - center };
+      const Scalar length { Magnitude(displacement) };
+      const Scalar radius { Magnitude(center) };
+      const Scalar new_length {
+          length + length * radius * radius / (radius * radius - length * length) };
+      Coordinate3 reference_displacement { (new_length / length) * displacement };
+      Coordinate3 reference { center + reference_displacement };
+      reference = (radius / Magnitude(reference)) * reference;
+      center = new_center;
+      new_center = reference;
+
+      i = Vector3 { center.x, center.y, center.z };
+      v = Vector3 { new_center.x, new_center.y, new_center.z };
+      k = i.cross(v);
+      j = k.cross(i);
+    }
+
+    i.normalize();
+    j.normalize();
+    k.normalize();
+
+    frame[0] = i.x;
+    frame[1] = i.y;
+    frame[2] = i.z;
+    frame[3] = j.x;
+    frame[4] = j.y;
+    frame[5] = j.z;
+    frame[6] = k.x;
+    frame[7] = k.y;
+    frame[8] = k.z;
+    return frame;
+  }
+
+  static std::array<Scalar, 3> InnerCoordinateCoefficients(
+      Coordinate3 target, Coordinate3 center, Matrix3 frame) {
+    std::array<Scalar, 3> coefficients {};
+
+    Vector3 target_vector { target - center };
+    target_vector.calc_magnitude();
+    if (target_vector.magnitude < 1.0e-8) {
+      return coefficients;
+    }
+
+    Vector3 i { frame[0], frame[1], frame[2] };
+    Vector3 j { frame[3], frame[4], frame[5] };
+    Vector3 k { frame[6], frame[7], frame[8] };
+
+    Scalar alpha {};
+    Scalar beta {};
+    Scalar gamma {};
+    Vector3 normalized_target { target_vector };
+    normalized_target.normalize();
+    if (std::abs(normalized_target.dot(i)) < 1.0e-8) {
+      alpha = 0.0;
+      if (std::abs(normalized_target.dot(j)) < 1.0e-8) {
+        beta = 0.0;
+        gamma = target_vector.magnitude;
+        if (normalized_target.dot(k) < 0.0) {
+          gamma = -gamma;
+        }
+      } else if (std::abs(normalized_target.dot(k)) < 1.0e-8) {
+        gamma = 0.0;
+        beta = target_vector.magnitude;
+        if (normalized_target.dot(j) < 0.0) {
+          beta = -beta;
+        }
+      } else {
+        beta = (target_vector.x * k.y - target_vector.y * k.x)
+               / (j.x * k.y - j.y * k.x);
+        gamma = (target_vector.x * j.y - target_vector.y * j.x)
+                / (k.x * j.y - k.y * j.x);
+      }
+    } else if (std::abs(normalized_target.dot(j)) < 1.0e-8) {
+      beta = 0.0;
+      if (std::abs(normalized_target.dot(i)) < 1.0e-8) {
+        alpha = 0.0;
+        gamma = target_vector.magnitude;
+        if (normalized_target.dot(k) < 0.0) {
+          gamma = -gamma;
+        }
+      } else if (std::abs(normalized_target.dot(k)) < 1.0e-8) {
+        gamma = 0.0;
+        alpha = target_vector.magnitude;
+        if (normalized_target.dot(i) < 0.0) {
+          alpha = -alpha;
+        }
+      } else {
+        alpha = (target_vector.x * k.y - target_vector.y * k.x)
+                / (i.x * k.y - i.y * k.x);
+        gamma = (target_vector.x * i.y - target_vector.y * i.x)
+                / (k.x * i.y - k.y * i.x);
+      }
+    } else if (std::abs(normalized_target.dot(k)) < 1.0e-8) {
+      gamma = 0.0;
+      if (std::abs(normalized_target.dot(i)) < 1.0e-8) {
+        alpha = 0.0;
+        beta = target_vector.magnitude;
+        if (normalized_target.dot(j) < 0.0) {
+          beta = -beta;
+        }
+      } else if (std::abs(normalized_target.dot(j)) < 1.0e-8) {
+        beta = 0.0;
+        alpha = target_vector.magnitude;
+        if (normalized_target.dot(i) < 0.0) {
+          alpha = -alpha;
+        }
+      } else {
+        alpha = (target_vector.x * j.y - target_vector.y * j.x)
+                / (i.x * j.y - i.y * j.x);
+        beta = (target_vector.x * i.y - target_vector.y * i.x)
+               / (j.x * i.y - j.y * i.x);
+      }
+    } else {
+      const Scalar n1 { k.y * target_vector.x - k.x * target_vector.y };
+      const Scalar n2 { i.x * k.y - i.y * k.x };
+      const Scalar n3 { j.x * k.y - j.y * k.x };
+      const Scalar n4 { k.z * target_vector.x - k.x * target_vector.z };
+      const Scalar n5 { i.x * k.z - i.z * k.x };
+      const Scalar n6 { j.x * k.z - j.z * k.x };
+      alpha = (n1 * n6 - n4 * n3) / (n2 * n6 - n5 * n3);
+      beta = (n1 * n6 - n2 * n6 * alpha) / (n3 * n6);
+      gamma = (target_vector.x - alpha * i.x - beta * j.x) / k.x;
+    }
+
+    coefficients[0] = alpha;
+    coefficients[1] = beta;
+    coefficients[2] = gamma;
+    return coefficients;
+  }
+
+  static Coordinate3 TranslateOnSphere(Coordinate3 target, Coordinate3 center,
+                                       Coordinate3 new_center, Matrix3 frame,
+                                       Matrix3 new_frame) {
+    Coordinate3 displacement { new_center - center };
+    if (Magnitude(displacement) < 1.0e-8) {
+      return target;
+    }
+
+    const std::array<Scalar, 3> coefficients {
+        InnerCoordinateCoefficients(target, center, frame) };
+    const Scalar alpha { coefficients[0] };
+    const Scalar beta { coefficients[1] };
+    const Scalar gamma { coefficients[2] };
+    Vector3 i { new_frame[0], new_frame[1], new_frame[2] };
+    Vector3 j { new_frame[3], new_frame[4], new_frame[5] };
+    Vector3 k { new_frame[6], new_frame[7], new_frame[8] };
+    Coordinate3 translated { alpha * i + beta * j + gamma * k };
+    return translated + new_center;
+  }
+
   static bool AreAnglesNearlyEqual(Scalar angle1, Scalar angle2) {
     return std::abs(angle1 - angle2) < 1.0e-4;
   }
