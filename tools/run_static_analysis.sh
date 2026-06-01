@@ -1,9 +1,20 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if ! command -v clang-tidy >/dev/null 2>&1; then
+clang_tidy_bin="${CLANG_TIDY_BIN:-}"
+if [ -z "$clang_tidy_bin" ]; then
+  if command -v clang-tidy >/dev/null 2>&1; then
+    clang_tidy_bin="$(command -v clang-tidy)"
+  elif [ -x /opt/homebrew/opt/llvm/bin/clang-tidy ]; then
+    clang_tidy_bin=/opt/homebrew/opt/llvm/bin/clang-tidy
+  elif [ -x /usr/local/opt/llvm/bin/clang-tidy ]; then
+    clang_tidy_bin=/usr/local/opt/llvm/bin/clang-tidy
+  fi
+fi
+
+if [ -z "$clang_tidy_bin" ] || [ ! -x "$clang_tidy_bin" ]; then
   echo "clang-tidy was not found on PATH." >&2
-  echo "Install clang-tidy or add it to PATH, then rerun this script." >&2
+  echo "Install clang-tidy, add it to PATH, or set CLANG_TIDY_BIN." >&2
   exit 127
 fi
 
@@ -47,7 +58,17 @@ elif [ ! -f .clang-tidy ]; then
   tidy_args+=("-checks=$default_checks")
 fi
 
+if [ "$(uname -s)" = "Darwin" ] && command -v xcrun >/dev/null 2>&1; then
+  sdk_path="$(xcrun --show-sdk-path 2>/dev/null || true)"
+  if [ -n "$sdk_path" ]; then
+    tidy_args+=("--extra-arg=-isysroot" "--extra-arg=$sdk_path")
+    if [ -d "$sdk_path/usr/include/c++/v1" ]; then
+      tidy_args+=("--extra-arg=-isystem" "--extra-arg=$sdk_path/usr/include/c++/v1")
+    fi
+  fi
+fi
+
 while IFS= read -r source_file; do
-  echo "clang-tidy $source_file"
-  clang-tidy "${tidy_args[@]}" "$source_file"
+  echo "$clang_tidy_bin $source_file"
+  "$clang_tidy_bin" "${tidy_args[@]}" "$source_file"
 done < "$tmp_sources"

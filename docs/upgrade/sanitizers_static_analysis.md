@@ -74,6 +74,13 @@ Useful environment variables:
 
 - `NERDSS_STATIC_ANALYSIS_BUILD_DIR`: override the compile database build dir.
 - `NERDSS_CLANG_TIDY_CHECKS`: override the fallback check expression.
+- `CLANG_TIDY_BIN`: use an explicit clang-tidy executable when it is not on
+  `PATH`.
+
+On macOS, the helper also checks Homebrew LLVM's common install locations and
+passes the active Command Line Tools SDK path to clang-tidy. This keeps local
+analysis runs independent of shell-specific `PATH` setup and avoids libc++
+header discovery failures from the generated compile database.
 
 ## Current Validation Notes
 
@@ -91,3 +98,11 @@ Validated locally on 2026-05-28 with AppleClang 16.0.0, CMake 4.3.3, and GSL
   outputs `bin/nerdss_asan`.
 - `tools/run_static_analysis.sh src/math` exits early because `clang-tidy` is
   not installed on the local PATH.
+
+Revalidated locally on 2026-06-01:
+
+- `gh auth status -h github.com` succeeds through the host keyring for
+  `yingyue2030699` with `repo` and `workflow` scopes.
+- `/opt/homebrew/opt/llvm/bin/clang-tidy` is available.
+- `tools/run_static_analysis.sh EXEs/nerdss.cpp` configures the compile
+  database and runs clang-tidy with macOS SDK/libc++ include discovery.
