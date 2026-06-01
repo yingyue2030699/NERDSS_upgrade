@@ -28,7 +28,8 @@ void determine_2D_bimolecular_reaction_probability(int simItr, int rxnIndex, int
     // Only allow 2D diffusion at certain intervals to avoid generating too many 2D tables.
     biMolData.Dtot = nerdss::core::ProbabilityEngine::QuantizeDiffusionFor2DTable(biMolData.Dtot);
 
-    double RMax { 3.5 * sqrt(4.0 * biMolData.Dtot * params.timeStep) + forwardRxns[rxnIndex].bindRadius };
+    const double RMax { nerdss::core::ProbabilityEngine::ReactionSearchRadius2D(
+        biMolData.Dtot, params.timeStep, forwardRxns[rxnIndex].bindRadius) };
     double sep {};
     double R1 {};
     bool withinRmax { get_distance(biMolData.pro1Index, biMolData.pro2Index, biMolData.relIface1, biMolData.relIface2,
