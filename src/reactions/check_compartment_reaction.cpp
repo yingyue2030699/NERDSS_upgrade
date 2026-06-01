@@ -1,4 +1,5 @@
 #include "classes/class_Membrane.hpp"
+#include "core/probability_engine.hpp"
 #include "math/rand_gsl.hpp"
 #include "reactions/bimolecular/bimolecular_reactions.hpp"
 #include "reactions/implicitlipid/implicitlipid_reactions.hpp"
@@ -57,7 +58,8 @@ void check_compartment_reaction(int pro1Index, int pro2Index, int simItr,
         double distToCompartment{relIfaceDistance - membraneObject.compartmentR};
         //this definition of Rmax may not need bindRadius depending on the binding model.
 
-        double Rmax { 3.0 * sqrt(6.0 * Dtot * params.timeStep) + transmissionRxns[rxnIndex].bindRadius };
+        const double Rmax { nerdss::core::ProbabilityEngine::ReactionSearchRadius3D(
+            Dtot, params.timeStep, transmissionRxns[rxnIndex].bindRadius) };
 
         if (distToCompartment < Rmax){
             // Checking if molecule is part of a complex and if so applying boundary condition of compartment
@@ -96,7 +98,8 @@ void check_compartment_reaction(int pro1Index, int pro2Index, int simItr,
         double distToCompartment{membraneObject.compartmentR - relIfaceDistance};
         //this definition of Rmax may not need bindRadius depending on the binding model.
 
-        double Rmax{3.0 * sqrt(6.0 * Dtot * params.timeStep) + transmissionRxns[rxnIndex].bindRadius};
+        const double Rmax{nerdss::core::ProbabilityEngine::ReactionSearchRadius3D(
+            Dtot, params.timeStep, transmissionRxns[rxnIndex].bindRadius)};
 
         if (distToCompartment < Rmax)
         {

@@ -1,5 +1,6 @@
 #include "reactions/bimolecular/2D_reaction_table_functions.hpp"
 #include "reactions/bimolecular/bimolecular_reactions.hpp"
+#include "core/probability_engine.hpp"
 #include "tracing.hpp"
 
 void determine_3D_bimolecular_reaction_probability(int simItr, int rxnIndex, int rateIndex, bool isStateChangeBackRxn,
@@ -31,7 +32,8 @@ void determine_3D_bimolecular_reaction_probability(int simItr, int rxnIndex, int
         biMolData.Dtot += Dr2 / (6.0 * params.timeStep);
     }
 
-    double Rmax { 3.0 * sqrt(6.0 * biMolData.Dtot * params.timeStep) + forwardRxns[rxnIndex].bindRadius };
+    const double Rmax { nerdss::core::ProbabilityEngine::ReactionSearchRadius3D(
+        biMolData.Dtot, params.timeStep, forwardRxns[rxnIndex].bindRadius) };
 
     double sep {};
     double R1 {};

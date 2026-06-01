@@ -1,6 +1,7 @@
 #include "reactions/bimolecular/2D_reaction_table_functions.hpp"
 #include "reactions/bimolecular/bimolecular_reactions.hpp"
 #include "reactions/implicitlipid/implicitlipid_reactions.hpp"
+#include "core/probability_engine.hpp"
 #include "tracing.hpp"
 
 void determine_3D_implicitlipid_reaction_probability(int simItr, int rxnIndex, int rateIndex, bool isStateChangeBackRxn,
@@ -32,7 +33,8 @@ void determine_3D_implicitlipid_reaction_probability(int simItr, int rxnIndex, i
         biMolData.Dtot += Dr2 / (6.0 * params.timeStep);
     }
 
-    double Rmax { 3.0 * sqrt(6.0 * biMolData.Dtot * params.timeStep) + forwardRxns[rxnIndex].bindRadius };
+    const double Rmax { nerdss::core::ProbabilityEngine::ReactionSearchRadius3D(
+        biMolData.Dtot, params.timeStep, forwardRxns[rxnIndex].bindRadius) };
     // std::cout << "Rmax: " << std::setprecision(20) << Rmax << std::endl;
     // exit(1);
 

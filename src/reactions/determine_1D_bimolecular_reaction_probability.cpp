@@ -1,5 +1,6 @@
 #include "reactions/bimolecular/2D_reaction_table_functions.hpp"
 #include "reactions/bimolecular/bimolecular_reactions.hpp"
+#include "core/probability_engine.hpp"
 #include "tracing.hpp"
 #include <iostream>
 #include <sstream>
@@ -23,10 +24,12 @@ void determine_1D_bimolecular_reaction_probability(
   
   // the maximum distance along x axis for reaction to occur
   // for site + site or protein + protein, RMax = 4 * sqrt(2 * Dtot * dt) + sigma
-  double RMax{4.0 * sqrt(2.0 * biMolData.Dtot * params.timeStep) + forwardRxns[rxnIndex].bindRadius};
+  double RMax{nerdss::core::ProbabilityEngine::ReactionSearchRadius1D(
+      biMolData.Dtot, params.timeStep, forwardRxns[rxnIndex].bindRadius)};
   // Use 3D diffusion to identify if reactans are on the same fiber
   // Assume D is isotropic in 3D so that Dtot3D = Dtot1D
-  double RMax3D{3.0 * sqrt(6.0 * biMolData.Dtot * params.timeStep) + forwardRxns[rxnIndex].bindRadius};
+  double RMax3D{nerdss::core::ProbabilityEngine::ReactionSearchRadius3D(
+      biMolData.Dtot, params.timeStep, forwardRxns[rxnIndex].bindRadius)};
   // for protein binding to DNA sites, consider Sigma_1D = 0 when calculating RMax and reaction rate
   // protein + DNA site 
   // TODO: use xor in future
@@ -34,10 +37,12 @@ void determine_1D_bimolecular_reaction_probability(
   // Namely, we assume sigma_x = 0
   bool bindfrom3Dto1D {false};
   if (moleculeList[biMolData.pro1Index].isPromoter && !moleculeList[biMolData.pro2Index].isPromoter) {
-    RMax = 4.0 * sqrt(2.0 * biMolData.Dtot * params.timeStep);
+    RMax = nerdss::core::ProbabilityEngine::ReactionSearchRadius1D(
+        biMolData.Dtot, params.timeStep, 0.0);
     bindfrom3Dto1D = true; 
   } else if (!moleculeList[biMolData.pro1Index].isPromoter && moleculeList[biMolData.pro2Index].isPromoter) {
-    RMax = 4.0 * sqrt(2.0 * biMolData.Dtot * params.timeStep);
+    RMax = nerdss::core::ProbabilityEngine::ReactionSearchRadius1D(
+        biMolData.Dtot, params.timeStep, 0.0);
     bindfrom3Dto1D = true;
   }
   // double sep{};
