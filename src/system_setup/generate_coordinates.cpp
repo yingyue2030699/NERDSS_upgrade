@@ -2,6 +2,7 @@
 #include "classes/class_Molecule_Complex.hpp"
 #include "classes/class_Vector.hpp"
 #include "io/io.hpp"
+#include "parser/parser_diagnostics.hpp"
 #include "parser/parser_functions.hpp"
 #include "system_setup/system_setup.hpp"
 #include "tracing.hpp"
@@ -181,8 +182,8 @@ std::vector<int> updateMoleculeCoordinates(
   std::ifstream inputFile(coordinateFileName);
   if (!inputFile.is_open())
   {
-    std::cerr << "Error: Could not open coordinate file: " << coordinateFileName << std::endl;
-    return changedMoleculeIndex;
+    nerdss::parser::ExitWithFileOpenDiagnostic(coordinateFileName,
+                                               "coordinate");
   }
   std::cout << "Parsing given coordinates..." << std::endl;
   

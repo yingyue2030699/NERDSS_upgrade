@@ -130,6 +130,11 @@ molecule config file open failures. These failures report category `file_io`,
 render through the shared diagnostic formatter, include the failed path and
 file role, and exit with `ExitCode::file_io`.
 
+The setup coordinate-file loader now uses the same file-open diagnostic for
+missing `--coordinate` / `-c` files. This replaces the previous plain stderr
+message and silent continuation with a structured `file_io` diagnostic and
+`ExitCode::file_io`.
+
 ## Parser Invalid-Keyword Diagnostics
 
 The molecule config parser now uses
@@ -210,7 +215,8 @@ of exiting, matching the previous optional-artifact behavior.
 - Setup failures and warnings with direct text/exit behavior remain in
   `src/system_setup/initialize_states.cpp` outside the migrated invalid
   starting state character check,
-  `src/system_setup/generate_coordinates.cpp`, and
+  `src/system_setup/generate_coordinates.cpp` outside the migrated coordinate
+  file-open check, and
   `src/system_setup/determine_shape_molecule.cpp`.
 - File I/O failures with direct text/exit behavior remain in restart and other
   artifact paths, notably `src/io/read_restart.cpp` and MPI output writers.
