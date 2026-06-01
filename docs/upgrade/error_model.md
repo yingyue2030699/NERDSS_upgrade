@@ -157,6 +157,17 @@ The shared parser boolean reader now uses
 `exit(1)` path to a structured `input` diagnostic and exits with
 `ExitCode::input`.
 
+## Setup State Diagnostics
+
+The state setup path now uses
+`nerdss::setup::MakeInvalidStateCharacterDiagnostic` and
+`ExitWithInvalidStateCharacterDiagnostic` when a starting copy-number state
+expression contains a character outside the accepted alphanumeric token,
+`~`, and `,` grammar. This migrates the previous direct `std::cerr` plus
+`exit(1)` path in `initialize_states` to a structured `input` diagnostic,
+includes the offending character, state expression, and molecule name, and
+exits with `ExitCode::input`.
+
 ## Remaining Traceback Gaps
 
 - Diagnostics unit coverage is now part of the normal CMake/CTest path through
@@ -176,7 +187,8 @@ The shared parser boolean reader now uses
   validation failures, such as malformed coordinate, state, bond, or numeric
   values, are not yet fully migrated.
 - Setup failures and warnings with direct text/exit behavior remain in
-  `src/system_setup/initialize_states.cpp`,
+  `src/system_setup/initialize_states.cpp` outside the migrated invalid
+  starting state character check,
   `src/system_setup/generate_coordinates.cpp`, and
   `src/system_setup/determine_shape_molecule.cpp`.
 - File I/O failures with direct text/exit behavior remain in restart and
