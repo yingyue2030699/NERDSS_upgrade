@@ -432,6 +432,45 @@ public:
     return intrinsic_rate;
   }
 
+  struct AssociationParameters3D {
+    double diffusion_limited_rate {};
+    double intrinsic_rate {};
+    double alpha {};
+    double probability_coefficient {};
+
+    AssociationParameters3D() = default;
+
+    AssociationParameters3D(double diffusion_limited_rate_value,
+                            double intrinsic_rate_value, double alpha_value,
+                            double probability_coefficient_value)
+        : diffusion_limited_rate { diffusion_limited_rate_value }
+        , intrinsic_rate { intrinsic_rate_value }
+        , alpha { alpha_value }
+        , probability_coefficient { probability_coefficient_value } {}
+  };
+
+  static double DiffusionLimitedAssociationRate3D(double diffusion_total,
+                                                  double binding_radius) {
+    const double pi { 3.141592653589793238462643383279502884 };
+    return 4.0 * pi * diffusion_total * binding_radius;
+  }
+
+  static AssociationParameters3D AssociationParametersFor3D(
+      double diffusion_total, double binding_radius, double association_rate,
+      bool is_symmetric, bool has_surface_reactant, bool has_fiber_reactant) {
+    const double diffusion_limited_rate {
+        DiffusionLimitedAssociationRate3D(diffusion_total, binding_radius) };
+    const double intrinsic_rate { BimolecularAssociationRate3D(
+        association_rate, is_symmetric, has_surface_reactant,
+        has_fiber_reactant) };
+    const double rate_ratio { intrinsic_rate / diffusion_limited_rate };
+    return AssociationParameters3D {
+        diffusion_limited_rate,
+        intrinsic_rate,
+        (1.0 + rate_ratio) * std::sqrt(diffusion_total) / binding_radius,
+        intrinsic_rate / (intrinsic_rate + diffusion_limited_rate) };
+  }
+
   static double SurfaceAssociationRate3DTo2D(double association_rate) {
     return 2.0 * association_rate;
   }
