@@ -220,6 +220,16 @@ declared template interface. This migrates the previous direct `std::cerr` or
 `ExitCode::input` while preserving accepted reaction molecules, interfaces,
 states, and legacy informational parsing output.
 
+## Setup Geometry Diagnostics
+
+Top-level serial setup validation now uses structured setup diagnostics for
+implicit lipid molecule ordering, sphere/compartment incompatibility, and
+compartment water-box clearance failures. The two duplicated setup paths in
+`EXEs/nerdss.cpp` share the same diagnostic helpers. Water-box clearance still
+reports every failing dimension before exiting, but now each message includes
+the category, stable input exit code, dimension, compartment radius, and
+`rMaxLimit`.
+
 ## Optional I/O Artifact Diagnostics
 
 The serial PDB and bonded-complex JSON artifact writers now use
@@ -249,6 +259,7 @@ of exiting, matching the previous optional-artifact behavior.
   validation failures, such as malformed coordinate, state, bond, or numeric
   values, are not yet fully migrated.
 - Setup failures and warnings with direct text/exit behavior remain in
+  `EXEs/nerdss.cpp` outside the migrated setup geometry paths,
   `src/system_setup/initialize_states.cpp` outside the migrated invalid
   starting state character check,
   `src/system_setup/generate_coordinates.cpp` outside the migrated coordinate

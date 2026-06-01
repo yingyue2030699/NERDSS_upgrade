@@ -169,6 +169,67 @@ void test_setup_invalid_state_character_diagnostic() {
                    "setup invalid state character rendering includes exit code");
 }
 
+void test_setup_implicit_lipid_ordering_diagnostic() {
+  const nerdss::core::Diagnostic diagnostic =
+      nerdss::setup::MakeImplicitLipidOrderingDiagnostic("Membrane", 2);
+  const std::string formatted = nerdss::core::FormatDiagnostic(diagnostic);
+
+  require_true(diagnostic.category == nerdss::error::ErrorCategory::input,
+               "implicit lipid ordering should use input category");
+  require_true(diagnostic.exit_code == nerdss::error::ExitCode::input,
+               "implicit lipid ordering should use input exit code");
+  require_contains(
+      diagnostic.message,
+      "invalid implicit lipid molecule ordering: molecule 'Membrane' has type "
+      "index 2, but implicit lipid must be molecule type index 0",
+      "implicit lipid ordering message includes molecule and index");
+  require_contains(formatted, "ERROR [input]",
+                   "implicit lipid ordering rendering includes category");
+  require_contains(formatted, "exit_code=input(2)",
+                   "implicit lipid ordering rendering includes exit code");
+}
+
+void test_setup_sphere_compartment_conflict_diagnostic() {
+  const nerdss::core::Diagnostic diagnostic =
+      nerdss::setup::MakeSphereCompartmentConflictDiagnostic();
+  const std::string formatted = nerdss::core::FormatDiagnostic(diagnostic);
+
+  require_true(diagnostic.category == nerdss::error::ErrorCategory::input,
+               "sphere compartment conflict should use input category");
+  require_true(diagnostic.exit_code == nerdss::error::ExitCode::input,
+               "sphere compartment conflict should use input exit code");
+  require_contains(
+      diagnostic.message,
+      "invalid boundary setup: compartment cannot be used with a sphere system",
+      "sphere compartment conflict message describes invalid combination");
+  require_contains(formatted, "ERROR [input]",
+                   "sphere compartment conflict rendering includes category");
+  require_contains(formatted, "exit_code=input(2)",
+                   "sphere compartment conflict rendering includes exit code");
+}
+
+void test_setup_compartment_water_box_clearance_diagnostic() {
+  const nerdss::core::Diagnostic diagnostic =
+      nerdss::setup::MakeCompartmentWaterBoxClearanceDiagnostic('x', 50.0,
+                                                               20.0, 4.0);
+  const std::string formatted = nerdss::core::FormatDiagnostic(diagnostic);
+
+  require_true(diagnostic.category == nerdss::error::ErrorCategory::input,
+               "compartment clearance should use input category");
+  require_true(diagnostic.exit_code == nerdss::error::ExitCode::input,
+               "compartment clearance should use input exit code");
+  require_contains(
+      diagnostic.message,
+      "invalid compartment setup: water box x dimension 50 is too small for "
+      "compartment radius 20 and rMaxLimit 4; require half box length minus "
+      "compartment radius >= 8",
+      "compartment clearance message includes dimension and required clearance");
+  require_contains(formatted, "ERROR [input]",
+                   "compartment clearance rendering includes category");
+  require_contains(formatted, "exit_code=input(2)",
+                   "compartment clearance rendering includes exit code");
+}
+
 void test_parser_too_many_reaction_reactants_diagnostic() {
   const nerdss::core::Diagnostic diagnostic =
       nerdss::parser::MakeTooManyReactionReactantsDiagnostic("A+B+C->D", 3);
@@ -300,6 +361,9 @@ int main() {
   test_parser_invalid_boolean_diagnostic();
   test_parser_invalid_numeric_array_token_diagnostic();
   test_setup_invalid_state_character_diagnostic();
+  test_setup_implicit_lipid_ordering_diagnostic();
+  test_setup_sphere_compartment_conflict_diagnostic();
+  test_setup_compartment_water_box_clearance_diagnostic();
   test_parser_too_many_reaction_reactants_diagnostic();
   test_parser_unknown_observable_type_diagnostic();
   test_parser_unknown_state_interface_diagnostic();

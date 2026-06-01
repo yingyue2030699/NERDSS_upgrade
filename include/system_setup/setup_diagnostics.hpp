@@ -30,11 +30,53 @@ MakeInvalidStateCharacterDiagnostic(char character,
   return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
 }
 
+inline core::Diagnostic MakeImplicitLipidOrderingDiagnostic(
+    const std::string& molecule_name, int molecule_type_index) {
+  std::ostringstream message;
+  message << "invalid implicit lipid molecule ordering";
+  if (!molecule_name.empty()) {
+    message << ": molecule '" << molecule_name << "'";
+  }
+  message << " has type index " << molecule_type_index
+          << ", but implicit lipid must be molecule type index 0";
+  return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
+}
+
+inline core::Diagnostic MakeSphereCompartmentConflictDiagnostic() {
+  return core::MakeDiagnostic(
+      error::ErrorCategory::input,
+      "invalid boundary setup: compartment cannot be used with a sphere system",
+      "");
+}
+
+inline core::Diagnostic MakeCompartmentWaterBoxClearanceDiagnostic(
+    char axis, double dimension, double compartment_radius,
+    double r_max_limit) {
+  std::ostringstream message;
+  message << "invalid compartment setup: water box " << axis
+          << " dimension " << dimension
+          << " is too small for compartment radius " << compartment_radius
+          << " and rMaxLimit " << r_max_limit
+          << "; require half box length minus compartment radius >= "
+          << 2.0 * r_max_limit;
+  return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
+}
+
 inline void ExitWithInvalidStateCharacterDiagnostic(
     char character, const std::string& molecule_name,
     const std::string& state_expression) {
   core::ExitWithDiagnostic(MakeInvalidStateCharacterDiagnostic(
       character, molecule_name, state_expression));
+}
+
+inline void ExitWithImplicitLipidOrderingDiagnostic(
+    const std::string& molecule_name, int molecule_type_index) {
+  core::ExitWithDiagnostic(MakeImplicitLipidOrderingDiagnostic(
+      molecule_name, molecule_type_index));
+}
+
+inline void ExitWithSphereCompartmentConflictDiagnostic() {
+  core::ExitWithDiagnostic(MakeSphereCompartmentConflictDiagnostic());
 }
 
 } // namespace setup
