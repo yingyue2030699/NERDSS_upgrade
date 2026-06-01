@@ -82,11 +82,34 @@ void test_parser_invalid_keyword_diagnostic() {
                    "invalid parser keyword rendering includes exit code");
 }
 
+void test_parser_section_order_diagnostic() {
+  const nerdss::core::Diagnostic diagnostic =
+      nerdss::parser::MakeSectionOrderDiagnostic("bad_order.inp",
+                                                 "startReactions",
+                                                 "startMolecules");
+  const std::string formatted = nerdss::core::FormatDiagnostic(diagnostic);
+
+  require_true(diagnostic.category == nerdss::error::ErrorCategory::input,
+               "parser section order should use input category");
+  require_true(diagnostic.exit_code == nerdss::error::ExitCode::input,
+               "parser section order should use input exit code");
+  require_contains(
+      diagnostic.message,
+      "invalid input section order in 'bad_order.inp': 'startReactions' "
+      "requires 'startMolecules' first",
+      "parser section order message includes path and section names");
+  require_contains(formatted, "ERROR [input]",
+                   "parser section order rendering includes category");
+  require_contains(formatted, "exit_code=input(2)",
+                   "parser section order rendering includes exit code");
+}
+
 } // namespace
 
 int main() {
   test_diagnostic_format_with_trace();
   test_diagnostic_format_without_trace();
   test_parser_invalid_keyword_diagnostic();
+  test_parser_section_order_diagnostic();
   return 0;
 }

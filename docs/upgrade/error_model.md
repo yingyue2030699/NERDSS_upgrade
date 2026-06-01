@@ -139,6 +139,15 @@ replaces the previous stdout plus `exit(1)` path with a structured `input`
 diagnostic, includes the invalid keyword and molecule config path, and exits
 with `ExitCode::input`.
 
+## Parser Section-Order Diagnostics
+
+The main input parser now uses
+`nerdss::parser::MakeSectionOrderDiagnostic` and
+`ExitWithSectionOrderDiagnostic` when a `startReactions` block appears before
+the required `startMolecules` block. This migrates a semantic parser failure
+from direct `std::cerr` plus `exit(1)` to a structured `input` diagnostic,
+includes the input path and section names, and exits with `ExitCode::input`.
+
 ## Remaining Traceback Gaps
 
 - Diagnostics unit coverage is now part of the normal CMake/CTest path through
@@ -147,7 +156,8 @@ with `ExitCode::input`.
   longer required for routine validation.
 - Parser failures that still call `exit(...)`, `error(...)`, throw ad hoc
   exceptions, or write direct `std::cerr` messages include remaining paths in
-  `src/parser/parse_input.cpp`, `src/parser/parse_reaction.cpp`,
+  `src/parser/parse_input.cpp` outside the migrated file-open, molecule
+  keyword, and section-order checks, `src/parser/parse_reaction.cpp`,
   `src/parser/parse_states.cpp`,
   `src/parser/parse_observable.cpp`, `src/parser/parse_molecule_bngl.cpp`,
   `src/parser/check_for_valid_states.cpp`, `src/parser/read_boolean.cpp`,
