@@ -42,6 +42,13 @@ inline core::Diagnostic MakeSectionOrderDiagnostic(const std::string& path,
   return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
 }
 
+inline core::Diagnostic MakeInvalidBooleanDiagnostic(const std::string& value) {
+  std::ostringstream message;
+  message << "cannot read boolean value '" << value
+          << "': expected one of 0, 1, false, or true";
+  return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
+}
+
 inline void ExitWithFileOpenDiagnostic(const std::string& path,
                                        const char* role) {
   core::ExitWithDiagnostic(MakeFileOpenDiagnostic(path, role));
@@ -59,6 +66,10 @@ inline void ExitWithSectionOrderDiagnostic(const std::string& path,
                                            const char* required) {
   core::ExitWithDiagnostic(
       MakeSectionOrderDiagnostic(path, encountered, required));
+}
+
+inline void ExitWithInvalidBooleanDiagnostic(const std::string& value) {
+  core::ExitWithDiagnostic(MakeInvalidBooleanDiagnostic(value));
 }
 
 } // namespace parser

@@ -148,6 +148,15 @@ the required `startMolecules` block. This migrates a semantic parser failure
 from direct `std::cerr` plus `exit(1)` to a structured `input` diagnostic,
 includes the input path and section names, and exits with `ExitCode::input`.
 
+## Parser Boolean Diagnostics
+
+The shared parser boolean reader now uses
+`nerdss::parser::MakeInvalidBooleanDiagnostic` and
+`ExitWithInvalidBooleanDiagnostic` when a normalized value is not one of `0`,
+`1`, `false`, or `true`. This migrates the previous direct `std::cerr` plus
+`exit(1)` path to a structured `input` diagnostic and exits with
+`ExitCode::input`.
+
 ## Remaining Traceback Gaps
 
 - Diagnostics unit coverage is now part of the normal CMake/CTest path through
@@ -160,8 +169,7 @@ includes the input path and section names, and exits with `ExitCode::input`.
   keyword, and section-order checks, `src/parser/parse_reaction.cpp`,
   `src/parser/parse_states.cpp`,
   `src/parser/parse_observable.cpp`, `src/parser/parse_molecule_bngl.cpp`,
-  `src/parser/check_for_valid_states.cpp`, `src/parser/read_boolean.cpp`,
-  `src/parser/parse_input_array.cpp`,
+  `src/parser/check_for_valid_states.cpp`, `src/parser/parse_input_array.cpp`,
   `src/parser/parse_input_for_a_new_simulation.cpp`,
   `src/parser/parse_input_for_a_restart_simulation.cpp`, and
   `src/parser/parse_input_for_add_file.cpp`. Other `parse_molFile` semantic

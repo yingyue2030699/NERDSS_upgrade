@@ -104,6 +104,25 @@ void test_parser_section_order_diagnostic() {
                    "parser section order rendering includes exit code");
 }
 
+void test_parser_invalid_boolean_diagnostic() {
+  const nerdss::core::Diagnostic diagnostic =
+      nerdss::parser::MakeInvalidBooleanDiagnostic("maybe");
+  const std::string formatted = nerdss::core::FormatDiagnostic(diagnostic);
+
+  require_true(diagnostic.category == nerdss::error::ErrorCategory::input,
+               "invalid parser boolean should use input category");
+  require_true(diagnostic.exit_code == nerdss::error::ExitCode::input,
+               "invalid parser boolean should use input exit code");
+  require_contains(diagnostic.message,
+                   "cannot read boolean value 'maybe': expected one of 0, 1, "
+                   "false, or true",
+                   "invalid parser boolean message includes accepted values");
+  require_contains(formatted, "ERROR [input]",
+                   "invalid parser boolean rendering includes category");
+  require_contains(formatted, "exit_code=input(2)",
+                   "invalid parser boolean rendering includes exit code");
+}
+
 } // namespace
 
 int main() {
@@ -111,5 +130,6 @@ int main() {
   test_diagnostic_format_without_trace();
   test_parser_invalid_keyword_diagnostic();
   test_parser_section_order_diagnostic();
+  test_parser_invalid_boolean_diagnostic();
   return 0;
 }
