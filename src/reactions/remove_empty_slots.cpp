@@ -29,6 +29,7 @@
 #include "reactions/bimolecular/bimolecular_reactions.hpp"
 #include "reactions/implicitlipid/implicitlipid_reactions.hpp"
 #include "reactions/shared_reaction_functions.hpp"
+#include "reactions/topology/topology_operations.hpp"
 #include "reactions/unimolecular/unimolecular_reactions.hpp"
 #include "split.cpp"
 #include "system_setup/system_setup.hpp"
@@ -55,38 +56,9 @@ void remove_empty_slots(
     debug_molecule_complex_missmatch(mpiContext, moleculeList, complexList,
                                      "// before 1.10");
   }
-  // Put the last non-empty complex in the list to the first empty slot:
-  sort(Complex::emptyComList.begin(), Complex::emptyComList.end());
-  int lastNonEmptyIndex = complexList.size() - 1;
-
-  for (auto& firstEmptyIndex : Complex::emptyComList) {
-    // Find the last non-empty complex:
-    while (complexList[lastNonEmptyIndex].isEmpty) lastNonEmptyIndex--;
-    if (lastNonEmptyIndex <= firstEmptyIndex) {
-      break;
-    }
-    // Move last non-empty complex to the first empty position:
-    // cout << "  Moving a complex from " << lastNonEmptyIndex << " to " <<
-    // firstEmptyIndex << "... "
-    //         << "complexList[firstEmptyIndex].isEmpty=" <<
-    //         complexList[firstEmptyIndex].isEmpty << endl;
-    complexList[firstEmptyIndex] = complexList[lastNonEmptyIndex];
-
-    // Update complex index to match new position:
-    complexList[firstEmptyIndex].index = firstEmptyIndex;
-
-    // Update myComIndex for all complex members to match firstEmptyIndex:
-    for (auto& molIndex : complexList[firstEmptyIndex].memberList) {
-      moleculeList[molIndex].myComIndex = firstEmptyIndex;
-    }
-    lastNonEmptyIndex--;
-  }
-
-  // Remove last elements in complexList
-  for (int k = 0; k < Complex::emptyComList.size(); k++) complexList.pop_back();
-
-  // Empty Complex::emptyComList:
-  Complex::emptyComList.clear();
+  // Put the last non-empty complex in the list to the first empty slot.
+  nerdss::reactions::topology::CompactEmptyComplexSlots(moleculeList,
+                                                        complexList);
 
   if (DEBUG) {
     debug_firstEmptyIndex(mpiContext, "Before 3.10");
@@ -107,7 +79,7 @@ void remove_empty_slots(
   sort(Molecule::emptyMolList.begin(), Molecule::emptyMolList.end());
   // Always copy last occupied element from moleculeList to the first empty
   // index:
-  lastNonEmptyIndex = moleculeList.size() - 1;
+  int lastNonEmptyIndex = moleculeList.size() - 1;
   // While there is a molecule to delete:
   for (auto& firstEmptyIndex : Molecule::emptyMolList) {
     // cout << "firstEmptyIndex=" << firstEmptyIndex << endl;
