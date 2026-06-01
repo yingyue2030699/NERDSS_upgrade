@@ -544,6 +544,26 @@ void test_probability_engine_facade()
     require_close(
         nerdss::core::ProbabilityEngine::TableStepSize2D(1.0, 0.01), 0.002,
         "2D table step helper should preserve legacy sqrt(Dt)/50 relation");
+    require_close(
+        nerdss::core::ProbabilityEngine::QuantizeDiffusionFor2DTable(9.6e-5),
+        1.0e-4,
+        "2D diffusion table binning should round the smallest bucket");
+    require_close(
+        nerdss::core::ProbabilityEngine::QuantizeDiffusionFor2DTable(0.00019),
+        0.0002,
+        "2D diffusion table binning should preserve sub-milliscale buckets");
+    require_close(
+        nerdss::core::ProbabilityEngine::QuantizeDiffusionFor2DTable(0.0016),
+        0.002,
+        "2D diffusion table binning should preserve centiscale buckets");
+    require_close(
+        nerdss::core::ProbabilityEngine::QuantizeDiffusionFor2DTable(0.126),
+        0.13,
+        "2D diffusion table binning should preserve larger values");
+    require_close(
+        nerdss::core::ProbabilityEngine::QuantizeDiffusionFor2DTable(-1.0e-8),
+        0.0,
+        "2D diffusion table binning should preserve legacy tiny-value clamp");
     Parameters lookup_params;
     lookup_params.timeStep = 0.01;
     require_true(
