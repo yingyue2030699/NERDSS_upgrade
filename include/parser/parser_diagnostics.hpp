@@ -30,6 +30,18 @@ inline core::Diagnostic MakeInvalidKeywordDiagnostic(const std::string& keyword,
   return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
 }
 
+inline core::Diagnostic MakeSectionOrderDiagnostic(const std::string& path,
+                                                   const char* encountered,
+                                                   const char* required) {
+  std::ostringstream message;
+  message << "invalid input section order";
+  if (!path.empty()) {
+    message << " in '" << path << "'";
+  }
+  message << ": '" << encountered << "' requires '" << required << "' first";
+  return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
+}
+
 inline void ExitWithFileOpenDiagnostic(const std::string& path,
                                        const char* role) {
   core::ExitWithDiagnostic(MakeFileOpenDiagnostic(path, role));
@@ -40,6 +52,13 @@ inline void ExitWithInvalidKeywordDiagnostic(const std::string& keyword,
                                              const std::string& path) {
   core::ExitWithDiagnostic(
       MakeInvalidKeywordDiagnostic(keyword, context, path));
+}
+
+inline void ExitWithSectionOrderDiagnostic(const std::string& path,
+                                           const char* encountered,
+                                           const char* required) {
+  core::ExitWithDiagnostic(
+      MakeSectionOrderDiagnostic(path, encountered, required));
 }
 
 } // namespace parser

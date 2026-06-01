@@ -251,8 +251,8 @@ void parse_input(std::string& fileName, Parameters& params, std::map<std::string
             determine_shape_molecule(molTemplateList);
         } else if (tmpLine == "startreactions") {
             if (hasParsedMol == false) {
-                std::cerr << "Error, molecule section must be before reaction section in input file, exiting...\n";
-                exit(1);
+                nerdss::parser::ExitWithSectionOrderDiagnostic(
+                    fileName, "startReactions", "startMolecules");
             }
             // index of the last template. should. starts out as number of interface states
             int totSpecies { (molTemplateList.back().interfaceList.back().stateList.back().index) }; // last iface index
