@@ -20,6 +20,7 @@
 #include "math/constants.hpp"
 #include "math/matrix.hpp"
 #include "math/rand_gsl.hpp"
+#include "parser/parser_diagnostics.hpp"
 #include "parser/parser_functions.hpp"
 #include "reactions/association/association.hpp"
 #include "reactions/bimolecular/bimolecular_reactions.hpp"
@@ -356,8 +357,8 @@ int main(int argc, char *argv[]) {
     read_rng_state(); // read the current RNG state
     std::ifstream restartFileInput{restartFileNameInput};
     if (!restartFileInput) {
-      std::cerr << "Error, could not find restart file, exiting...\n";
-      exit(1);
+      nerdss::parser::ExitWithFileOpenDiagnostic(restartFileNameInput,
+                                                 "restart");
     }
 
     std::cout << "Reading restart file..." << std::endl;
