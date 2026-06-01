@@ -51,6 +51,14 @@ void require_close(double actual, double expected, const std::string& label)
     }
 }
 
+void require_close_with_tolerance(double actual, double expected, double tolerance, const std::string& label)
+{
+    if (std::abs(actual - expected) > tolerance) {
+        std::cerr << label << ": expected " << expected << ", got " << actual << '\n';
+        std::exit(1);
+    }
+}
+
 void require_true(bool condition, const std::string& label)
 {
     if (!condition) {
@@ -65,6 +73,12 @@ void require_contains(const std::string& text, const std::string& needle, const 
         std::cerr << label << ": expected to find '" << needle << "' in '" << text << "'\n";
         std::exit(1);
     }
+}
+
+double exponential_integrand(double x, void* p)
+{
+    const IntegrandParams* params = static_cast<const IntegrandParams*>(p);
+    return std::exp(-params->k * x);
 }
 
 void test_coord_rounding_and_colinearity()
@@ -490,6 +504,27 @@ void test_probability_engine_facade()
             0.6, finite_params.r0, finite_params.D, finite_params.t),
         norm_function(0.6, &finite_params),
         "2D norm integrand facade should match legacy callback");
+
+    IntegrandParams integration_params;
+    integration_params.k = 2.0;
+    gsl_function integration_function;
+    integration_function.function = &exponential_integrand;
+    integration_function.params = &integration_params;
+    gsl_integration_workspace* integration_workspace = gsl_integration_workspace_alloc(1000000);
+    require_close_with_tolerance(
+        nerdss::core::ProbabilityEngine::IntegrateSemiInfinite2D(
+            integration_function, &integration_params, integration_workspace,
+            &exponential_integrand),
+        0.5, 1.0e-7,
+        "2D semi-infinite integrator should match known exponential integral");
+    char integrator_id[] = "unit";
+    require_close_with_tolerance(
+        integrator(
+            integration_function, integration_params, integration_workspace, 0.0,
+            0.0, 0.0, 0.0, 0.0, integrator_id, &exponential_integrand),
+        0.5, 1.0e-7,
+        "2D semi-infinite integrator facade should match legacy wrapper");
+    gsl_integration_workspace_free(integration_workspace);
 
     gsl_matrix* lookup_matrix = gsl_matrix_alloc(2, 100);
     for (size_t index = 0; index < 100; ++index) {

@@ -312,6 +312,46 @@ public:
            * gsl_sf_bessel_I0_scaled(scaled_radius);
   }
 
+  static double IntegrateSemiInfinite2D(
+      gsl_function function, void* integrand_parameters,
+      gsl_integration_workspace* workspace,
+      double (*integrand)(double, void*)) {
+    double result {};
+    double error {};
+    const double x_low { 0.0 };
+    const double eps_abs { 1.0e-7 };
+    const double eps_rel { 1.0e-7 };
+    const double publication_criterion { 1.0e-6 };
+
+    int status { gsl_integration_qagiu(
+        &function, x_low, eps_abs, eps_rel, 1000000, workspace, &result,
+        &error) };
+
+    if (status != GSL_SUCCESS) {
+      status = gsl_integration_qagiu(
+          &function, x_low, publication_criterion, publication_criterion,
+          1000000, workspace, &result, &error);
+    }
+
+    if (status != GSL_SUCCESS) {
+      double upper_bound { 10000.0 };
+      while (std::abs((*integrand)(upper_bound, integrand_parameters))
+             > 1.0e-10) {
+        upper_bound *= 1.2;
+      }
+
+      while (status != GSL_SUCCESS) {
+        const int key { 2 };
+        status = gsl_integration_qag(
+            &function, x_low, upper_bound, eps_abs, publication_criterion,
+            1000000, key, workspace, &result, &error);
+        upper_bound *= 0.9;
+      }
+    }
+
+    return result;
+  }
+
   static double TableStepSize2D(double diffusion_total, double time) {
     return std::sqrt(diffusion_total * time) / 50.0;
   }

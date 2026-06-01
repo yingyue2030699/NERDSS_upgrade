@@ -52,7 +52,10 @@ trajectory math, restart semantics, or legacy input/output compatibility.
    Current slices additionally cover the 2D implicit-lipid binding
    probability integration and block-distance solve while preserving legacy
    wrapper mutation of `R2D`, plus the same-complex loop-closure association
-   probability used by reaction probability evaluation.
+   probability used by reaction probability evaluation. The 2026-06-01
+   integrator slice also moves the semi-infinite GSL integration retry/fallback
+   algorithm used by 2D reaction-table generation behind `ProbabilityEngine`
+   while keeping the legacy `integrator` function as a forwarding wrapper.
 4. Separate mutable topology operations from probability calculations.
 5. Introduce backend-neutral data-shape documentation for future GPU work:
    structure-of-arrays candidates, batchable kernels, and RNG constraints.
