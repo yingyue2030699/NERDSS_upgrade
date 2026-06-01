@@ -51,7 +51,8 @@ trajectory math, restart semantics, or legacy input/output compatibility.
    implicit-lipid probability kernels behind `nerdss::core::ProbabilityEngine`.
    Current slices additionally cover the 2D implicit-lipid binding
    probability integration and block-distance solve while preserving legacy
-   wrapper mutation of `R2D`.
+   wrapper mutation of `R2D`, plus the same-complex loop-closure association
+   probability used by reaction probability evaluation.
 4. Separate mutable topology operations from probability calculations.
 5. Introduce backend-neutral data-shape documentation for future GPU work:
    structure-of-arrays candidates, batchable kernels, and RNG constraints.

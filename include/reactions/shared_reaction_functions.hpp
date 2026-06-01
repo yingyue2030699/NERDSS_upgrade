@@ -118,6 +118,8 @@ void check_bimolecular_reactions(int pro1Index, int pro2Index, int simItr, doubl
  * If the two molecules are within Rmax, probability of reaction is set to 1.0. If not, it is set to 0.
  */
 
+double loop_closure_probability(double timeStep, double associationRate, double loopCoopFactor);
+
 void evaluate_binding_within_complex(int pro1Index, int pro2Index, int iface1Index, int iface2Index, int rxnIndex,
     int rateIndex, bool isBiMolStateChange, const Parameters& params,
     std::vector<Molecule>& moleculeList, std::vector<Complex>& complexList,
@@ -187,4 +189,3 @@ void remove_empty_slots(
     std::vector<MolTemplate>& molTemplateList,
     std::map<std::string, int>& observablesList, copyCounters& counterArrays,
     Membrane& membraneObject, MpiContext& mpiContext);
-    
