@@ -1,3 +1,4 @@
+#include "parser/parser_diagnostics.hpp"
 #include "parser/parser_functions.hpp"
 
 #include <sstream>
@@ -21,8 +22,7 @@ SpeciesTracker::Observable parse_observable(const std::string& line, const std::
         std::transform(obsTypeStr.begin(), obsTypeStr.end(), obsTypeStr.begin(), ::tolower);
         auto obsTypeItr = observableTypes.find(obsTypeStr);
         if (obsTypeItr == observableTypes.end()) {
-            std::cerr << "FATAL ERROR: Observable type " << obsTypeStr << " unknown. Exiting.\n";
-            exit(1);
+            nerdss::parser::ExitWithUnknownObservableTypeDiagnostic(obsTypeStr);
         } else {
             tmpObs.observableType = obsTypeItr->second;
         }
@@ -67,15 +67,17 @@ SpeciesTracker::Observable parse_observable(const std::string& line, const std::
                             }
                             ifaceFound = true;
                         }
-                        if (ifaceFound)
+                        if (ifaceFound) {
                             break;
+                        }
                     }
                     ifaceFound = false;
                 }
                 molFound = true;
             }
-            if (molFound)
+            if (molFound) {
                 break;
+            }
         }
         molFound = false;
     }
@@ -108,9 +110,10 @@ SpeciesTracker::Observable parse_observable(const std::string& line, const std::
         tmpObs.constituentList.emplace_back();
         SpeciesTracker::Observable::Constituent& newConst = tmpObs.constituentList.back();
         newConst.molTypeIndex = parsedMol.molTypeIndex;
-        for (auto& parsedIface : parsedMol.interfaceList)
+        for (auto& parsedIface : parsedMol.interfaceList) {
             newConst.interfaceList.emplace_back(parsedIface.relIndex, parsedIface.absIndex, parsedIface.state,
                 parsedIface.isBound, parsedIface.bondIndex);
+        }
     }
     return tmpObs;
 }
