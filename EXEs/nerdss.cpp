@@ -27,6 +27,7 @@
 #include "reactions/implicitlipid/implicitlipid_reactions.hpp"
 #include "reactions/shared_reaction_functions.hpp"
 #include "reactions/unimolecular/unimolecular_reactions.hpp"
+#include "system_setup/setup_diagnostics.hpp"
 #include "system_setup/system_setup.hpp"
 #include "tracing.hpp"
 #include "trajectory_functions/trajectory_functions.hpp"
@@ -44,6 +45,58 @@ using timeDuration = std::chrono::duration<double, std::chrono::seconds>;
 /* INITIALIZE GLOBALS */
 long long randNum = 0;
 unsigned long totMatches = 0;
+
+namespace {
+
+void exit_if_sphere_compartment_conflict(const Membrane& membrane_object) {
+  if (membrane_object.isSphere && membrane_object.hasCompartment) {
+    nerdss::setup::ExitWithSphereCompartmentConflictDiagnostic();
+  }
+}
+
+void exit_if_compartment_water_box_too_small(const Membrane& membrane_object,
+                                            const Parameters& params) {
+  if (membrane_object.isSphere || !membrane_object.hasCompartment) {
+    return;
+  }
+
+  bool has_error = false;
+  const double required_clearance = 2.0 * params.rMaxLimit;
+  if (membrane_object.waterBox.x / 2.0 - membrane_object.compartmentR
+      < required_clearance) {
+    nerdss::core::WriteDiagnostic(
+        std::cerr,
+        nerdss::setup::MakeCompartmentWaterBoxClearanceDiagnostic(
+            'x', membrane_object.waterBox.x, membrane_object.compartmentR,
+            params.rMaxLimit));
+    has_error = true;
+  }
+  if (membrane_object.waterBox.y / 2.0 - membrane_object.compartmentR
+      < required_clearance) {
+    nerdss::core::WriteDiagnostic(
+        std::cerr,
+        nerdss::setup::MakeCompartmentWaterBoxClearanceDiagnostic(
+            'y', membrane_object.waterBox.y, membrane_object.compartmentR,
+            params.rMaxLimit));
+    has_error = true;
+  }
+  if (membrane_object.waterBox.z / 2.0 - membrane_object.compartmentR
+      < required_clearance) {
+    nerdss::core::WriteDiagnostic(
+        std::cerr,
+        nerdss::setup::MakeCompartmentWaterBoxClearanceDiagnostic(
+            'z', membrane_object.waterBox.z, membrane_object.compartmentR,
+            params.rMaxLimit));
+    has_error = true;
+  }
+
+  if (has_error) {
+    std::exit(
+        nerdss::error::to_exit_status(nerdss::error::ExitCode::input));
+  }
+}
+
+} // namespace
 
 // debug function
 void debug_print_wrong_Mol(std::vector<Molecule> &moleculeList,
@@ -212,9 +265,8 @@ int main(int argc, char *argv[]) {
     for (auto &tempMolTemplate : molTemplateList) {
       if (tempMolTemplate.isImplicitLipid == true &&
           tempMolTemplate.molTypeIndex != 0) {
-        std::cerr << "Error: implicit Lipid must be the first molecule type, "
-                     "exiting.\n";
-        exit(1);
+        nerdss::setup::ExitWithImplicitLipidOrderingDiagnostic(
+            tempMolTemplate.molName, tempMolTemplate.molTypeIndex);
       }
     }
 
@@ -250,11 +302,7 @@ int main(int argc, char *argv[]) {
 
     // create water box for sphere boundary
     if (membraneObject.isSphere) {
-      if (membraneObject.hasCompartment == true) {
-        std::cerr << "Compartment should not exist in a sphere system!"
-                  << std::endl;
-        exit(1);
-      }
+      exit_if_sphere_compartment_conflict(membraneObject);
       membraneObject.create_water_box();
       membraneObject.sphereVol =
           (4.0 * M_PI * pow(membraneObject.sphereR, 3.0)) / 3.0;
@@ -262,34 +310,7 @@ int main(int argc, char *argv[]) {
 
     // check the size of the compartment: make sure that the waterbox boundary
     // to the compartment should be larger than the rMaxLimit
-    if (membraneObject.isSphere == false &&
-        membraneObject.hasCompartment == true) {
-      bool tooSmallBox = false;
-      if (membraneObject.waterBox.x / 2.0 - membraneObject.compartmentR <
-          2.0 * params.rMaxLimit) {
-        std::cerr << "length of x dimension of the water box is too small "
-                     "compared with the radius of compartment!"
-                  << std::endl;
-        tooSmallBox = true;
-      }
-      if (membraneObject.waterBox.y / 2.0 - membraneObject.compartmentR <
-          2.0 * params.rMaxLimit) {
-        std::cerr << "length of y dimension of the water box is too small "
-                     "compared with the radius of compartment!"
-                  << std::endl;
-        tooSmallBox = true;
-      }
-      if (membraneObject.waterBox.z / 2.0 - membraneObject.compartmentR <
-          2.0 * params.rMaxLimit) {
-        std::cerr << "length of z dimension of the water box is too small "
-                     "compared with the radius of compartment!"
-                  << std::endl;
-        tooSmallBox = true;
-      }
-      if (tooSmallBox == true) {
-        exit(1);
-      }
-    }
+    exit_if_compartment_water_box_too_small(membraneObject, params);
 
     // generate the system coordinates, write out coordinate and topology files
     // modify generate coordinates to keep molecules out of compartment
@@ -406,9 +427,8 @@ int main(int argc, char *argv[]) {
       for (auto &tempMolTemplate : molTemplateList) {
         if (tempMolTemplate.isImplicitLipid == true &&
             tempMolTemplate.molTypeIndex != 0) {
-          std::cout << "Implicit Lipid must be the first molecule type!"
-                    << std::endl;
-          exit(1);
+          nerdss::setup::ExitWithImplicitLipidOrderingDiagnostic(
+              tempMolTemplate.molName, tempMolTemplate.molTypeIndex);
         }
       }
 
@@ -481,11 +501,7 @@ int main(int argc, char *argv[]) {
 
       // create water box for sphere boundary
       if (membraneObject.isSphere) {
-        if (membraneObject.hasCompartment == true) {
-          std::cerr << "Compartment should not exist in a sphere system!"
-                    << std::endl;
-          exit(1);
-        }
+        exit_if_sphere_compartment_conflict(membraneObject);
         membraneObject.create_water_box();
         membraneObject.sphereVol =
             (4.0 * M_PI * pow(membraneObject.sphereR, 3.0)) / 3.0;
@@ -493,34 +509,7 @@ int main(int argc, char *argv[]) {
 
       // check the size of the compartment: make sure that the waterbox boundary
       // to the compartment should be larger than the rMaxLimit
-      if (membraneObject.isSphere == false &&
-          membraneObject.hasCompartment == true) {
-        bool tooSmallBox = false;
-        if (membraneObject.waterBox.x / 2.0 - membraneObject.compartmentR <
-            2.0 * params.rMaxLimit) {
-          std::cerr << "length of x dimension of the water box is too small "
-                       "compared with the radius of compartment!"
-                    << std::endl;
-          tooSmallBox = true;
-        }
-        if (membraneObject.waterBox.y / 2.0 - membraneObject.compartmentR <
-            2.0 * params.rMaxLimit) {
-          std::cerr << "length of y dimension of the water box is too small "
-                       "compared with the radius of compartment!"
-                    << std::endl;
-          tooSmallBox = true;
-        }
-        if (membraneObject.waterBox.z / 2.0 - membraneObject.compartmentR <
-            2.0 * params.rMaxLimit) {
-          std::cerr << "length of z dimension of the water box is too small "
-                       "compared with the radius of compartment!"
-                    << std::endl;
-          tooSmallBox = true;
-        }
-        if (tooSmallBox == true) {
-          exit(1);
-        }
-      }
+      exit_if_compartment_water_box_too_small(membraneObject, params);
 
       // generate the coordinates, write out coordinate and topology files for
       // added molecules
