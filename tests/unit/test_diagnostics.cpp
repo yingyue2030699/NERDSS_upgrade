@@ -145,6 +145,32 @@ void test_parser_invalid_numeric_array_token_diagnostic() {
                    "invalid numeric array token rendering includes exit code");
 }
 
+void test_parser_invalid_molecule_count_diagnostic() {
+  const nerdss::core::Diagnostic diagnostic =
+      nerdss::parser::MakeInvalidMoleculeCountDiagnostic(
+          "Kinase", "100(site~P)@bad", "invalid character '@'");
+  const std::string formatted = nerdss::core::FormatDiagnostic(diagnostic);
+
+  require_true(diagnostic.category == nerdss::error::ErrorCategory::input,
+               "invalid molecule count should use input category");
+  require_true(diagnostic.exit_code == nerdss::error::ExitCode::input,
+               "invalid molecule count should use input exit code");
+  require_contains(
+      diagnostic.message,
+      "invalid molecule copy-number for molecule 'Kinase' in "
+      "'100(site~P)@bad': invalid character '@'",
+      "invalid molecule count message includes molecule and bad expression");
+  require_contains(
+      diagnostic.message,
+      "expected 'molName:100' or state counts like "
+      "'molName:100(interface~state)'",
+      "invalid molecule count message includes expected format");
+  require_contains(formatted, "ERROR [input]",
+                   "invalid molecule count rendering includes category");
+  require_contains(formatted, "exit_code=input(2)",
+                   "invalid molecule count rendering includes exit code");
+}
+
 void test_setup_invalid_state_character_diagnostic() {
   const nerdss::core::Diagnostic diagnostic =
       nerdss::setup::MakeInvalidStateCharacterDiagnostic('@', "Lipid",
@@ -360,6 +386,7 @@ int main() {
   test_parser_section_order_diagnostic();
   test_parser_invalid_boolean_diagnostic();
   test_parser_invalid_numeric_array_token_diagnostic();
+  test_parser_invalid_molecule_count_diagnostic();
   test_setup_invalid_state_character_diagnostic();
   test_setup_implicit_lipid_ordering_diagnostic();
   test_setup_sphere_compartment_conflict_diagnostic();

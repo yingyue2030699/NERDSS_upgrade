@@ -1,4 +1,31 @@
 #include "parser/parser_functions.hpp"
+#include "parser/parser_diagnostics.hpp"
+
+#include <stdexcept>
+
+namespace {
+
+int parse_copy_number_token(const std::string& token,
+    const std::string& moleculeName, const std::string& expression)
+{
+    try {
+        return std::stoi(token);
+    } catch (const std::invalid_argument&) {
+        nerdss::parser::ExitWithInvalidMoleculeCountDiagnostic(
+            moleculeName, expression, "cannot read copy-number token '" + token + "'");
+    } catch (const std::out_of_range&) {
+        nerdss::parser::ExitWithInvalidMoleculeCountDiagnostic(
+            moleculeName, expression, "copy-number token '" + token + "' is out of range");
+    }
+    return 0;
+}
+
+std::string invalid_character_reason(char character)
+{
+    return std::string("invalid character '") + character + "'";
+}
+
+} // namespace
 
 ParsedMol parse_molecule_bngl(int& totSpecies, bool isProductSide,
     std::pair<std::string, int> oneMol) // totSpecies is not altered in this routine
@@ -128,7 +155,7 @@ ParsedMol parse_molecule_bngl(int& totSpecies, bool isProductSide,
     return tmpMol;
 }
 
-ParsedMolNumState parse_number_bngl(std::string oneLine)
+ParsedMolNumState parse_number_bngl(std::string oneLine, const std::string& moleculeName)
 {
     std::string buffer;
     ParsedMolNumState tmpMolNum;
@@ -151,8 +178,9 @@ ParsedMolNumState parse_number_bngl(std::string oneLine)
                 /* -if the character is '(', it indicates the beginning of an iface list
                  * set the copy number to the buffer before the parenthesis
                  */
-                tmpMolNum.totalCopyNumbers += std::stoi(buffer);
-                tmpMolNum.numberEachState.emplace_back(std::stoi(buffer));
+                int copyNumber = parse_copy_number_token(buffer, moleculeName, oneLine);
+                tmpMolNum.totalCopyNumbers += copyNumber;
+                tmpMolNum.numberEachState.emplace_back(copyNumber);
                 buffer.clear();
                 break;
             }
@@ -170,14 +198,14 @@ ParsedMolNumState parse_number_bngl(std::string oneLine)
                 break;
             }
             default: {
-                std::cerr << "ERROR: Character " << *molIterator << " is not valid in starting copy numbers for each state. Exiting...\n.";
-                exit(1);
+                nerdss::parser::ExitWithInvalidMoleculeCountDiagnostic(
+                    moleculeName, oneLine, invalid_character_reason(*molIterator));
             }
             }
         }
     }
     if (!buffer.empty()) {
-        tmpMolNum.totalCopyNumbers += std::stoi(buffer);
+        tmpMolNum.totalCopyNumbers += parse_copy_number_token(buffer, moleculeName, oneLine);
     }
     return tmpMolNum;
 }

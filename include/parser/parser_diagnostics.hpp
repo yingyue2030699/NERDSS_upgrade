@@ -61,6 +61,25 @@ inline core::Diagnostic MakeInvalidNumericArrayTokenDiagnostic(
   return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
 }
 
+inline core::Diagnostic MakeInvalidMoleculeCountDiagnostic(
+    const std::string& molecule_name, const std::string& expression,
+    const std::string& reason) {
+  std::ostringstream message;
+  message << "invalid molecule copy-number";
+  if (!molecule_name.empty()) {
+    message << " for molecule '" << molecule_name << "'";
+  }
+  if (!expression.empty()) {
+    message << " in '" << expression << "'";
+  }
+  if (!reason.empty()) {
+    message << ": " << reason;
+  }
+  message << "; expected 'molName:100' or state counts like "
+             "'molName:100(interface~state)'";
+  return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
+}
+
 inline core::Diagnostic
 MakeTooManyReactionReactantsDiagnostic(const std::string& reaction,
                                        std::size_t reactant_count) {
@@ -142,6 +161,13 @@ inline void ExitWithInvalidNumericArrayTokenDiagnostic(
     const std::string& token, const std::string& input) {
   core::ExitWithDiagnostic(
       MakeInvalidNumericArrayTokenDiagnostic(token, input));
+}
+
+inline void ExitWithInvalidMoleculeCountDiagnostic(
+    const std::string& molecule_name, const std::string& expression,
+    const std::string& reason) {
+  core::ExitWithDiagnostic(
+      MakeInvalidMoleculeCountDiagnostic(molecule_name, expression, reason));
 }
 
 inline void ExitWithTooManyReactionReactantsDiagnostic(
