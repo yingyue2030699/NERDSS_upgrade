@@ -876,6 +876,20 @@ public:
     return PoissonEventProbability(poisson);
   }
 
+  static double LoopDissociationCorrectionRatio(double lambda) {
+    return PoissonEventProbability(lambda) / lambda;
+  }
+
+  static double LoopDissociationCorrectionRatio(double time,
+                                                double association_rate,
+                                                double cooperativity_factor) {
+    const double standard_state_per_nm3 { 0.602 };
+    const double poisson {
+        time * association_rate * standard_state_per_nm3
+        * cooperativity_factor };
+    return LoopDissociationCorrectionRatio(poisson);
+  }
+
   static double ImplicitLipidIntegralKernel2D(double u, double binding_radius,
                                               double diffusion_total,
                                               double association_rate,

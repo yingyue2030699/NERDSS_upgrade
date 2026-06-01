@@ -781,6 +781,20 @@ void test_probability_engine_facade()
             0.2, 0.0, 1.5),
         0.0,
         "zero-rate loop-closure association probability should be zero");
+    require_close(
+        nerdss::core::ProbabilityEngine::LoopDissociationCorrectionRatio(
+            0.2, 3.0, 1.5),
+        (1.0 - std::exp(-(0.2 * 3.0 * 0.602 * 1.5)))
+            / (0.2 * 3.0 * 0.602 * 1.5),
+        "loop-dissociation correction ratio should match legacy formula");
+    require_close(
+        nerdss::core::ProbabilityEngine::LoopDissociationCorrectionRatio(1000.0),
+        (1.0 - std::exp(-1000.0)) / 1000.0,
+        "large-lambda loop-dissociation correction ratio should match legacy formula");
+    require_true(
+        std::isnan(
+            nerdss::core::ProbabilityEngine::LoopDissociationCorrectionRatio(0.0)),
+        "zero-lambda loop-dissociation correction ratio should preserve legacy NaN");
 
     paramsIL implicit_lipid_params {};
     implicit_lipid_params.dt = 0.1;
