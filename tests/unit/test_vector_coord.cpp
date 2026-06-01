@@ -202,6 +202,57 @@ void test_math_engine_facade()
         get_geodesic_distance({ 2.0, 0.0, 0.0 }, { 0.0, 2.0, 0.0 }),
         "geodesic facade should match legacy wrapper");
 
+    nerdss::core::Matrix3 frame =
+        nerdss::core::MathEngine::InnerCoordinateFrame(
+            { 2.0, 0.0, 0.0 }, { 0.0, 2.0, 0.0 });
+    require_close(frame[0], 1.0, "inner frame i.x");
+    require_close(frame[1], 0.0, "inner frame i.y");
+    require_close(frame[2], 0.0, "inner frame i.z");
+    require_close(frame[3], 0.0, "inner frame j.x");
+    require_close(frame[4], 1.0, "inner frame j.y");
+    require_close(frame[5], 0.0, "inner frame j.z");
+    require_close(frame[6], 0.0, "inner frame k.x");
+    require_close(frame[7], 0.0, "inner frame k.y");
+    require_close(frame[8], 1.0, "inner frame k.z");
+
+    nerdss::core::Matrix3 unchanged_frame =
+        nerdss::core::MathEngine::InnerCoordinateFrame(
+            { 0.0, 0.0, 2.0 }, { 0.0, 0.0, 2.0 });
+    require_close(unchanged_frame[0], 0.0, "unchanged inner frame pole i.x");
+    require_close(unchanged_frame[1], 0.0, "unchanged inner frame pole i.y");
+    require_close(unchanged_frame[2], 1.0, "unchanged inner frame pole i.z");
+    require_close(unchanged_frame[3], 0.0, "unchanged inner frame pole j.x");
+    require_close(unchanged_frame[4], 1.0, "unchanged inner frame pole j.y");
+    require_close(unchanged_frame[5], 0.0, "unchanged inner frame pole j.z");
+
+    nerdss::core::Matrix3 new_frame =
+        nerdss::core::MathEngine::UpdatedInnerCoordinateFrame(
+            { 2.0, 0.0, 0.0 }, { 0.0, 2.0, 0.0 });
+    require_close(new_frame[0], 0.0, "updated inner frame i.x");
+    require_close(new_frame[1], 1.0, "updated inner frame i.y");
+    require_close(new_frame[2], 0.0, "updated inner frame i.z");
+    require_close(new_frame[3], 1.0, "updated inner frame j.x");
+    require_close(new_frame[4], 0.0, "updated inner frame j.y");
+    require_close(new_frame[5], 0.0, "updated inner frame j.z");
+    require_close(new_frame[6], 0.0, "updated inner frame k.x");
+    require_close(new_frame[7], 0.0, "updated inner frame k.y");
+    require_close(new_frame[8], -1.0, "updated inner frame k.z");
+
+    std::array<double, 3> coefficients =
+        nerdss::core::MathEngine::InnerCoordinateCoefficients(
+            { 2.5, 0.25, 0.0 }, { 2.0, 0.0, 0.0 }, frame);
+    require_close(coefficients[0], 0.5, "inner coordinate coefficient alpha");
+    require_close(coefficients[1], 0.25, "inner coordinate coefficient beta");
+    require_close(coefficients[2], 0.0, "inner coordinate coefficient gamma");
+
+    Coord translated =
+        nerdss::core::MathEngine::TranslateOnSphere(
+            { 2.0, 1.0, 0.0 }, { 2.0, 0.0, 0.0 }, { 0.0, 2.0, 0.0 },
+            frame, new_frame);
+    require_close(translated.x, 1.0, "translated-on-sphere x");
+    require_close(translated.y, 2.0, "translated-on-sphere y");
+    require_close(translated.z, 0.0, "translated-on-sphere z");
+
     require_true(
         nerdss::core::MathEngine::AreAnglesNearlyEqual(1.0, 1.0 + 1.0e-5),
         "facade angle equality tolerance");

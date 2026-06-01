@@ -61,219 +61,22 @@ Coord find_position_after_association(double arc1, Coord Iface1, Coord Iface2, d
 // COM COMnew are cardeseian coords
 std::array<double, 9> inner_coord_set(Coord com, Coord comnew)
 {
-    std::array<double, 9> crdset;
-    crdset[0] = 0;
-    crdset[1] = 0;
-    crdset[2] = 0;
-    crdset[3] = 0;
-    crdset[4] = 0;
-    crdset[5] = 0;
-    crdset[6] = 0;
-    crdset[7] = 0;
-    crdset[8] = 0;
-    Vector i, j, k, v;
-    if (sqrt(pow(com.x - comnew.x, 2.0) + pow(com.y - comnew.y, 2.0) + pow(com.z - comnew.z, 2.0)) < 1E-8) {
-        //std::cout<<"During the tranlsation on sphere, the complex doesn't move, then use the default inner_coord_set"<<std::endl;
-        i = Vector { com.x, com.y, com.z };
-        i.normalize();
-        v = Vector { 0.0, 0.0, 1.0 };
-        if (std::abs(std::abs(com.z) - com.get_magnitude()) < 1E-8) {
-            v = Vector { -1.0, 0.0, 0.0 };
-        }
-        j = v.cross(i);
-        k = i.cross(j);
-    } else {
-        i = Vector { com.x, com.y, com.z };
-        i.normalize();
-        v = Vector { comnew.x, comnew.y, comnew.z };
-        v.normalize();
-        k = i.cross(v);
-        j = k.cross(i);
-    }
-    i.normalize();
-    j.normalize();
-    k.normalize();
-
-    crdset[0] = i.x;
-    crdset[1] = i.y;
-    crdset[2] = i.z;
-    crdset[3] = j.x;
-    crdset[4] = j.y;
-    crdset[5] = j.z;
-    crdset[6] = k.x;
-    crdset[7] = k.y;
-    crdset[8] = k.z;
-
-    return crdset;
+    return nerdss::core::MathEngine::InnerCoordinateFrame(com, comnew);
 }
 std::array<double, 9> inner_coord_set_new(Coord com, Coord comnew)
 {
-    std::array<double, 9> crdsetnew;
-    crdsetnew[0] = 0;
-    crdsetnew[1] = 0;
-    crdsetnew[2] = 0;
-    crdsetnew[3] = 0;
-    crdsetnew[4] = 0;
-    crdsetnew[5] = 0;
-    crdsetnew[6] = 0;
-    crdsetnew[7] = 0;
-    crdsetnew[8] = 0;
-    Vector i, j, k, v;
-    if (sqrt(pow(com.x - comnew.x, 2.0) + pow(com.y - comnew.y, 2.0) + pow(com.z - comnew.z, 2.0)) < 1E-8) {
-        //std::cout<<"During the tranlsation on sphere, the complex doesn't move, then use the default inner_coord_set_new"<<std::endl;
-        i = Vector { comnew.x, comnew.y, comnew.z };
-        i.normalize();
-        v = Vector { 0.0, 0.0, 1.0 };
-        if (std::abs(std::abs(comnew.z) - comnew.get_magnitude()) < 1E-8) {
-            v = Vector { -1.0, 0.0, 0.0 };
-        }
-        j = v.cross(i);
-        k = i.cross(j);
-    } else {
-        Coord dist = comnew - com;
-        double l = dist.get_magnitude();
-        double R = com.get_magnitude();
-        double lnew = l + l * R * R / (R * R - l * l);
-        Coord dREFnew = (lnew / l) * dist;
-        Coord REFnew = com + dREFnew;
-        REFnew = (R / REFnew.get_magnitude()) * REFnew;
-        com = comnew;
-        comnew = REFnew;
-
-        i = Vector { com.x, com.y, com.z };
-        v = Vector { comnew.x, comnew.y, comnew.z };
-        k = i.cross(v);
-        j = k.cross(i);
-    }
-    i.normalize();
-    j.normalize();
-    k.normalize();
-
-    crdsetnew[0] = i.x;
-    crdsetnew[1] = i.y;
-    crdsetnew[2] = i.z;
-    crdsetnew[3] = j.x;
-    crdsetnew[4] = j.y;
-    crdsetnew[5] = j.z;
-    crdsetnew[6] = k.x;
-    crdsetnew[7] = k.y;
-    crdsetnew[8] = k.z;
-
-    return crdsetnew;
+    return nerdss::core::MathEngine::UpdatedInnerCoordinateFrame(com, comnew);
 }
 // crdset is the previous one, not the new or updated one
 std::array<double, 3> calculate_inner_coord_coefficients(Coord TARG, Coord COM, std::array<double, 9> crdset)
 {
-    std::array<double, 3> M {};
-    M[0] = 0.0;
-    M[1] = 0.0;
-    M[2] = 0.0;
-
-    Vector targ = Vector(TARG - COM);
-    targ.calc_magnitude();
-    if (targ.magnitude < 1E-8) { // targ is as com
-        return M;
-    }
-
-    // get the inner_coords_set
-    Vector i = Vector { crdset[0], crdset[1], crdset[2] };
-    Vector j = Vector { crdset[3], crdset[4], crdset[5] };
-    Vector k = Vector { crdset[6], crdset[7], crdset[8] };
-
-    // targ = alpha*i + beta*j + gama*k;
-    double alpha, beta, gama;
-    // check whether targ vector is perpenticular to any of the coords set_memProtein_sphere
-    Vector Targ = targ;
-    Targ.normalize();
-    if (std::abs(Targ.dot(i)) < 1E-8) { // targ is perpenticular to i
-        alpha = 0.0;
-        if (std::abs(Targ.dot(j)) < 1E-8) { // targ is also perpenticular to j
-            beta = 0.0;
-            gama = targ.magnitude;
-            if (Targ.dot(k) < 0.0) {
-                gama = -gama;
-            }
-        } else if (std::abs(Targ.dot(k)) < 1E-8) { // targ is also perpenticular to k
-            gama = 0.0;
-            beta = targ.magnitude;
-            if (Targ.dot(j) < 0.0) {
-                beta = -beta;
-            }
-        } else {
-            beta = (targ.x * k.y - targ.y * k.x) / (j.x * k.y - j.y * k.x);
-            gama = (targ.x * j.y - targ.y * j.x) / (k.x * j.y - k.y * j.x);
-        }
-    } else if (std::abs(Targ.dot(j)) < 1E-8) { // targ is verticle to j
-        beta = 0.0;
-        if (std::abs(Targ.dot(i)) < 1E-8) { // verticle to i
-            alpha = 0.0;
-            gama = targ.magnitude;
-            if (Targ.dot(k) < 0.0) {
-                gama = -gama;
-            }
-        } else if (std::abs(Targ.dot(k)) < 1E-8) { // verticle to k
-            gama = 0.0;
-            alpha = targ.magnitude;
-            if (Targ.dot(i) < 0.0) {
-                alpha = -alpha;
-            }
-        } else {
-            alpha = (targ.x * k.y - targ.y * k.x) / (i.x * k.y - i.y * k.x);
-            gama = (targ.x * i.y - targ.y * i.x) / (k.x * i.y - k.y * i.x);
-        }
-    } else if (std::abs(Targ.dot(k)) < 1E-8) { // targ is verticle to k
-        gama = 0.0;
-        if (std::abs(Targ.dot(i)) < 1E-8) { // verticle to i
-            alpha = 0.0;
-            beta = targ.magnitude;
-            if (Targ.dot(j) < 0.0) {
-                beta = -beta;
-            }
-        } else if (std::abs(Targ.dot(j)) < 1E-8) { // verticle to j
-            beta = 0.0;
-            alpha = targ.magnitude;
-            if (Targ.dot(i) < 0.0) {
-                alpha = -alpha;
-            }
-        } else {
-            alpha = (targ.x * j.y - targ.y * j.x) / (i.x * j.y - i.y * j.x);
-            beta = (targ.x * i.y - targ.y * i.x) / (j.x * i.y - j.y * i.x);
-        }
-    } else {
-        double n1 = k.y * targ.x - k.x * targ.y;
-        double n2 = i.x * k.y - i.y * k.x;
-        double n3 = j.x * k.y - j.y * k.x;
-        double n4 = k.z * targ.x - k.x * targ.z;
-        double n5 = i.x * k.z - i.z * k.x;
-        double n6 = j.x * k.z - j.z * k.x;
-        alpha = (n1 * n6 - n4 * n3) / (n2 * n6 - n5 * n3);
-        beta = (n1 * n6 - n2 * n6 * alpha) / (n3 * n6);
-        gama = (targ.x - alpha * i.x - beta * j.x) / k.x;
-    }
-    M[0] = alpha;
-    M[1] = beta;
-    M[2] = gama;
-    return M;
+    return nerdss::core::MathEngine::InnerCoordinateCoefficients(TARG, COM, crdset);
 }
 
 // input and output are cardesian coords
 Coord translate_on_sphere(Coord targ, Coord COM, Coord COMnew, std::array<double, 9> crdset, std::array<double, 9> crdsetnew)
 {
-    Coord dcom = COMnew - COM;
-    if (dcom.get_magnitude() < 1E-8) { // no translation on sphere
-        return targ;
-    }
-    // calculate the inner-coords-set efficient
-    std::array<double, 3> M = calculate_inner_coord_coefficients(targ, COM, crdset);
-    double alpha = M[0];
-    double beta = M[1];
-    double gama = M[2];
-    Vector i = Vector { crdsetnew[0], crdsetnew[1], crdsetnew[2] };
-    Vector j = Vector { crdsetnew[3], crdsetnew[4], crdsetnew[5] };
-    Vector k = Vector { crdsetnew[6], crdsetnew[7], crdsetnew[8] };
-    Coord targnew = Coord { alpha * i + beta * j + gama * k };
-    targnew = targnew + COMnew;
-    return targnew;
+    return nerdss::core::MathEngine::TranslateOnSphere(targ, COM, COMnew, crdset, crdsetnew);
 }
 
 // input and output are cardesian coords
