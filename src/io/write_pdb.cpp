@@ -1,4 +1,5 @@
 #include "io/io.hpp"
+#include "io/io_diagnostics.hpp"
 #include <chrono>
 #include <ctime>
 #include <iomanip>
@@ -13,7 +14,8 @@ void write_pdb(long long int simItr,
     std::string pdbFileName = "PDB/" + std::to_string(frameNum) + ".pdb";
     std::ofstream pdbFile(pdbFileName);
     if (!pdbFile.is_open()) {
-        std::cerr << "Error: Unable to open PDB file for writing: " << pdbFileName << std::endl;
+        nerdss::io::WriteArtifactWriteOpenDiagnostic(std::cerr, pdbFileName,
+                                                     "PDB");
         return;
     }
 
