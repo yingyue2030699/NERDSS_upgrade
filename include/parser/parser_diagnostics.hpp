@@ -50,6 +50,17 @@ inline core::Diagnostic MakeInvalidBooleanDiagnostic(const std::string& value) {
   return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
 }
 
+inline core::Diagnostic MakeInvalidNumericArrayTokenDiagnostic(
+    const std::string& token, const std::string& input) {
+  std::ostringstream message;
+  message << "cannot read numeric array token '" << token << "'";
+  if (!input.empty()) {
+    message << " in '" << input << "'";
+  }
+  message << ": expected a number, pi, m_pi, or nan";
+  return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
+}
+
 inline core::Diagnostic
 MakeTooManyReactionReactantsDiagnostic(const std::string& reaction,
                                        std::size_t reactant_count) {
@@ -80,6 +91,12 @@ inline void ExitWithSectionOrderDiagnostic(const std::string& path,
 
 inline void ExitWithInvalidBooleanDiagnostic(const std::string& value) {
   core::ExitWithDiagnostic(MakeInvalidBooleanDiagnostic(value));
+}
+
+inline void ExitWithInvalidNumericArrayTokenDiagnostic(
+    const std::string& token, const std::string& input) {
+  core::ExitWithDiagnostic(
+      MakeInvalidNumericArrayTokenDiagnostic(token, input));
 }
 
 inline void ExitWithTooManyReactionReactantsDiagnostic(
