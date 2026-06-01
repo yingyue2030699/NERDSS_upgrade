@@ -83,10 +83,11 @@ The helper provides:
 
 The helper does not change any existing writer output. Existing `.dat`, `.xyz`,
 `.psf`, restart, and PDB files remain the compatibility contract. The first
-runtime adoption routes the legacy `copy_numbers_time.dat` and
-`observables_time.dat` data rows through `WriteCsvRow`, preserving the current
-comma-separated bytes for ordinary numeric rows while centralizing CSV row
-emission. The MPI adoption applies the same row helper to rank-local
+runtime adoption routes the legacy `copy_numbers_time.dat` header and data rows
+and `observables_time.dat` data rows through `WriteCsvRow`, preserving the
+current comma-separated bytes for ordinary names and numeric rows while
+centralizing CSV row emission and quoting special header fields consistently.
+The MPI adoption applies the same row helper to rank-local
 `DATA/copy_numbers_time_<rank>.dat` rows and the merged
 `mergeOUT/copy_numbers_time.dat` rows while keeping the legacy file names,
 headers, and numeric row bytes unchanged. Future output modernization can
