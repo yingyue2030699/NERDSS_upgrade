@@ -24,6 +24,15 @@ enum class MathBackend {
   kCpuScalar,
 };
 
+struct RotationAnglePartition {
+  Scalar positive_angle {};
+  Scalar negative_angle {};
+
+  RotationAnglePartition() = default;
+  RotationAnglePartition(Scalar positive, Scalar negative)
+      : positive_angle(positive), negative_angle(negative) {}
+};
+
 class MathEngine {
 public:
   static MathBackend backend() { return MathBackend::kCpuScalar; }
@@ -637,6 +646,16 @@ public:
     Vector3 projected1 { 0.0, vector1.y, vector1.z };
     Vector3 projected2 { 0.0, vector2.y, vector2.z };
     return projected1.cross(projected2).x > 0.0;
+  }
+
+  static RotationAnglePartition PartitionRotationAngle(
+      Scalar target_angle, Scalar current_angle, Scalar positive_diffusion,
+      Scalar negative_diffusion) {
+    const Scalar total_diffusion { positive_diffusion + negative_diffusion };
+    const Scalar delta { target_angle - current_angle };
+    return RotationAnglePartition(
+        delta * (positive_diffusion / total_diffusion),
+        -delta * (negative_diffusion / total_diffusion));
   }
 };
 

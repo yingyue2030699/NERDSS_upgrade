@@ -7,6 +7,7 @@
 #include "parser/parser_diagnostics.hpp"
 #include "math/math_functions.hpp"
 #include "math/matrix.hpp"
+#include "reactions/association/association.hpp"
 #include "reactions/bimolecular/2D_reaction_table_functions.hpp"
 #include "reactions/implicitlipid/implicitlipid_reactions.hpp"
 
@@ -341,6 +342,43 @@ void test_math_engine_facade()
             { 0.0, 0.0, 1.0 }, { 0.0, 1.0, 0.0 }, { 0.0, 0.0, 1.0 })
             == requiresSignFlip({ 0.0, 0.0, 1.0 }, { 0.0, 1.0, 0.0 }, { 0.0, 0.0, 1.0 }),
         "sign-flip facade should match legacy wrapper for x-axis fallback");
+
+    const auto rotation_partition =
+        nerdss::core::MathEngine::PartitionRotationAngle(2.5, 0.5, 3.0, 1.0);
+    require_close(rotation_partition.positive_angle, 1.5, "rotation partition positive angle");
+    require_close(rotation_partition.negative_angle, -0.5, "rotation partition negative angle");
+
+    Complex react_com1;
+    Complex react_com2;
+    react_com1.Dr.x = 3.0;
+    react_com2.Dr.x = 1.0;
+    double rot_ang_pos {};
+    double rot_ang_neg {};
+    determine_rotation_angles(2.5, 0.5, rot_ang_pos, rot_ang_neg, react_com1, react_com2);
+    require_close(rot_ang_pos, rotation_partition.positive_angle, "rotation wrapper Dr positive angle");
+    require_close(rot_ang_neg, rotation_partition.negative_angle, "rotation wrapper Dr negative angle");
+
+    react_com1.OnSurface = true;
+    react_com2.OnSurface = true;
+    react_com1.D.x = 1.0;
+    react_com2.D.x = 3.0;
+    const auto surface_partition =
+        nerdss::core::MathEngine::PartitionRotationAngle(2.5, 0.5, 1.0, 3.0);
+    determine_rotation_angles(2.5, 0.5, rot_ang_pos, rot_ang_neg, react_com1, react_com2);
+    require_close(rot_ang_pos, surface_partition.positive_angle, "rotation wrapper surface positive angle");
+    require_close(rot_ang_neg, surface_partition.negative_angle, "rotation wrapper surface negative angle");
+
+    react_com1.OnSurface = false;
+    react_com2.OnSurface = false;
+    react_com1.Dr.x = 0.0;
+    react_com2.Dr.x = 0.0;
+    react_com1.D = Coord { 3.0, 6.0, 9.0 };
+    react_com2.D = Coord { 6.0, 9.0, 12.0 };
+    const auto translation_partition =
+        nerdss::core::MathEngine::PartitionRotationAngle(2.5, 0.5, 6.0, 9.0);
+    determine_rotation_angles(2.5, 0.5, rot_ang_pos, rot_ang_neg, react_com1, react_com2);
+    require_close(rot_ang_pos, translation_partition.positive_angle, "rotation wrapper translation positive angle");
+    require_close(rot_ang_neg, translation_partition.negative_angle, "rotation wrapper translation negative angle");
 
     require_close(
         static_cast<double>(nerdss::core::MathEngine::Factorial(10)),
