@@ -583,6 +583,22 @@ void test_probability_engine_facade()
         nerdss::core::ProbabilityEngine::TableStepSize2D(1.0, 0.01), 0.002,
         "2D table step helper should preserve legacy sqrt(Dt)/50 relation");
     require_close(
+        nerdss::core::ProbabilityEngine::RotationalDiffusionDisplacement(0.5, 0.02, 3.0, 2),
+        0.059900066642862626,
+        "2D rotational diffusion displacement should preserve legacy cosine relation");
+    require_close(
+        nerdss::core::ProbabilityEngine::RotationalDiffusionContribution(0.5, 0.02, 3.0, 2),
+        0.7487508330357828,
+        "2D rotational diffusion contribution should preserve legacy denominator");
+    require_close(
+        nerdss::core::ProbabilityEngine::RotationalDiffusionContribution(0.5, 0.02, 3.0, 3),
+        0.9966711079379187,
+        "3D rotational diffusion contribution should preserve legacy denominator");
+    require_close(
+        nerdss::core::ProbabilityEngine::RotationalDiffusionContribution(0.0, 0.02, 3.0, 3),
+        0.0,
+        "zero rotational diffusion should contribute no total diffusion");
+    require_close(
         nerdss::core::ProbabilityEngine::ReactionSearchRadius1D(0.5, 0.25, 1.2),
         3.2,
         "1D reaction search radius should preserve legacy RMax arithmetic");
