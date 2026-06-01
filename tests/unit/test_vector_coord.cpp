@@ -254,6 +254,20 @@ void test_math_engine_facade()
     require_close(translated.y, 2.0, "translated-on-sphere y");
     require_close(translated.z, 0.0, "translated-on-sphere z");
 
+    Coord rotated_on_sphere =
+        nerdss::core::MathEngine::RotateOnSphere(
+            { 2.0, 1.0, 0.0 }, { 2.0, 0.0, 0.0 }, frame, pi / 2.0);
+    require_close(rotated_on_sphere.x, 2.0, "rotated-on-sphere x");
+    require_close(rotated_on_sphere.y, 0.0, "rotated-on-sphere y");
+    require_close(rotated_on_sphere.z, 1.0, "rotated-on-sphere z");
+
+    Coord axial_rotated =
+        nerdss::core::MathEngine::RotateOnSphere(
+            { 3.0, 0.0, 0.0 }, { 2.0, 0.0, 0.0 }, frame, pi / 2.0);
+    require_close(axial_rotated.x, 3.0, "axial rotated-on-sphere x");
+    require_close(axial_rotated.y, 0.0, "axial rotated-on-sphere y");
+    require_close(axial_rotated.z, 0.0, "axial rotated-on-sphere z");
+
     require_true(
         nerdss::core::MathEngine::AreAnglesNearlyEqual(1.0, 1.0 + 1.0e-5),
         "facade angle equality tolerance");

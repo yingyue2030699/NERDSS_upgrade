@@ -489,6 +489,37 @@ public:
     return translated + new_center;
   }
 
+  static Coordinate3 RotateOnSphere(Coordinate3 target, Coordinate3 center,
+                                    Matrix3 frame, Scalar angle) {
+    Vector3 i { frame[0], frame[1], frame[2] };
+    Vector3 j { frame[3], frame[4], frame[5] };
+    Vector3 k { frame[6], frame[7], frame[8] };
+    Vector3 target_vector { target - center };
+
+    Vector3 target_i { i * target_vector.dot(i) };
+    Vector3 target_jk { target_vector - target_i };
+    target_i.calc_magnitude();
+    target_jk.calc_magnitude();
+
+    if (target_jk.magnitude < 1.0e-8
+        || std::abs(target_i.magnitude - 1.0) < 1.0e-8) {
+      return target;
+    }
+
+    const Scalar pi { 3.141592653589793238462643383279502884 };
+    Scalar phi { std::acos(target_jk.dot(j) / target_jk.magnitude) };
+    if (target_jk.dot(k) < 0.0) {
+      phi = 2.0 * pi - phi;
+    }
+    phi += angle;
+
+    target_jk = j * (target_jk.magnitude * std::cos(phi))
+                + k * (target_jk.magnitude * std::sin(phi));
+    target_vector = target_i + target_jk;
+    return { target_vector.x + center.x, target_vector.y + center.y,
+             target_vector.z + center.z };
+  }
+
   static bool AreAnglesNearlyEqual(Scalar angle1, Scalar angle2) {
     return std::abs(angle1 - angle2) < 1.0e-4;
   }

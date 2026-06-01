@@ -82,38 +82,10 @@ Coord translate_on_sphere(Coord targ, Coord COM, Coord COMnew, std::array<double
 // input and output are cardesian coords
 Coord rotate_on_sphere(Coord Targ, Coord COM, std::array<double, 9> crdset, double dangle)
 {
-    Coord targnew;
-
-    // targ will rotate along O-COM line, i.e. i axis. so its projection along i is not change
-    Vector i = Vector { crdset[0], crdset[1], crdset[2] };
-    Vector j = Vector { crdset[3], crdset[4], crdset[5] };
-    Vector k = Vector { crdset[6], crdset[7], crdset[8] };
-    Vector targ = Vector { Targ - COM };
-
-    Vector targi = i * targ.dot(i);
-    Vector targjk = targ - targi;
-    targi.calc_magnitude();
-    targjk.calc_magnitude();
-    // if targ is on the line of O-COM, then no need to rotate
-    if (targjk.magnitude < 1E-8 || std::abs(targi.magnitude - 1.0) < 1E-8) {
-        targnew = Targ;
-    } else {
-        double phi = acos(targjk.dot(j) / targjk.magnitude);
-        if (targjk.dot(k) < 0.0) {
-            phi = 2.0 * M_PI - phi;
-        }
-        phi = phi + dangle;
-        targjk = j * (targjk.magnitude * cos(phi)) + k * (targjk.magnitude * sin(phi));
-        targ = targi + targjk;
-        targnew = Coord { targ.x + COM.x, targ.y + COM.y, targ.z + COM.z };
-    }
+    Coord targnew = nerdss::core::MathEngine::RotateOnSphere(Targ, COM, crdset, dangle);
     if (std::isnan(targnew.x)) {
-        if (targjk.magnitude < 1E-8 || std::abs(targi.magnitude - 1.0) < 1E-8) {
-            targnew = Coord { Targ.x, Targ.y, Targ.z };
-        } else {
-            std::cout << "WRONG! NON is generated after the rotation on sphere! EXIT..." << std::endl;
-            exit(1);
-        }
+        std::cout << "WRONG! NON is generated after the rotation on sphere! EXIT..." << std::endl;
+        exit(1);
     }
     return targnew;
 }
