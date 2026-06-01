@@ -49,6 +49,9 @@ trajectory math, restart semantics, or legacy input/output compatibility.
    association, rebinding-ratio, 2D table-integrand, 2D table interpolation,
    2D PIR table interpolation, 2D table rebinding-ratio, 2D table sizing, and
    implicit-lipid probability kernels behind `nerdss::core::ProbabilityEngine`.
+   Current slices additionally cover the 2D implicit-lipid binding
+   probability integration and block-distance solve while preserving legacy
+   wrapper mutation of `R2D`.
 4. Separate mutable topology operations from probability calculations.
 5. Introduce backend-neutral data-shape documentation for future GPU work:
    structure-of-arrays candidates, batchable kernels, and RNG constraints.

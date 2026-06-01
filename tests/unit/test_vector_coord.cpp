@@ -599,6 +599,24 @@ void test_probability_engine_facade()
             implicit_lipid_params.dt),
         function2D(0.8, &implicit_lipid_params),
         "2D implicit-lipid integrand facade should match legacy callback");
+
+    paramsIL direct_binding_params = implicit_lipid_params;
+    const auto direct_binding =
+        nerdss::core::ProbabilityEngine::ImplicitLipidBindingProbability2D(
+            direct_binding_params.dt, direct_binding_params.Dtot,
+            direct_binding_params.sigma, direct_binding_params.ka,
+            direct_binding_params.kb, direct_binding_params.Na,
+            direct_binding_params.Nlipid, direct_binding_params.area,
+            direct_binding_params.R2D);
+    paramsIL legacy_binding_params = implicit_lipid_params;
+    const double legacy_binding_probability =
+        pimplicitlipid_2D(legacy_binding_params);
+    require_close(
+        direct_binding.probability, legacy_binding_probability,
+        "2D implicit-lipid binding facade should match legacy wrapper");
+    require_close(
+        direct_binding.reaction_radius, legacy_binding_params.R2D,
+        "2D implicit-lipid binding facade should preserve legacy block distance");
 }
 
 } // namespace

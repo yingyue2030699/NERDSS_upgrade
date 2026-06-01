@@ -9,6 +9,8 @@
 #include <cmath>
 #include <complex>
 #include <cstddef>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_integration.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_sf_bessel.h>
 
@@ -17,6 +19,19 @@ namespace core {
 
 class ProbabilityEngine {
 public:
+  struct ImplicitLipidIntegralParameters2D {
+    double binding_radius {};
+    double diffusion_total {};
+    double association_rate {};
+    double reaction_radius {};
+    double time {};
+  };
+
+  struct ImplicitLipidBindingProbability2DResult {
+    double probability {};
+    double reaction_radius {};
+  };
+
   static double AssociationProbability3D(double r0, double time,
                                          double diffusion_total,
                                          double binding_radius, double alpha,
@@ -708,6 +723,116 @@ public:
     return 1.0 / std::pow(u, 3.0)
            * (std::exp(-diffusion_total * u * u * time) - 1.0)
            / (alpha * alpha + eta * eta) * (alpha * a - eta * b);
+  }
+
+  static double ImplicitLipidIntegralKernel2DCallback(double u,
+                                                      void* parameter) {
+    ImplicitLipidIntegralParameters2D* params =
+        static_cast<ImplicitLipidIntegralParameters2D*>(parameter);
+    return ImplicitLipidIntegralKernel2D(
+        u, params->binding_radius, params->diffusion_total,
+        params->association_rate, params->reaction_radius, params->time);
+  }
+
+  static double IntegrateImplicitLipidKernel2D(
+      double binding_radius, double diffusion_total, double association_rate,
+      double reaction_radius, double time) {
+    ImplicitLipidIntegralParameters2D params {};
+    params.binding_radius = binding_radius;
+    params.diffusion_total = diffusion_total;
+    params.association_rate = association_rate;
+    params.reaction_radius = reaction_radius;
+    params.time = time;
+
+    gsl_integration_workspace* workspace =
+        gsl_integration_workspace_alloc(1000000);
+    double result {};
+    double error {};
+    const double epsabs { 1.0e-5 };
+    const double epsrel { epsabs };
+    gsl_function function {};
+    function.function = &ImplicitLipidIntegralKernel2DCallback;
+    function.params = &params;
+
+    gsl_set_error_handler_off();
+    int status = gsl_integration_qagiu(
+        &function, 0.0, epsabs, epsrel, 1000000, workspace, &result, &error);
+    if (status != GSL_SUCCESS) {
+      double lower_bound { 0.0 };
+      double upper_bound { 1.0e4 };
+      while (std::abs(ImplicitLipidIntegralKernel2DCallback(
+                 upper_bound, function.params)) > 1.0e-5) {
+        upper_bound *= 1.5;
+      }
+      while (status != GSL_SUCCESS) {
+        status = gsl_integration_qags(
+            &function, lower_bound, upper_bound, epsabs, epsabs, 1000000,
+            workspace, &result, &error);
+        upper_bound *= 0.9;
+      }
+    }
+    gsl_integration_workspace_free(workspace);
+    gsl_set_error_handler(nullptr);
+
+    return result;
+  }
+
+  static double ImplicitLipidBlockDistance2D(
+      double time, double diffusion_total, double binding_radius,
+      double association_rate, double dissociation_rate, int solution_count,
+      int lipid_count, double membrane_area) {
+    const double dissociation_rate_per_microsecond {
+        dissociation_rate / 1.0e6 };
+    const double max_radius {
+        binding_radius + 3.0 * std::sqrt(4.0 * diffusion_total * time) };
+    const double target_probability {
+        ImplicitLipidDissociationProbability2D(
+            time, diffusion_total, binding_radius, association_rate,
+            dissociation_rate, solution_count, lipid_count, membrane_area) };
+    const double criterion { 1.0e-5 };
+    double radius_min { binding_radius };
+    double radius_max { max_radius };
+    double radius_mean { binding_radius };
+
+    while (std::abs(radius_max - radius_min) > criterion) {
+      radius_mean = 0.5 * (radius_max + radius_min);
+      const double integrated_probability {
+          4.0 * dissociation_rate_per_microsecond
+          * IntegrateImplicitLipidKernel2D(
+              binding_radius, diffusion_total, association_rate, radius_mean,
+              time) };
+      if (integrated_probability > target_probability) {
+        radius_min = radius_mean;
+      } else {
+        radius_max = radius_mean;
+      }
+    }
+
+    return radius_mean;
+  }
+
+  static ImplicitLipidBindingProbability2DResult
+  ImplicitLipidBindingProbability2D(
+      double time, double diffusion_total, double binding_radius,
+      double association_rate, double dissociation_rate, int solution_count,
+      int lipid_count, double membrane_area, double reaction_radius) {
+    ImplicitLipidBindingProbability2DResult result {};
+    result.reaction_radius = reaction_radius;
+    if (association_rate < 1.0e-15) {
+      result.probability = 0.0;
+      return result;
+    }
+
+    result.reaction_radius = ImplicitLipidBlockDistance2D(
+        time, diffusion_total, binding_radius, association_rate,
+        dissociation_rate, solution_count, lipid_count, membrane_area);
+    result.probability =
+        4.0 * association_rate
+        * IntegrateImplicitLipidKernel2D(
+            binding_radius, diffusion_total, association_rate,
+            result.reaction_radius, time);
+
+    return result;
   }
 };
 

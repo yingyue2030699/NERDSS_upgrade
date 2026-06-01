@@ -31,95 +31,30 @@ double function2D(double u, void* parameter)
 // the block-distance
 double integral_for_blockdistance2D(paramsIL& parameters2D)
 {
-    paramsIL params = parameters2D;
-
-    gsl_integration_workspace* w = gsl_integration_workspace_alloc(1e6);
-    double result, error;
-    double eps1 = 1.0e-5;
-    double eps2 = eps1;
-    gsl_function F;
-    F.function = &function2D;
-    F.params = &params;
-    gsl_set_error_handler_off();
-    int status = gsl_integration_qagiu(&F, 0, eps1, eps2, 1000000, w, &result, &error);
-    if (status != GSL_SUCCESS) {
-        double u1 = 0;
-        double u2 = 1.0e4;
-        while (std::abs(function2D(u2, F.params)) > 1.0e-5) {
-            u2 = u2 * 1.5;
-        }
-        while (status != GSL_SUCCESS) {
-            status = gsl_integration_qags(&F, u1, u2, eps1, eps1, 1000000, w, &result, &error);
-            u2 = u2 * 0.9;
-        }
-    }
-    gsl_integration_workspace_free(w);
-    gsl_set_error_handler(NULL);
-    return result;
+    return nerdss::core::ProbabilityEngine::IntegrateImplicitLipidKernel2D(
+        parameters2D.sigma, parameters2D.Dtot, parameters2D.ka,
+        parameters2D.R2D, parameters2D.dt);
 }
 
 void block_distance(paramsIL& parameters2D)
 {
-    double kb = parameters2D.kb / 1.0e6;
-    double sigma = parameters2D.sigma;
-    double D = parameters2D.Dtot;
-    double h = parameters2D.dt;
-    double Rmax = sigma + 3.0 * sqrt(4.0 * D * h);
-    double left = dissociate2D(parameters2D);
-    double criterion = 1e-5;
-    double rmin = sigma;
-    double rmax = Rmax;
-    double rmean, right;
-    while (std::abs(rmax - rmin) > criterion) {
-        rmean = 0.5 * (rmax + rmin);
-        parameters2D.R2D = rmean;
-        right = 4 * kb * integral_for_blockdistance2D(parameters2D);
-        if (right > left) {
-            rmin = rmean;
-        } else {
-            rmax = rmean;
-        }
-    }
-    parameters2D.R2D = rmean;
-    //std::cout<<left<<std::endl;
-    //std::cout<<rmean<<", "<<Rmax<<std::cin.get();
+    parameters2D.R2D =
+        nerdss::core::ProbabilityEngine::ImplicitLipidBlockDistance2D(
+            parameters2D.dt, parameters2D.Dtot, parameters2D.sigma,
+            parameters2D.ka, parameters2D.kb, parameters2D.Na,
+            parameters2D.Nlipid, parameters2D.area);
 }
 
 // binding probability, but must time the lipid density
 double pimplicitlipid_2D(paramsIL& parameters2D)
 {
-    double ka = parameters2D.ka;
-    if (ka < 1E-15) {
-        return 0.0;
-    }
-    block_distance(parameters2D);
-    // std::cout<<parameters2D.R2D<<std::endl;
-    paramsIL params = parameters2D;
-    gsl_integration_workspace* w = gsl_integration_workspace_alloc(1e6);
-    double result, error;
-    double eps1 = 1.0e-5;
-    double eps2 = eps1;
-    gsl_function F;
-    F.function = &function2D;
-    F.params = &params;
-    gsl_set_error_handler_off();
-    int status = gsl_integration_qagiu(&F, 0, eps1, eps2, 1000000, w, &result, &error);
-    if (status != GSL_SUCCESS) {
-        double u1 = 0;
-        double u2 = 1.0e4;
-        while (std::abs(function2D(u2, F.params)) > 1.0e-5) {
-            u2 = u2 * 1.5;
-        }
-        while (status != GSL_SUCCESS) {
-            status = gsl_integration_qags(&F, u1, u2, eps1, eps1, 1000000, w, &result, &error);
-            u2 = u2 * 0.9;
-        }
-    }
-    gsl_integration_workspace_free(w);
-    gsl_set_error_handler(NULL);
-
-    //double ka = parameters2D.ka;
-    return result * 4 * ka;
+    const auto result =
+        nerdss::core::ProbabilityEngine::ImplicitLipidBindingProbability2D(
+            parameters2D.dt, parameters2D.Dtot, parameters2D.sigma,
+            parameters2D.ka, parameters2D.kb, parameters2D.Na,
+            parameters2D.Nlipid, parameters2D.area, parameters2D.R2D);
+    parameters2D.R2D = result.reaction_radius;
+    return result.probability;
 }
 
 ///////////////////////////////////////////////////////////////
