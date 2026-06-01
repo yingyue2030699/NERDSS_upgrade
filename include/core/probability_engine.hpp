@@ -376,6 +376,44 @@ public:
            / (2.0 * static_cast<double>(dimensions) * time);
   }
 
+  static double BimolecularAssociationRate1D(double association_rate,
+                                             double area_3d_to_1d,
+                                             bool is_symmetric) {
+    double intrinsic_rate { association_rate / area_3d_to_1d };
+    if (!is_symmetric) {
+      intrinsic_rate /= 2.0;
+    }
+    return intrinsic_rate;
+  }
+
+  static double BimolecularAssociationRate2D(double association_rate,
+                                             double length_3d_to_2d,
+                                             bool is_symmetric) {
+    double intrinsic_rate { association_rate / length_3d_to_2d };
+    if (is_symmetric) {
+      intrinsic_rate *= 2.0;
+    }
+    return intrinsic_rate;
+  }
+
+  static double BimolecularAssociationRate3D(double association_rate,
+                                             bool is_symmetric,
+                                             bool has_surface_reactant,
+                                             bool has_fiber_reactant) {
+    double intrinsic_rate { association_rate };
+    if (has_surface_reactant && !has_fiber_reactant) {
+      intrinsic_rate *= 2.0;
+    }
+    if (is_symmetric) {
+      intrinsic_rate *= 2.0;
+    }
+    return intrinsic_rate;
+  }
+
+  static double SurfaceAssociationRate3DTo2D(double association_rate) {
+    return 2.0 * association_rate;
+  }
+
   static double ReactionSearchRadius1D(double diffusion_total, double time,
                                        double binding_radius) {
     return 4.0 * std::sqrt(2.0 * diffusion_total * time) + binding_radius;

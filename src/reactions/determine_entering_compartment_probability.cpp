@@ -1,6 +1,7 @@
 #include "reactions/bimolecular/2D_reaction_table_functions.hpp"
 #include "reactions/bimolecular/bimolecular_reactions.hpp"
 #include "reactions/implicitlipid/implicitlipid_reactions.hpp"
+#include "core/probability_engine.hpp"
 #include "tracing.hpp"
 
 void determine_entering_compartment_probability(double distToCompartment, const std::vector<TransmissionRxn> &transmissionRxns, int rxnIndex, int pro1Index,
@@ -17,8 +18,8 @@ void determine_entering_compartment_probability(double distToCompartment, const 
         // This movestat check is if you allow just dissociated proteins to avoid overlap
         if (transmissionRxns[rxnIndex].rateList[0].rate > 0)
         {
-            // declare intrinsic binding rate of 3D->2D case.
-            double ktemp{2.0 * transmissionRxns[rxnIndex].rateList[0].rate};
+            double ktemp { nerdss::core::ProbabilityEngine::SurfaceAssociationRate3DTo2D(
+                transmissionRxns[rxnIndex].rateList[0].rate) };
 
             double rxnProb {};
 

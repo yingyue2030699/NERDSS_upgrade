@@ -121,12 +121,12 @@ void determine_1D_bimolecular_reaction_probability(
       /*Evaluate probability of reaction, with reweighting*/
       // double ratio = forwardRxns[rxnIndex].bindRadius / R1;
 
-      // declare intrinsic binding rate of 1D->1D case.
-      double kact{forwardRxns[rxnIndex].rateList[rateIndex].rate / forwardRxns[rxnIndex].area3Dto1D};
-      if (forwardRxns[rxnIndex].isSymmetric == false)
-        kact /= 2.0; // for A(a)+B(b)->A(a!).B(b!) case
-        // This is different from 3D case since molecules can only approach from one side in 1D
-        // This is irrelevant of bypassing is allowed or not.
+      // This differs from 3D because 1D molecules can only approach from one
+      // side; bypassing does not affect this legacy normalization.
+      double kact { nerdss::core::ProbabilityEngine::BimolecularAssociationRate1D(
+          forwardRxns[rxnIndex].rateList[rateIndex].rate,
+          forwardRxns[rxnIndex].area3Dto1D,
+          forwardRxns[rxnIndex].isSymmetric) };
 
       double currnorm{1.0};
       double p0_ratio{1.0};

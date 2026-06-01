@@ -42,8 +42,8 @@ void determine_3D_implicitlipid_reaction_probability(int simItr, int rxnIndex, i
     if (!moleculeList[biMolData.pro1Index].isDissociated) {
         // This movestat check is if you allow just dissociated proteins to avoid overlap
         if (withinRmax && forwardRxns[rxnIndex].rateList[rateIndex].rate > 0) {
-            // declare intrinsic binding rate of 3D->2D case.
-            double ktemp { 2.0 * forwardRxns[rxnIndex].rateList[rateIndex].rate };
+            double ktemp { nerdss::core::ProbabilityEngine::SurfaceAssociationRate3DTo2D(
+                forwardRxns[rxnIndex].rateList[rateIndex].rate) };
 
             // Evaluate probability of reaction, implicit-lipid method doesn't need reweighting
             if (sep < 0) {
