@@ -6,6 +6,7 @@
 
 #include "core/diagnostics.hpp"
 
+#include <cstddef>
 #include <sstream>
 #include <string>
 
@@ -49,6 +50,15 @@ inline core::Diagnostic MakeInvalidBooleanDiagnostic(const std::string& value) {
   return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
 }
 
+inline core::Diagnostic
+MakeTooManyReactionReactantsDiagnostic(const std::string& reaction,
+                                       std::size_t reactant_count) {
+  std::ostringstream message;
+  message << "invalid reaction '" << reaction << "': has " << reactant_count
+          << " reacting molecules; expected at most 2";
+  return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
+}
+
 inline void ExitWithFileOpenDiagnostic(const std::string& path,
                                        const char* role) {
   core::ExitWithDiagnostic(MakeFileOpenDiagnostic(path, role));
@@ -70,6 +80,12 @@ inline void ExitWithSectionOrderDiagnostic(const std::string& path,
 
 inline void ExitWithInvalidBooleanDiagnostic(const std::string& value) {
   core::ExitWithDiagnostic(MakeInvalidBooleanDiagnostic(value));
+}
+
+inline void ExitWithTooManyReactionReactantsDiagnostic(
+    const std::string& reaction, std::size_t reactant_count) {
+  core::ExitWithDiagnostic(
+      MakeTooManyReactionReactantsDiagnostic(reaction, reactant_count));
 }
 
 } // namespace parser
