@@ -755,6 +755,23 @@ void test_probability_engine_facade()
         "2D free probability should match radial norm relation");
 
     require_close(
+        nerdss::core::ProbabilityEngine::PoissonEventProbability(0.0),
+        0.0,
+        "zero Poisson event probability should be zero");
+    require_close(
+        nerdss::core::ProbabilityEngine::PoissonEventProbability(1.0e-8),
+        1.0 - std::exp(-1.0e-8),
+        "small-lambda Poisson event probability should match legacy formula");
+    require_close(
+        nerdss::core::ProbabilityEngine::PoissonEventProbability(12.5),
+        1.0 - std::exp(-12.5),
+        "moderate-lambda Poisson event probability should match legacy formula");
+    require_close(
+        nerdss::core::ProbabilityEngine::PoissonEventProbability(2.5, 0.2, 0.602),
+        1.0 - std::exp(-(2.5 * 0.2 * 0.602)),
+        "rate-time Poisson event probability should match legacy formula");
+
+    require_close(
         nerdss::core::ProbabilityEngine::LoopClosureAssociationProbability(
             0.2, 3.0, 1.5),
         loop_closure_probability(0.2, 3.0, 1.5),
