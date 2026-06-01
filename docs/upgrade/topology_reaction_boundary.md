@@ -34,8 +34,11 @@ behavior-preserving helpers:
   complex index, and rewrites member `myComIndex` values.
 - `ApplyComplexSlotCompactionMove(...)` copies a live complex into an earlier
   empty slot and rewrites the moved members' `myComIndex` values. It mirrors the
-  complex-side move performed during empty-slot compaction without changing the
-  main-loop compaction call site yet.
+  complex-side move performed during empty-slot compaction.
+- `CompactEmptyComplexSlots(...)` runs the complex-side empty-slot sweep used by
+  `remove_empty_slots(...)`: it sorts the empty-complex list, moves live tail
+  complexes into earlier holes through `ApplyComplexSlotCompactionMove(...)`,
+  trims the tail, and clears `Complex::emptyComList`.
 
 The helpers intentionally preserve the legacy behavior:
 
@@ -49,6 +52,9 @@ The helpers intentionally preserve the legacy behavior:
   dissociation reassignment.
 - preserve the moved complex member order during empty-slot compaction, while
   updating only the moved members' complex index.
+- preserve the legacy complex compaction order by filling sorted empty slots
+  from the last live complex toward the front, then popping one tail slot for
+  each recorded empty complex.
 
 ## Behavior Tests
 
@@ -63,30 +69,29 @@ The standalone topology harness now covers:
 - reassignment into a reused empty complex slot without growing
   `complexList`;
 - the complex-side empty-slot compaction move that rewrites the moved complex
-  index and moved members' `myComIndex` values.
+  index and moved members' `myComIndex` values;
+- the production complex-side compaction sweep for unsorted interior holes and
+  tail-only empty slots.
 
 Validation for this slice:
 
 | Check | Result | Notes |
 | --- | --- | --- |
-| Standalone topology helper tests | Passed | `tests/topology/run_topology_tests.sh` covers append reservation, valid empty-slot reuse, stale empty-list entries, and release rollback behavior. |
+| Standalone topology helper tests | Passed | `tests/topology/run_topology_tests.sh` covers complex reservation/release, reassignment, compaction moves, and the complex-side empty-slot sweep. |
 | CTest unit suite | Passed | Existing unit executable rebuilt and passed. |
 | Serial build | Passed | `make serial` rebuilt `bin/nerdss`. |
 | Unified validation runner | Passed | Smoke, unit configure/build/CTest, and regression passed. |
-| Benchmark mode | Passed | `small_homotrimer` wall time `9.384s`, CPU time `8.982s`. |
+| Benchmark mode | Passed | `small_homotrimer` wall time `8.576s`, CPU time `8.464s`. |
 
 ## Follow-Up Slices
 
-1. Extend the standalone topology harness beyond slot reservation to cover
-   parent-complex reassignment and empty-slot compaction without constructing a
-   full simulation.
-2. Move `determine_parent_complex_IL` and `determine_parent_complex` behind a
+1. Move `determine_parent_complex_IL` and `determine_parent_complex` behind a
    `TopologyEditor`-style interface after adding tests for loop and split
    cases.
-3. Extract binding-interface release helpers shared by normal and
+2. Extract binding-interface release helpers shared by normal and
    implicit-lipid dissociation while preserving the current log-write order.
-4. Extract creation slot allocation separately from coordinate sampling so
+3. Extract creation slot allocation separately from coordinate sampling so
    creation can be tested without changing overlap/resampling RNG order.
-5. Extract `remove_empty_slots` into reusable topology compaction operations
-   only after validating a destruction case that observes molecule and complex
-   index remapping.
+4. Extract the molecule-side `remove_empty_slots` compaction sweep after
+   validating a destruction case that observes molecule index, binding-partner,
+   and interface partner remapping.

@@ -366,6 +366,134 @@ void test_complex_slot_compaction_move_updates_members()
         "compaction move should leave non-members untouched");
 }
 
+void test_compact_empty_complex_slots_moves_live_tail_complexes()
+{
+    reset_empty_complexes();
+    std::vector<Molecule> molecules(8);
+    for (int index = 0; index < static_cast<int>(molecules.size()); ++index) {
+        molecules[index].myComIndex = 99;
+    }
+
+    std::vector<Complex> complexes(6);
+    complexes[0].index = 0;
+    complexes[0].id = 10;
+    complexes[0].memberList = { 0 };
+    molecules[0].myComIndex = 0;
+
+    complexes[1].index = 1;
+    complexes[1].isEmpty = true;
+
+    complexes[2].index = 2;
+    complexes[2].id = 20;
+    complexes[2].memberList = { 2 };
+    molecules[2].myComIndex = 2;
+
+    complexes[3].index = 3;
+    complexes[3].isEmpty = true;
+
+    complexes[4].index = 4;
+    complexes[4].id = 40;
+    complexes[4].memberList = { 4, 6 };
+    molecules[4].myComIndex = 4;
+    molecules[6].myComIndex = 4;
+
+    complexes[5].index = 5;
+    complexes[5].id = 50;
+    complexes[5].memberList = { 5, 7 };
+    molecules[5].myComIndex = 5;
+    molecules[7].myComIndex = 5;
+
+    Complex::emptyComList.push_back(3);
+    Complex::emptyComList.push_back(1);
+
+    nerdss::reactions::topology::CompactEmptyComplexSlots(molecules, complexes);
+
+    require_equal(
+        static_cast<unsigned>(complexes.size()), 4,
+        "complex compaction should remove one slot per empty complex");
+    require_true(
+        Complex::emptyComList.empty(),
+        "complex compaction should clear the empty-complex list");
+    require_equal(
+        complexes[1].index, 1,
+        "complex compaction should rewrite first moved complex index");
+    require_equal(
+        complexes[1].id, 50,
+        "complex compaction should move the last live complex first");
+    require_vector_equal(
+        complexes[1].memberList, { 5, 7 },
+        "complex compaction should preserve first moved member order");
+    require_equal(
+        complexes[3].index, 3,
+        "complex compaction should rewrite second moved complex index");
+    require_equal(
+        complexes[3].id, 40,
+        "complex compaction should move the next live tail complex");
+    require_vector_equal(
+        complexes[3].memberList, { 4, 6 },
+        "complex compaction should preserve second moved member order");
+    require_equal(
+        molecules[5].myComIndex, 1,
+        "complex compaction should repoint first moved member");
+    require_equal(
+        molecules[7].myComIndex, 1,
+        "complex compaction should repoint second first-move member");
+    require_equal(
+        molecules[4].myComIndex, 3,
+        "complex compaction should repoint second moved member");
+    require_equal(
+        molecules[6].myComIndex, 3,
+        "complex compaction should repoint second second-move member");
+    require_equal(
+        molecules[0].myComIndex, 0,
+        "complex compaction should leave earlier live members untouched");
+    require_equal(
+        molecules[2].myComIndex, 2,
+        "complex compaction should leave middle live members untouched");
+}
+
+void test_compact_empty_complex_slots_trims_tail_empty_slots()
+{
+    reset_empty_complexes();
+    std::vector<Molecule> molecules(2);
+    molecules[0].myComIndex = 0;
+    molecules[1].myComIndex = 1;
+
+    std::vector<Complex> complexes(4);
+    complexes[0].index = 0;
+    complexes[0].memberList = { 0 };
+    complexes[1].index = 1;
+    complexes[1].memberList = { 1 };
+    complexes[2].index = 2;
+    complexes[2].isEmpty = true;
+    complexes[3].index = 3;
+    complexes[3].isEmpty = true;
+
+    Complex::emptyComList.push_back(3);
+    Complex::emptyComList.push_back(2);
+
+    nerdss::reactions::topology::CompactEmptyComplexSlots(molecules, complexes);
+
+    require_equal(
+        static_cast<unsigned>(complexes.size()), 2,
+        "tail-only complex compaction should trim empty tail slots");
+    require_true(
+        Complex::emptyComList.empty(),
+        "tail-only complex compaction should clear empty-complex list");
+    require_vector_equal(
+        complexes[0].memberList, { 0 },
+        "tail-only complex compaction should leave first live complex in place");
+    require_vector_equal(
+        complexes[1].memberList, { 1 },
+        "tail-only complex compaction should leave second live complex in place");
+    require_equal(
+        molecules[0].myComIndex, 0,
+        "tail-only complex compaction should leave first molecule index");
+    require_equal(
+        molecules[1].myComIndex, 1,
+        "tail-only complex compaction should leave second molecule index");
+}
+
 } // namespace
 
 int main()
@@ -381,6 +509,8 @@ int main()
     test_apply_dissociation_reassignment_for_larger_split();
     test_reused_empty_slot_can_receive_dissociation_reassignment();
     test_complex_slot_compaction_move_updates_members();
+    test_compact_empty_complex_slots_moves_live_tail_complexes();
+    test_compact_empty_complex_slots_trims_tail_empty_slots();
 
     std::cout << "topology_operations tests passed\n";
     return 0;

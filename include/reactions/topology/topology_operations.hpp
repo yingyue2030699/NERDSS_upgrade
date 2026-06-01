@@ -76,6 +76,33 @@ inline void ApplyComplexSlotCompactionMove(
     }
 }
 
+inline void CompactEmptyComplexSlots(
+    std::vector<Molecule>& molecule_list, std::vector<Complex>& complex_list)
+{
+    std::sort(Complex::emptyComList.begin(), Complex::emptyComList.end());
+
+    int last_non_empty_index = static_cast<int>(complex_list.size()) - 1;
+    for (auto& first_empty_index : Complex::emptyComList) {
+        while (complex_list[last_non_empty_index].isEmpty) {
+            --last_non_empty_index;
+        }
+        if (last_non_empty_index <= first_empty_index) {
+            break;
+        }
+
+        ApplyComplexSlotCompactionMove(
+            first_empty_index, last_non_empty_index, molecule_list,
+            complex_list);
+        --last_non_empty_index;
+    }
+
+    for (int count = 0; count < static_cast<int>(Complex::emptyComList.size());
+         ++count) {
+        complex_list.pop_back();
+    }
+    Complex::emptyComList.clear();
+}
+
 } // namespace topology
 } // namespace reactions
 } // namespace nerdss
