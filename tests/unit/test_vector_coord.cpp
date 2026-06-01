@@ -627,6 +627,18 @@ void test_probability_engine_facade()
         0.0,
         "zero rotational diffusion should contribute no total diffusion");
     require_close(
+        nerdss::core::ProbabilityEngine::TranslationalDiffusionDisplacement(1.25, 0.04, 3.0),
+        std::sqrt(0.3),
+        "translational displacement helper should preserve Einstein relation");
+    require_close(
+        nerdss::core::ProbabilityEngine::TranslationalDiffusionDisplacement(1.25, 0.04, 2.0),
+        std::sqrt(0.2),
+        "2D translational displacement helper should preserve dimensional factor");
+    require_close(
+        nerdss::core::ProbabilityEngine::ScaledDisplacementLimitSquared(std::sqrt(0.3), 2.5),
+        1.875,
+        "scaled displacement limit helper should preserve squared threshold");
+    require_close(
         nerdss::core::ProbabilityEngine::BimolecularAssociationRate1D(12.0, 6.0, false),
         1.0,
         "1D association-rate helper should preserve asymmetric half-rate normalization");

@@ -73,7 +73,10 @@ trajectory math, restart semantics, or legacy input/output compatibility.
    kernels into `ProbabilityEngine`: 1D area scaling, 2D length scaling,
    3D surface/symmetric multipliers, and 3D-to-surface rate doubling now have
    named pure helpers while the legacy reaction callers retain all mutation,
-   table allocation, and warning behavior.
+   table allocation, and warning behavior. The complex displacement guard now
+   also forwards the pure Einstein displacement and scaled-threshold arithmetic
+   through `ProbabilityEngine`, keeping coordinate mutation and cancellation
+   decisions in the legacy association path.
 4. Separate mutable topology operations from probability calculations.
 5. Introduce backend-neutral data-shape documentation for future GPU work:
    structure-of-arrays candidates, batchable kernels, and RNG constraints.

@@ -1,4 +1,5 @@
 #include "classes/class_Rxns.hpp"
+#include "core/probability_engine.hpp"
 #include "reactions/association/association.hpp"
 #include "reactions/shared_reaction_functions.hpp"
 #include "tracing.hpp"
@@ -18,8 +19,7 @@ void measure_complex_displacement(bool& flag, Complex& reactCom1, Complex& react
     // TRACE();
     double dx, dy, dz;
     double R2;
-    double Dtot1, Dtot2, cf, Dr1, Dr2;
-    bool in2D = false;
+    double Dtot1, Dtot2;
     double dim1 = 3; //dimensionality
     double dim2 = 3; //dimensionality
     double eps = 1e-12; // for machine precision
@@ -39,8 +39,6 @@ void measure_complex_displacement(bool& flag, Complex& reactCom1, Complex& react
         //complex 2 is in 2D
         dim2 = 2;
     }
-    if (dim1 == 2 && dim2 == 2)
-        in2D = true;
     // For 1D, dim1=1, dim2=1
     if (reactCom1.onFiber) {
         dim1 = 1;
@@ -49,25 +47,23 @@ void measure_complex_displacement(bool& flag, Complex& reactCom1, Complex& react
         dim1 = 1;
     }
 
-    /*rotational displacement*/
-    cf = cos(sqrt(2.0 * (dim1 - 1) * reactCom1.Dr.z * params.timeStep));
-    Dr1 = 2.0 * reactCom1.radius * reactCom1.radius * (1.0 - cf);
-    cf = cos(sqrt(2.0 * (dim2 - 1) * reactCom2.Dr.z * params.timeStep));
-    Dr2 = 2.0 * reactCom2.radius * reactCom2.radius * (1.0 - cf);
+    Dtot1 += nerdss::core::ProbabilityEngine::RotationalDiffusionContribution(
+        reactCom1.Dr.z, params.timeStep, reactCom1.radius * reactCom1.radius,
+        static_cast<int>(dim1)); //in 2D, use 4
+    Dtot2 += nerdss::core::ProbabilityEngine::RotationalDiffusionContribution(
+        reactCom2.Dr.z, params.timeStep, reactCom2.radius * reactCom2.radius,
+        static_cast<int>(dim2)); //in 2D, use 4, 3D, use 6
 
-    Dtot1 += Dr1 / (2.0 * dim1 * params.timeStep); //in 2D, use 4
-    Dtot2 += Dr2 / (2.0 * dim2 * params.timeStep); //in 2D, use 4, 3D, use 6
-
-    double avgDisp1 = sqrt(2.0 * dim1 * Dtot1 * params.timeStep); //from Einstein relation.
-    double avgDisp2 = sqrt(2.0 * dim2 * Dtot2 * params.timeStep); //from Einstein relation.
+    double avgDisp1 = nerdss::core::ProbabilityEngine::TranslationalDiffusionDisplacement(
+        Dtot1, params.timeStep, dim1); //from Einstein relation.
+    double avgDisp2 = nerdss::core::ProbabilityEngine::TranslationalDiffusionDisplacement(
+        Dtot2, params.timeStep, dim2); //from Einstein relation.
 
     /*calculated average displacement of both complexes in the step, due to both translational and rotational diffusion. Use this distance multiplied by params.scaleMaxDisplace to decide if motion is too large */
-    double LARGE_DISP1 = params.scaleMaxDisplace * avgDisp1; //nm
-    double LDISP1SQ = LARGE_DISP1 * LARGE_DISP1;
-    double LARGE_DISP2 = params.scaleMaxDisplace * avgDisp2; //nm
-    double LDISP2SQ = LARGE_DISP2 * LARGE_DISP2;
-
-    int mp;
+    double LDISP1SQ = nerdss::core::ProbabilityEngine::ScaledDisplacementLimitSquared(
+        avgDisp1, params.scaleMaxDisplace); //nm^2
+    double LDISP2SQ = nerdss::core::ProbabilityEngine::ScaledDisplacementLimitSquared(
+        avgDisp2, params.scaleMaxDisplace); //nm^2
 
     /*Distance between ind_com[c1] and all_com[c1Main], and ind_com[c2] and all_com[c2Main]
       protein and the complex COMs.
@@ -102,9 +98,8 @@ void measure_complex_displacement(bool& flag, Complex& reactCom1, Complex& react
     }
 
     //NOW LOOP OVER ALL PROTEINS in Com1
-    for (int i = 0; i < reactCom1.memberList.size(); i++) {
+    for (int mp : reactCom1.memberList) {
         //proteins are in the same order in both lists.
-        mp = reactCom1.memberList[i];
         dx = moleculeList[mp].tmpComCoord.x - moleculeList[mp].comCoord.x;
         dy = moleculeList[mp].tmpComCoord.y - moleculeList[mp].comCoord.y;
         dz = moleculeList[mp].tmpComCoord.z - moleculeList[mp].comCoord.z;
@@ -122,9 +117,8 @@ void measure_complex_displacement(bool& flag, Complex& reactCom1, Complex& react
     } //all proteins in Com1
     //NOW LOOP OVER ALL PROTEINS in C2
 
-    for (int i = 0; i < reactCom2.memberList.size(); i++) {
+    for (int mp : reactCom2.memberList) {
         //proteins are in the same order in both lists.
-        mp = reactCom2.memberList[i];
         dx = moleculeList[mp].tmpComCoord.x - moleculeList[mp].comCoord.x;
         dy = moleculeList[mp].tmpComCoord.y - moleculeList[mp].comCoord.y;
         dz = moleculeList[mp].tmpComCoord.z - moleculeList[mp].comCoord.z;

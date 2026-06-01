@@ -376,6 +376,18 @@ public:
            / (2.0 * static_cast<double>(dimensions) * time);
   }
 
+  static double TranslationalDiffusionDisplacement(double diffusion_total,
+                                                   double time,
+                                                   double dimensions) {
+    return std::sqrt(2.0 * dimensions * diffusion_total * time);
+  }
+
+  static double ScaledDisplacementLimitSquared(double average_displacement,
+                                               double scale_factor) {
+    const double limit { scale_factor * average_displacement };
+    return limit * limit;
+  }
+
   static double BimolecularAssociationRate1D(double association_rate,
                                              double area_3d_to_1d,
                                              bool is_symmetric) {
