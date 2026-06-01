@@ -627,6 +627,41 @@ void test_probability_engine_facade()
         0.0,
         "zero rotational diffusion should contribute no total diffusion");
     require_close(
+        nerdss::core::ProbabilityEngine::BimolecularAssociationRate1D(12.0, 6.0, false),
+        1.0,
+        "1D association-rate helper should preserve asymmetric half-rate normalization");
+    require_close(
+        nerdss::core::ProbabilityEngine::BimolecularAssociationRate1D(12.0, 6.0, true),
+        2.0,
+        "1D association-rate helper should preserve symmetric rate normalization");
+    require_close(
+        nerdss::core::ProbabilityEngine::BimolecularAssociationRate2D(12.0, 3.0, false),
+        4.0,
+        "2D association-rate helper should preserve length conversion");
+    require_close(
+        nerdss::core::ProbabilityEngine::BimolecularAssociationRate2D(12.0, 3.0, true),
+        8.0,
+        "2D association-rate helper should preserve symmetric doubling");
+    require_close(
+        nerdss::core::ProbabilityEngine::BimolecularAssociationRate3D(
+            5.0, false, true, false),
+        10.0,
+        "3D association-rate helper should preserve surface non-fiber doubling");
+    require_close(
+        nerdss::core::ProbabilityEngine::BimolecularAssociationRate3D(
+            5.0, true, true, false),
+        20.0,
+        "3D association-rate helper should preserve stacked symmetric and surface scaling");
+    require_close(
+        nerdss::core::ProbabilityEngine::BimolecularAssociationRate3D(
+            5.0, false, true, true),
+        5.0,
+        "3D association-rate helper should preserve fiber exception to surface doubling");
+    require_close(
+        nerdss::core::ProbabilityEngine::SurfaceAssociationRate3DTo2D(7.0),
+        14.0,
+        "3D-to-surface association-rate helper should preserve legacy doubling");
+    require_close(
         nerdss::core::ProbabilityEngine::ReactionSearchRadius1D(0.5, 0.25, 1.2),
         3.2,
         "1D reaction search radius should preserve legacy RMax arithmetic");

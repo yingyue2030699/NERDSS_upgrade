@@ -68,7 +68,12 @@ trajectory math, restart semantics, or legacy input/output compatibility.
    through the same formulas. The rotational diffusion contribution used by
    2D/3D bimolecular and implicit-lipid probability calculations is now a pure
    `ProbabilityEngine` helper as well, preserving the legacy cosine
-   displacement relation and `2 * dimension * dt` denominator.
+   displacement relation and `2 * dimension * dt` denominator. The next
+   probability slice moves bimolecular and surface association-rate conversion
+   kernels into `ProbabilityEngine`: 1D area scaling, 2D length scaling,
+   3D surface/symmetric multipliers, and 3D-to-surface rate doubling now have
+   named pure helpers while the legacy reaction callers retain all mutation,
+   table allocation, and warning behavior.
 4. Separate mutable topology operations from probability calculations.
 5. Introduce backend-neutral data-shape documentation for future GPU work:
    structure-of-arrays candidates, batchable kernels, and RNG constraints.
