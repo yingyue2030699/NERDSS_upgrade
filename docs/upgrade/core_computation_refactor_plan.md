@@ -80,7 +80,10 @@ trajectory math, restart semantics, or legacy input/output compatibility.
    helper now centralizes `1 - exp(-lambda)` for unimolecular, dissociation,
    state-change, and loop-closure probability calculations while preserving
    RNG draws, counters, topology mutation, warnings, and cancellation in the
-   legacy reaction callers.
+   legacy reaction callers. The closed-loop dissociation correction ratio now
+   also lives behind `ProbabilityEngine`, reusing the same Poisson kernel for
+   `(1 - exp(-lambda)) / lambda` while leaving RNG cancellation, rebinding-rate
+   selection warnings, and topology mutation in the legacy dissociation path.
 4. Separate mutable topology operations from probability calculations.
 5. Introduce backend-neutral data-shape documentation for future GPU work:
    structure-of-arrays candidates, batchable kernels, and RNG constraints.
