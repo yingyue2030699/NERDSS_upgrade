@@ -84,6 +84,11 @@ trajectory math, restart semantics, or legacy input/output compatibility.
    also lives behind `ProbabilityEngine`, reusing the same Poisson kernel for
    `(1 - exp(-lambda)) / lambda` while leaving RNG cancellation, rebinding-rate
    selection warnings, and topology mutation in the legacy dissociation path.
+   The 3D bimolecular association parameter bundle now exposes the pure
+   diffusion-limited rate, intrinsic rate, alpha, and association-probability
+   coefficient behind `ProbabilityEngine` while preserving pair search,
+   reweighting, RNG, and molecule probability-vector mutation in the legacy
+   3D reaction path.
 4. Separate mutable topology operations from probability calculations.
 5. Introduce backend-neutral data-shape documentation for future GPU work:
    structure-of-arrays candidates, batchable kernels, and RNG constraints.
