@@ -88,6 +88,33 @@ MakeUnknownStateInterfaceDiagnostic(const std::string& interface_name,
   return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
 }
 
+inline core::Diagnostic MakeUnknownReactionMoleculeTemplateDiagnostic(
+    const std::string& molecule_name) {
+  std::ostringstream message;
+  message << "invalid reaction molecule '" << molecule_name
+          << "': molecule template is not declared";
+  return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
+}
+
+inline core::Diagnostic MakeUnknownReactionInterfaceDiagnostic(
+    const std::string& interface_name, const std::string& molecule_name) {
+  std::ostringstream message;
+  message << "invalid reaction interface '" << interface_name
+          << "' for molecule '" << molecule_name
+          << "': interface is not declared on the molecule template";
+  return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
+}
+
+inline core::Diagnostic MakeUnknownReactionInterfaceStateDiagnostic(
+    const std::string& state, const std::string& interface_name,
+    const std::string& molecule_name) {
+  std::ostringstream message;
+  message << "invalid reaction state '" << state << "' for interface '"
+          << interface_name << "' on molecule '" << molecule_name
+          << "': state is not declared on the molecule template interface";
+  return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
+}
+
 inline void ExitWithFileOpenDiagnostic(const std::string& path,
                                        const char* role) {
   core::ExitWithDiagnostic(MakeFileOpenDiagnostic(path, role));
@@ -133,6 +160,25 @@ inline void ExitWithUnknownStateInterfaceDiagnostic(
     const std::string& interface_name, const std::string& molecule_name) {
   core::ExitWithDiagnostic(
       MakeUnknownStateInterfaceDiagnostic(interface_name, molecule_name));
+}
+
+inline void ExitWithUnknownReactionMoleculeTemplateDiagnostic(
+    const std::string& molecule_name) {
+  core::ExitWithDiagnostic(
+      MakeUnknownReactionMoleculeTemplateDiagnostic(molecule_name));
+}
+
+inline void ExitWithUnknownReactionInterfaceDiagnostic(
+    const std::string& interface_name, const std::string& molecule_name) {
+  core::ExitWithDiagnostic(
+      MakeUnknownReactionInterfaceDiagnostic(interface_name, molecule_name));
+}
+
+inline void ExitWithUnknownReactionInterfaceStateDiagnostic(
+    const std::string& state, const std::string& interface_name,
+    const std::string& molecule_name) {
+  core::ExitWithDiagnostic(MakeUnknownReactionInterfaceStateDiagnostic(
+      state, interface_name, molecule_name));
 }
 
 } // namespace parser
