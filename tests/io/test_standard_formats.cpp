@@ -13,6 +13,10 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+void ForwardRxn::display() const
+{
+}
+
 namespace {
 
 void require_equal(const std::string& actual, const std::string& expected, const std::string& label)
@@ -102,6 +106,70 @@ void require_mkdir(const std::string& path)
 
 void test_runtime_csv_writer_adoption(const std::string& tmp_dir)
 {
+    {
+        const std::string path = join_path(tmp_dir, "copy_numbers_header.dat");
+        std::ofstream out(path.c_str());
+        copyCounters counter_arrays;
+        Parameters params;
+        params.fromRestart = false;
+
+        Interface single_state_iface;
+        single_state_iface.name = "a";
+        single_state_iface.stateList.push_back(Interface::State('0', 0));
+
+        Interface multi_state_iface;
+        multi_state_iface.name = "b";
+        multi_state_iface.stateList.push_back(Interface::State('U', 1));
+        multi_state_iface.stateList.push_back(Interface::State('P', 2));
+
+        MolTemplate alpha;
+        alpha.molName = "Alpha";
+        alpha.interfaceList.push_back(single_state_iface);
+
+        MolTemplate beta;
+        beta.molName = "Beta";
+        beta.interfaceList.push_back(multi_state_iface);
+
+        std::vector<MolTemplate> mol_templates;
+        mol_templates.push_back(alpha);
+        mol_templates.push_back(beta);
+        std::vector<ForwardRxn> forward_rxns;
+
+        const int species_count = init_speciesFile(out, counter_arrays, mol_templates, forward_rxns, params);
+        out.close();
+
+        require_true(species_count == 3, "species header count");
+        require_equal(read_file(path), "Time (s),Alpha(a),Beta(b~U),Beta(b~P)\n",
+            "copy-number header writer preserves ordinary legacy CSV bytes");
+    }
+
+    {
+        const std::string path = join_path(tmp_dir, "copy_numbers_header_escaped.dat");
+        std::ofstream out(path.c_str());
+        copyCounters counter_arrays;
+        Parameters params;
+        params.fromRestart = false;
+
+        Interface iface;
+        iface.name = "site\"1";
+        iface.stateList.push_back(Interface::State('0', 0));
+
+        MolTemplate mol_template;
+        mol_template.molName = "A,B";
+        mol_template.interfaceList.push_back(iface);
+
+        std::vector<MolTemplate> mol_templates;
+        mol_templates.push_back(mol_template);
+        std::vector<ForwardRxn> forward_rxns;
+
+        const int species_count = init_speciesFile(out, counter_arrays, mol_templates, forward_rxns, params);
+        out.close();
+
+        require_true(species_count == 1, "escaped species header count");
+        require_equal(read_file(path), "Time (s),\"A,B(site\"\"1)\"\n",
+            "copy-number header writer quotes special CSV fields");
+    }
+
     {
         const std::string path = join_path(tmp_dir, "observables_multi.dat");
         std::ofstream out(path.c_str());
