@@ -182,6 +182,15 @@ reacting molecules. This preserves the existing semantic validation boundary
 while moving the previous direct `std::cerr` plus `exit(1)` path to the shared
 structured `input` diagnostic formatter and `ExitCode::input`.
 
+## Parser Observable Diagnostics
+
+The observable parser now uses
+`nerdss::parser::MakeUnknownObservableTypeDiagnostic` and
+`ExitWithUnknownObservableTypeDiagnostic` when an observable type is not one of
+`molecule` or `complex`. This migrates the previous direct `std::cerr` plus
+`exit(1)` path in `parse_observable` to a structured `input` diagnostic and
+`ExitCode::input`.
+
 ## Optional I/O Artifact Diagnostics
 
 The serial PDB and bonded-complex JSON artifact writers now use
@@ -205,7 +214,7 @@ of exiting, matching the previous optional-artifact behavior.
   keyword, and section-order checks, `src/parser/parse_reaction.cpp` outside
   the migrated too-many-reactants check,
   `src/parser/parse_states.cpp`,
-  `src/parser/parse_observable.cpp`, `src/parser/parse_molecule_bngl.cpp`,
+  `src/parser/parse_molecule_bngl.cpp`,
   `src/parser/check_for_valid_states.cpp`, `src/parser/parse_input_array.cpp`,
   `src/parser/parse_input_for_a_new_simulation.cpp`,
   `src/parser/parse_input_for_a_restart_simulation.cpp`, and

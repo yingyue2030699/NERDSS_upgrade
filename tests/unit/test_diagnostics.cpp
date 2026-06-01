@@ -168,6 +168,25 @@ void test_parser_too_many_reaction_reactants_diagnostic() {
                    "too many reaction reactants rendering includes exit code");
 }
 
+void test_parser_unknown_observable_type_diagnostic() {
+  const nerdss::core::Diagnostic diagnostic =
+      nerdss::parser::MakeUnknownObservableTypeDiagnostic("species");
+  const std::string formatted = nerdss::core::FormatDiagnostic(diagnostic);
+
+  require_true(diagnostic.category == nerdss::error::ErrorCategory::input,
+               "unknown observable type should use input category");
+  require_true(diagnostic.exit_code == nerdss::error::ExitCode::input,
+               "unknown observable type should use input exit code");
+  require_contains(diagnostic.message,
+                   "invalid observable type 'species': expected molecule or "
+                   "complex",
+                   "unknown observable type message includes accepted values");
+  require_contains(formatted, "ERROR [input]",
+                   "unknown observable type rendering includes category");
+  require_contains(formatted, "exit_code=input(2)",
+                   "unknown observable type rendering includes exit code");
+}
+
 } // namespace
 
 int main() {
@@ -178,5 +197,6 @@ int main() {
   test_parser_invalid_boolean_diagnostic();
   test_setup_invalid_state_character_diagnostic();
   test_parser_too_many_reaction_reactants_diagnostic();
+  test_parser_unknown_observable_type_diagnostic();
   return 0;
 }
