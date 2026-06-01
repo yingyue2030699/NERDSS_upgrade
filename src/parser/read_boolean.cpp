@@ -1,3 +1,4 @@
+#include "parser/parser_diagnostics.hpp"
 #include "parser/parser_functions.hpp"
 
 bool read_boolean(std::string fileLine)
@@ -15,7 +16,7 @@ bool read_boolean(std::string fileLine)
     else if (fileLine == "1" || fileLine == "true")
         return true;
     else {
-        std::cerr << "FATAL ERROR: Cannot read boolean.";
-        exit(1);
+        nerdss::parser::ExitWithInvalidBooleanDiagnostic(fileLine);
     }
+    return false;
 }
