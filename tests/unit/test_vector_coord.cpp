@@ -30,6 +30,7 @@ double get_prevSurv(const gsl_matrix* survMatrix, double Dtot, double deltaT, do
 double calc_pirr(gsl_matrix* pirMatrix, gsl_matrix* survMatrix, double RStepSize, double r, double r0, double a);
 double DDpirr_pfree_ratio_ps(gsl_matrix* pirMatrix, gsl_matrix* survMatrix, gsl_matrix* normMatrix,
     double r, double Dtot, double deltaT, double r0, double ps_prev, double rTol, double bindRadius);
+double loop_closure_probability(double timeStep, double associationRate, double loopCoopFactor);
 size_t size_lookup(double bindRadius, double Dtot, const Parameters& params, double Rmax);
 bool areSameAngle(double ang1, double ang2);
 bool areParallel(const double& angle);
@@ -538,6 +539,17 @@ void test_probability_engine_facade()
     require_close(
         free_probability, free_norm / (2.0 * pi * 0.6),
         "2D free probability should match radial norm relation");
+
+    require_close(
+        nerdss::core::ProbabilityEngine::LoopClosureAssociationProbability(
+            0.2, 3.0, 1.5),
+        loop_closure_probability(0.2, 3.0, 1.5),
+        "loop-closure association probability facade should match legacy wrapper");
+    require_close(
+        nerdss::core::ProbabilityEngine::LoopClosureAssociationProbability(
+            0.2, 0.0, 1.5),
+        0.0,
+        "zero-rate loop-closure association probability should be zero");
 
     paramsIL implicit_lipid_params {};
     implicit_lipid_params.dt = 0.1;

@@ -82,15 +82,7 @@ void evaluate_binding_within_complex(int pro1Index, int pro2Index, int iface1Ind
 				*/
                 
 
-                double c0_nm3 = 0.602; // standard state 1M in units of /nm^3
-                //double m = kb / (ka * 1E6 * c0_nm3) * 2.0; // 1E6 is to convert ka to units of /s
-                double rateClose = ka * c0_nm3 * coop; //(1.0 + m); // ka*c0/(1+m) where m is defined above
-
-                // rateClose will be in units of /us (due to ka units), so no need for 1E-6 factor, since timeStep has
-                // units of us!!!!!
-
-		        double poisson = params.timeStep * rateClose;
-		        probvec1 = 1 - exp(-poisson);
+                probvec1 = loop_closure_probability(params.timeStep, ka, coop);
 
                 if (oneRxn.irrevRingClosure) {
                     // std::cout << "Ring closure reaction probability for species " << pro1Index << " and " << pro2Index
