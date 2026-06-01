@@ -208,6 +208,26 @@ void test_parser_unknown_observable_type_diagnostic() {
                    "unknown observable type rendering includes exit code");
 }
 
+void test_parser_unknown_state_interface_diagnostic() {
+  const nerdss::core::Diagnostic diagnostic =
+      nerdss::parser::MakeUnknownStateInterfaceDiagnostic("siteB", "Kinase");
+  const std::string formatted = nerdss::core::FormatDiagnostic(diagnostic);
+
+  require_true(diagnostic.category == nerdss::error::ErrorCategory::input,
+               "unknown state interface should use input category");
+  require_true(diagnostic.exit_code == nerdss::error::ExitCode::input,
+               "unknown state interface should use input exit code");
+  require_contains(
+      diagnostic.message,
+      "invalid state declaration for molecule 'Kinase': interface 'siteB' is "
+      "not declared on the molecule template",
+      "unknown state interface message includes molecule and interface");
+  require_contains(formatted, "ERROR [input]",
+                   "unknown state interface rendering includes category");
+  require_contains(formatted, "exit_code=input(2)",
+                   "unknown state interface rendering includes exit code");
+}
+
 } // namespace
 
 int main() {
@@ -220,5 +240,6 @@ int main() {
   test_setup_invalid_state_character_diagnostic();
   test_parser_too_many_reaction_reactants_diagnostic();
   test_parser_unknown_observable_type_diagnostic();
+  test_parser_unknown_state_interface_diagnostic();
   return 0;
 }
