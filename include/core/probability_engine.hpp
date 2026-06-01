@@ -19,6 +19,16 @@ namespace core {
 
 class ProbabilityEngine {
 public:
+  template <typename Real>
+  static Real PoissonEventProbability(Real lambda) {
+    return Real { 1 } - std::exp(-lambda);
+  }
+
+  static double PoissonEventProbability(double rate, double time,
+                                        double unit_scale) {
+    return PoissonEventProbability(rate * time * unit_scale);
+  }
+
   struct ImplicitLipidIntegralParameters2D {
     double binding_radius {};
     double diffusion_total {};
@@ -863,7 +873,7 @@ public:
     const double poisson {
         time * association_rate * standard_state_per_nm3
         * cooperativity_factor };
-    return 1.0 - std::exp(-poisson);
+    return PoissonEventProbability(poisson);
   }
 
   static double ImplicitLipidIntegralKernel2D(double u, double binding_radius,
