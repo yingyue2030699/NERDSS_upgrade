@@ -1,3 +1,4 @@
+#include "parser/parser_diagnostics.hpp"
 #include "parser/parser_functions.hpp"
 
 void parse_states(std::string& line, MolTemplate& molTemplate)
@@ -21,16 +22,18 @@ void parse_states(std::string& line, MolTemplate& molTemplate)
         [&](const Interface& oneIface) -> bool { return oneIface.name == ifaceName; });
 
     if (ifaceNameItr == molTemplate.interfaceList.end()) {
-        std::cout << ifaceName << " is not a valid interface for molecule " << molTemplate.molName << ".\n";
-        exit(1);
+        nerdss::parser::ExitWithUnknownStateInterfaceDiagnostic(
+            ifaceName, molTemplate.molName);
     } else {
         // TODO: replace the placeholder integer
-        for (auto& oneState : states)
+        for (auto& oneState : states) {
             ifaceNameItr->stateList.emplace_back(static_cast<char>(std::toupper(oneState[0])), -1);
+        }
 
         std::cout << ifaceName << " has " << states.size() << " state(s): ";
-        for (auto oneState : states)
+        for (const auto& oneState : states) {
             std::cout << oneState << "\t";
-        std::cout << std::endl;
+        }
+        std::cout << '\n';
     }
 }

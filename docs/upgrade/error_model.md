@@ -200,6 +200,16 @@ The observable parser now uses
 `exit(1)` path in `parse_observable` to a structured `input` diagnostic and
 `ExitCode::input`.
 
+## Parser State Declaration Diagnostics
+
+Molecule state declarations now use
+`nerdss::parser::MakeUnknownStateInterfaceDiagnostic` and
+`ExitWithUnknownStateInterfaceDiagnostic` when a state line references an
+interface that is not declared on the molecule template. This migrates the
+previous direct `std::cout` plus `exit(1)` path in `parse_states` to a
+structured `input` diagnostic and `ExitCode::input` while preserving accepted
+state declarations and state-token normalization.
+
 ## Optional I/O Artifact Diagnostics
 
 The serial PDB and bonded-complex JSON artifact writers now use
@@ -222,7 +232,6 @@ of exiting, matching the previous optional-artifact behavior.
   `src/parser/parse_input.cpp` outside the migrated file-open, molecule
   keyword, and section-order checks, `src/parser/parse_reaction.cpp` outside
   the migrated too-many-reactants check,
-  `src/parser/parse_states.cpp`,
   `src/parser/parse_molecule_bngl.cpp`,
   `src/parser/check_for_valid_states.cpp`,
   `src/parser/parse_input_for_a_new_simulation.cpp`,

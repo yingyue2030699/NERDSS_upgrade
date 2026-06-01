@@ -78,6 +78,16 @@ MakeUnknownObservableTypeDiagnostic(const std::string& observable_type) {
   return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
 }
 
+inline core::Diagnostic
+MakeUnknownStateInterfaceDiagnostic(const std::string& interface_name,
+                                    const std::string& molecule_name) {
+  std::ostringstream message;
+  message << "invalid state declaration for molecule '" << molecule_name
+          << "': interface '" << interface_name
+          << "' is not declared on the molecule template";
+  return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
+}
+
 inline void ExitWithFileOpenDiagnostic(const std::string& path,
                                        const char* role) {
   core::ExitWithDiagnostic(MakeFileOpenDiagnostic(path, role));
@@ -117,6 +127,12 @@ inline void ExitWithUnknownObservableTypeDiagnostic(
     const std::string& observable_type) {
   core::ExitWithDiagnostic(
       MakeUnknownObservableTypeDiagnostic(observable_type));
+}
+
+inline void ExitWithUnknownStateInterfaceDiagnostic(
+    const std::string& interface_name, const std::string& molecule_name) {
+  core::ExitWithDiagnostic(
+      MakeUnknownStateInterfaceDiagnostic(interface_name, molecule_name));
 }
 
 } // namespace parser
