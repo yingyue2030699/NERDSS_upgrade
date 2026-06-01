@@ -1,5 +1,6 @@
 #include "error_handling.hpp"
 #include "io/io.hpp"
+#include "parser/parser_diagnostics.hpp"
 #include "parser/parser_functions.hpp"
 #include <cmath>
 #include <limits>
@@ -77,9 +78,8 @@ void parse_reaction(std::ifstream& reactionFile, int& totSpecies, int& numProvid
 
     // check to make sure the reactants side only has two molecules
     if (reactantSpecies.size() > 2) {
-        std::cerr << "Error, invalid reaction.\n";
-        std::cerr << "Reaction " << reaction << " has more than two reacting molecules.\n";
-        exit(1);
+        nerdss::parser::ExitWithTooManyReactionReactantsDiagnostic(
+            reaction, reactantSpecies.size());
     }
 
     // Check for the reaction type

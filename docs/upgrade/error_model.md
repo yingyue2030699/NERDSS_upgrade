@@ -168,6 +168,15 @@ expression contains a character outside the accepted alphanumeric token,
 includes the offending character, state expression, and molecule name, and
 exits with `ExitCode::input`.
 
+## Parser Reaction Semantic Diagnostics
+
+The reaction parser now uses
+`nerdss::parser::MakeTooManyReactionReactantsDiagnostic` and
+`ExitWithTooManyReactionReactantsDiagnostic` when a reaction has more than two
+reacting molecules. This preserves the existing semantic validation boundary
+while moving the previous direct `std::cerr` plus `exit(1)` path to the shared
+structured `input` diagnostic formatter and `ExitCode::input`.
+
 ## Remaining Traceback Gaps
 
 - Diagnostics unit coverage is now part of the normal CMake/CTest path through
@@ -177,7 +186,8 @@ exits with `ExitCode::input`.
 - Parser failures that still call `exit(...)`, `error(...)`, throw ad hoc
   exceptions, or write direct `std::cerr` messages include remaining paths in
   `src/parser/parse_input.cpp` outside the migrated file-open, molecule
-  keyword, and section-order checks, `src/parser/parse_reaction.cpp`,
+  keyword, and section-order checks, `src/parser/parse_reaction.cpp` outside
+  the migrated too-many-reactants check,
   `src/parser/parse_states.cpp`,
   `src/parser/parse_observable.cpp`, `src/parser/parse_molecule_bngl.cpp`,
   `src/parser/check_for_valid_states.cpp`, `src/parser/parse_input_array.cpp`,
