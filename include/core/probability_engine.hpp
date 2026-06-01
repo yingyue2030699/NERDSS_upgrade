@@ -356,6 +356,21 @@ public:
     return std::sqrt(diffusion_total * time) / 50.0;
   }
 
+  static double ReactionSearchRadius1D(double diffusion_total, double time,
+                                       double binding_radius) {
+    return 4.0 * std::sqrt(2.0 * diffusion_total * time) + binding_radius;
+  }
+
+  static double ReactionSearchRadius2D(double diffusion_total, double time,
+                                       double binding_radius) {
+    return 3.5 * std::sqrt(4.0 * diffusion_total * time) + binding_radius;
+  }
+
+  static double ReactionSearchRadius3D(double diffusion_total, double time,
+                                       double binding_radius) {
+    return 3.0 * std::sqrt(6.0 * diffusion_total * time) + binding_radius;
+  }
+
   static double QuantizeDiffusionFor2DTable(double diffusion_total) {
     double scaled_diffusion {};
     if (diffusion_total < 0.0001) {

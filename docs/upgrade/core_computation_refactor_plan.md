@@ -59,7 +59,10 @@ trajectory math, restart semantics, or legacy input/output compatibility.
    while keeping the legacy `integrator` function as a forwarding wrapper.
    The 2D diffusion-table binning helper now also lives behind
    `ProbabilityEngine` so bimolecular and implicit-lipid reaction paths share
-   one table quantization rule.
+   one table quantization rule. Reaction search-radius/RMax arithmetic for
+   1D, 2D, and 3D candidate checks is also exposed through pure
+   `ProbabilityEngine` helpers while legacy reaction paths keep forwarding
+   through the same formulas.
 4. Separate mutable topology operations from probability calculations.
 5. Introduce backend-neutral data-shape documentation for future GPU work:
    structure-of-arrays candidates, batchable kernels, and RNG constraints.

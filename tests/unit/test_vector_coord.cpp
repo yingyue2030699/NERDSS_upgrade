@@ -583,6 +583,22 @@ void test_probability_engine_facade()
         nerdss::core::ProbabilityEngine::TableStepSize2D(1.0, 0.01), 0.002,
         "2D table step helper should preserve legacy sqrt(Dt)/50 relation");
     require_close(
+        nerdss::core::ProbabilityEngine::ReactionSearchRadius1D(0.5, 0.25, 1.2),
+        3.2,
+        "1D reaction search radius should preserve legacy RMax arithmetic");
+    require_close(
+        nerdss::core::ProbabilityEngine::ReactionSearchRadius1D(0.5, 0.25, 0.0),
+        2.0,
+        "1D protein-DNA reaction search radius should allow zero binding radius");
+    require_close(
+        nerdss::core::ProbabilityEngine::ReactionSearchRadius2D(0.5, 0.25, 1.2),
+        3.6748737341529163,
+        "2D reaction search radius should preserve legacy RMax arithmetic");
+    require_close(
+        nerdss::core::ProbabilityEngine::ReactionSearchRadius3D(0.5, 0.25, 1.2),
+        3.798076211353316,
+        "3D reaction search radius should preserve legacy RMax arithmetic");
+    require_close(
         nerdss::core::ProbabilityEngine::QuantizeDiffusionFor2DTable(9.6e-5),
         1.0e-4,
         "2D diffusion table binning should round the smallest bucket");
