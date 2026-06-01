@@ -1,6 +1,7 @@
 #include "classes/class_Coord.hpp"
 #include "classes/class_Molecule_Complex.hpp"
 #include "classes/class_Vector.hpp"
+#include "core/math_engine.hpp"
 #include "reactions/bimolecular/bimolecular_reactions.hpp"
 #include <iostream>
 
@@ -55,11 +56,7 @@ bool get_distance(int pro1, int pro2, int iface1, int iface2, int rxnIndex, int 
     if (isSphere == true && is2D == true) {
       Coord iface11 = moleculeList[pro1].interfaceList[iface1].coord;
       Coord iface22 = moleculeList[pro2].interfaceList[iface2].coord;
-      double r1 = iface11.get_magnitude();
-      double r2 = iface22.get_magnitude();
-      double r = (r1 + r2) / 2.0; //membraneObject.sphereR; //
-      double theta = acos((iface11.x * iface22.x + iface11.y * iface22.y + iface11.z * iface22.z) / r1 / r2);
-      R1 = r * theta;
+      R1 = nerdss::core::MathEngine::GeodesicDistance(iface11, iface22);
       sep = R1 - currRxn.bindRadius;
     } else if (is1D) {
       double coordx1{moleculeList[pro1].interfaceList[iface1].coord.x};
@@ -73,10 +70,8 @@ bool get_distance(int pro1, int pro2, int iface1, int iface2, int rxnIndex, int 
         sep = R1; 
       }
     } else {
-      double dx = moleculeList[pro1].interfaceList[iface1].coord.x -
-                  moleculeList[pro2].interfaceList[iface2].coord.x;
-      double dy = moleculeList[pro1].interfaceList[iface1].coord.y -
-                  moleculeList[pro2].interfaceList[iface2].coord.y;
+      const Coord iface11 = moleculeList[pro1].interfaceList[iface1].coord;
+      const Coord iface22 = moleculeList[pro2].interfaceList[iface2].coord;
       // double dz {
       // (std::abs(complexList[moleculeList[pro1].myComIndex].D.z - 0) <
       // 1E-10
@@ -86,13 +81,11 @@ bool get_distance(int pro1, int pro2, int iface1, int iface2, int rxnIndex, int 
       //         ? 0
       //         : moleculeList[pro1].interfaceList[iface1].coord.z -
       //         moleculeList[pro2].interfaceList[iface2].coord.z };
-      double dz{};
       if (is2D == true) {
-          dz = 0;
+          R1 = nerdss::core::MathEngine::PlanarDistanceXY(iface11, iface22);
       } else {
-          dz = moleculeList[pro1].interfaceList[iface1].coord.z - moleculeList[pro2].interfaceList[iface2].coord.z;
+          R1 = nerdss::core::MathEngine::CoordinateDistance(iface11, iface22);
       }
-      R1 = sqrt((dx * dx) + (dy * dy) + (dz * dz));
       sep = R1 - currRxn.bindRadius;
     }
     /*Rmax should be the binding radius plus ~max diffusion distance, using
