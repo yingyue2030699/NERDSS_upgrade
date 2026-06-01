@@ -358,6 +358,7 @@ def run_cli_error_checks(executable: Path) -> List[CommandResult]:
     checks = []
     check_dir = Path(tempfile.mkdtemp(prefix="nerdss-cli-check-"))
     try:
+        stage_smoke_input(check_dir)
         checks.append(run_command([str(executable), "--help"], check_dir, timeout=10.0))
         checks.append(run_command([str(executable), "-f"], check_dir, timeout=10.0))
         checks.append(
@@ -370,15 +371,30 @@ def run_cli_error_checks(executable: Path) -> List[CommandResult]:
                 timeout=10.0,
             )
         )
+        checks.append(
+            run_command(
+                [
+                    str(executable),
+                    "-f",
+                    "smoke.inp",
+                    "--coordinate",
+                    "missing_coords.pdb",
+                    "--seed",
+                    "1",
+                ],
+                check_dir,
+                timeout=10.0,
+            )
+        )
     finally:
         shutil.rmtree(check_dir, ignore_errors=True)
     return checks
 
 
 def cli_error_checks_passed(checks: List[CommandResult]) -> bool:
-    if len(checks) != 4:
+    if len(checks) != 5:
         return False
-    help_check, missing_file, missing_seed, missing_restart = checks
+    help_check, missing_file, missing_seed, missing_restart, missing_coordinate = checks
     return (
         help_check.exit_code == 0
         and "Usage:" in help_check.stdout
@@ -389,6 +405,10 @@ def cli_error_checks_passed(checks: List[CommandResult]) -> bool:
         and missing_restart.exit_code == 9
         and "ERROR [file_io]" in missing_restart.stderr
         and "cannot open restart file 'missing_restart.dat'" in missing_restart.stderr
+        and missing_coordinate.exit_code == 9
+        and "ERROR [file_io]" in missing_coordinate.stderr
+        and "cannot open coordinate file 'missing_coords.pdb'"
+        in missing_coordinate.stderr
     )
 
 
