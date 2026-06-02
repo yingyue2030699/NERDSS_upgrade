@@ -88,7 +88,10 @@ trajectory math, restart semantics, or legacy input/output compatibility.
    diffusion-limited rate, intrinsic rate, alpha, and association-probability
    coefficient behind `ProbabilityEngine` while preserving pair search,
    reweighting, RNG, and molecule probability-vector mutation in the legacy
-   3D reaction path.
+   3D reaction path. Compartment entry/exit transmission now also shares a pure
+   setup helper for the doubled surface association rate and compartment
+   probability parameter bundle while the legacy wrappers retain molecule
+   probability mutation and warning behavior.
 4. Separate mutable topology operations from probability calculations.
 5. Introduce backend-neutral data-shape documentation for future GPU work:
    structure-of-arrays candidates, batchable kernels, and RNG constraints.

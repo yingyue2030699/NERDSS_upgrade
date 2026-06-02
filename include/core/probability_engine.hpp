@@ -475,6 +475,31 @@ public:
     return 2.0 * association_rate;
   }
 
+  struct CompartmentTransmissionParameters {
+    double reaction_radius_2d {};
+    double binding_radius {};
+    double diffusion_total {};
+    double association_rate {};
+    double time {};
+    double compartment_radius {};
+    double site_density {};
+  };
+
+  static CompartmentTransmissionParameters CompartmentTransmissionSetup(
+      double association_rate, double binding_radius, double diffusion_total,
+      double time, double compartment_radius, double site_density) {
+    CompartmentTransmissionParameters parameters {};
+    parameters.reaction_radius_2d = 0.0;
+    parameters.binding_radius = binding_radius;
+    parameters.diffusion_total = diffusion_total;
+    parameters.association_rate =
+        SurfaceAssociationRate3DTo2D(association_rate);
+    parameters.time = time;
+    parameters.compartment_radius = compartment_radius;
+    parameters.site_density = site_density;
+    return parameters;
+  }
+
   static double ReactionSearchRadius1D(double diffusion_total, double time,
                                        double binding_radius) {
     return 4.0 * std::sqrt(2.0 * diffusion_total * time) + binding_radius;
