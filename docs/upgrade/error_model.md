@@ -210,6 +210,13 @@ reacting molecules. This preserves the existing semantic validation boundary
 while moving the previous direct `std::cerr` plus `exit(1)` path to the shared
 structured `input` diagnostic formatter and `ExitCode::input`.
 
+Additional reaction parse boundary failures now use structured diagnostics for
+missing reaction arrows, null-to-null reactions whose type cannot be inferred,
+unknown reaction parameter keywords, and incomplete assembled reactions. The
+legacy parser behavior is preserved for accepted reactions, while rejected
+reactions now report stable `input` diagnostics through the shared formatter
+instead of direct `std::cerr`/`exit(1)` calls.
+
 ## Parser Observable Diagnostics
 
 The observable parser now uses
@@ -270,9 +277,8 @@ of exiting, matching the previous optional-artifact behavior.
   exceptions, or write direct `std::cerr` messages include remaining paths in
   `src/parser/parse_input.cpp` outside the migrated file-open, molecule
   keyword, section-order, and molecule copy-number checks,
-  `src/parser/parse_reaction.cpp` outside the migrated too-many-reactants
-  check, `src/parser/parse_molecule_bngl.cpp` outside the migrated starting
-  molecule copy-number parser,
+  `src/parser/parse_molecule_bngl.cpp` outside the migrated starting molecule
+  copy-number parser,
   `src/parser/parse_input_for_a_new_simulation.cpp`,
   `src/parser/parse_input_for_a_restart_simulation.cpp`, and
   `src/parser/parse_input_for_add_file.cpp`. Other `parse_molFile` semantic

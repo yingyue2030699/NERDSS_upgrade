@@ -90,6 +90,42 @@ MakeTooManyReactionReactantsDiagnostic(const std::string& reaction,
 }
 
 inline core::Diagnostic
+MakeMissingReactionArrowDiagnostic(const std::string& reaction) {
+  std::ostringstream message;
+  message << "invalid reaction '" << reaction
+          << "': missing reaction arrow; expected '->' or '<->'";
+  return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
+}
+
+inline core::Diagnostic
+MakeAmbiguousReactionTypeDiagnostic(const std::string& reaction) {
+  std::ostringstream message;
+  message << "invalid reaction '" << reaction
+          << "': cannot determine reaction type when both sides are null";
+  return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
+}
+
+inline core::Diagnostic MakeInvalidReactionKeywordDiagnostic(
+    const std::string& keyword, const std::string& reaction) {
+  std::ostringstream message;
+  message << "invalid reaction parameter keyword '" << keyword << "'";
+  if (!reaction.empty()) {
+    message << " for reaction '" << reaction << "'";
+  }
+  return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
+}
+
+inline core::Diagnostic MakeIncompleteReactionDiagnostic(
+    const std::string& reaction, const std::string& reason) {
+  std::ostringstream message;
+  message << "invalid reaction '" << reaction << "'";
+  if (!reason.empty()) {
+    message << ": " << reason;
+  }
+  return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
+}
+
+inline core::Diagnostic
 MakeUnknownObservableTypeDiagnostic(const std::string& observable_type) {
   std::ostringstream message;
   message << "invalid observable type '" << observable_type
@@ -174,6 +210,28 @@ inline void ExitWithTooManyReactionReactantsDiagnostic(
     const std::string& reaction, std::size_t reactant_count) {
   core::ExitWithDiagnostic(
       MakeTooManyReactionReactantsDiagnostic(reaction, reactant_count));
+}
+
+inline void ExitWithMissingReactionArrowDiagnostic(
+    const std::string& reaction) {
+  core::ExitWithDiagnostic(MakeMissingReactionArrowDiagnostic(reaction));
+}
+
+inline void ExitWithAmbiguousReactionTypeDiagnostic(
+    const std::string& reaction) {
+  core::ExitWithDiagnostic(MakeAmbiguousReactionTypeDiagnostic(reaction));
+}
+
+inline void ExitWithInvalidReactionKeywordDiagnostic(
+    const std::string& keyword, const std::string& reaction) {
+  core::ExitWithDiagnostic(
+      MakeInvalidReactionKeywordDiagnostic(keyword, reaction));
+}
+
+inline void ExitWithIncompleteReactionDiagnostic(const std::string& reaction,
+                                                 const std::string& reason) {
+  core::ExitWithDiagnostic(
+      MakeIncompleteReactionDiagnostic(reaction, reason));
 }
 
 inline void ExitWithUnknownObservableTypeDiagnostic(
