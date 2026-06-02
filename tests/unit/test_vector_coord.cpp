@@ -704,6 +704,30 @@ void test_probability_engine_facade()
         nerdss::core::ProbabilityEngine::SurfaceAssociationRate3DTo2D(7.0),
         14.0,
         "3D-to-surface association-rate helper should preserve legacy doubling");
+    const auto compartment_transmission =
+        nerdss::core::ProbabilityEngine::CompartmentTransmissionSetup(
+            7.0, 0.8, 1.5, 0.02, 12.0, 0.35);
+    require_close(
+        compartment_transmission.reaction_radius_2d, 0.0,
+        "compartment transmission setup should preserve zero R2D");
+    require_close(
+        compartment_transmission.binding_radius, 0.8,
+        "compartment transmission setup should preserve binding radius");
+    require_close(
+        compartment_transmission.diffusion_total, 1.5,
+        "compartment transmission setup should preserve total diffusion");
+    require_close(
+        compartment_transmission.association_rate, 14.0,
+        "compartment transmission setup should preserve 3D-to-surface rate doubling");
+    require_close(
+        compartment_transmission.time, 0.02,
+        "compartment transmission setup should preserve timestep");
+    require_close(
+        compartment_transmission.compartment_radius, 12.0,
+        "compartment transmission setup should preserve compartment radius");
+    require_close(
+        compartment_transmission.site_density, 0.35,
+        "compartment transmission setup should preserve compartment site density");
     require_close(
         nerdss::core::ProbabilityEngine::ReactionSearchRadius1D(0.5, 0.25, 1.2),
         3.2,
@@ -839,6 +863,40 @@ void test_probability_engine_facade()
     implicit_lipid_params.compartmentR = 10.0;
     implicit_lipid_params.compartSiteRho = 0.2;
     implicit_lipid_params.R2D = 1.2;
+    paramsIL compartment_transmission_params {};
+    compartment_transmission_params.R2D =
+        compartment_transmission.reaction_radius_2d;
+    compartment_transmission_params.sigma =
+        compartment_transmission.binding_radius;
+    compartment_transmission_params.Dtot =
+        compartment_transmission.diffusion_total;
+    compartment_transmission_params.ka =
+        compartment_transmission.association_rate;
+    compartment_transmission_params.dt = compartment_transmission.time;
+    compartment_transmission_params.compartmentR =
+        compartment_transmission.compartment_radius;
+    compartment_transmission_params.compartSiteRho =
+        compartment_transmission.site_density;
+    require_close(
+        nerdss::core::ProbabilityEngine::CompartmentEntryProbability(
+            0.9, compartment_transmission.time,
+            compartment_transmission.diffusion_total,
+            compartment_transmission.binding_radius,
+            compartment_transmission.association_rate,
+            compartment_transmission.compartment_radius,
+            compartment_transmission.site_density),
+        prob_entering_compartment(0.9, compartment_transmission_params),
+        "compartment transmission setup should feed legacy entry probability");
+    require_close(
+        nerdss::core::ProbabilityEngine::CompartmentExitProbability(
+            0.9, compartment_transmission.time,
+            compartment_transmission.diffusion_total,
+            compartment_transmission.binding_radius,
+            compartment_transmission.association_rate,
+            compartment_transmission.compartment_radius,
+            compartment_transmission.site_density),
+        prob_exiting_compartment(0.9, compartment_transmission_params),
+        "compartment transmission setup should feed legacy exit probability");
     require_close(
         nerdss::core::ProbabilityEngine::ImplicitLipidDissociationProbability2D(
             implicit_lipid_params.dt, implicit_lipid_params.Dtot,
