@@ -1,4 +1,3 @@
-#include "error_handling.hpp"
 #include "io/io.hpp"
 #include "parser/parser_diagnostics.hpp"
 #include "parser/parser_functions.hpp"
@@ -52,8 +51,9 @@ void parse_reaction(std::ifstream& reactionFile, int& totSpecies, int& numProvid
             size_t position = reaction.find("->");
             reactantSide = reaction.substr(0, position);
             productSide = reaction.substr(position + 2, std::string::npos); // +2 is to remove delimiter
-        } else
-            invalid_rxn(std::string("Missing reaction arrow."), __func__, __LINE__);
+        } else {
+            nerdss::parser::ExitWithMissingReactionArrowDiagnostic(reaction);
+        }
     }
 
     { // break into species based on '+'
@@ -105,8 +105,7 @@ void parse_reaction(std::ifstream& reactionFile, int& totSpecies, int& numProvid
             parsedRxn.rxnType = ReactionType::destruction;
             std::cout << "Destruction reaction detected\n";
         } else {
-            std::cerr << "FATAL ERROR: Ccannot determine reaction type. Please check before moving on.\n";
-            exit(1);
+            nerdss::parser::ExitWithAmbiguousReactionTypeDiagnostic(reaction);
         }
     } else if ((reactantSpecies.size()) == 1 && (productSpecies.size() == 2)) {
         parsedRxn.rxnType = ReactionType::uniMolCreation;
@@ -214,8 +213,7 @@ void parse_reaction(std::ifstream& reactionFile, int& totSpecies, int& numProvid
             else if (*lineItr == '=') {
                 auto keyFind = rxnKeywords.find(buffer);
                 if (keyFind == rxnKeywords.end()) {
-                    std::cerr << buffer + " is an invalid argument for the reactions block. Exiting... San Check!";
-                    exit(1);
+                    nerdss::parser::ExitWithInvalidReactionKeywordDiagnostic(buffer, reaction);
                 }
 
                 line.erase(line.begin(), lineItr + 1); // hard coded for character length '='
@@ -489,8 +487,7 @@ void parse_reaction(std::ifstream& reactionFile, int& totSpecies, int& numProvid
             // Make sure everything that we need to be defined was provided
             auto status = oneRxn.isComplete(molTemplateList);
             if (!status.first) {
-                std::cerr << status.second << " [" << reaction << "].\n";
-                exit(1);
+                nerdss::parser::ExitWithIncompleteReactionDiagnostic(reaction, status.second);
             } else
                 std::cout << status.second << " [" << reaction << "].\n";
 
@@ -508,8 +505,7 @@ void parse_reaction(std::ifstream& reactionFile, int& totSpecies, int& numProvid
             // Make sure everything that we need to be defined was provided
             auto status = parsedRxn.isComplete(molTemplateList);
             if (!status.first) {
-                std::cerr << "Error, " << status.second << " [" << reaction << "].\n";
-                exit(1);
+                nerdss::parser::ExitWithIncompleteReactionDiagnostic(reaction, status.second);
             } else
                 std::cout << status.second << " [" << reaction << "].\n";
             parsedRxn.assemble_reactions(forwardRxns, backRxns, createDestructRxns, transmissionRxns, molTemplateList);

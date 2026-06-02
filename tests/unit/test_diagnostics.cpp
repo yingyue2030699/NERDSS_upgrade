@@ -299,6 +299,86 @@ void test_parser_too_many_reaction_reactants_diagnostic() {
                    "too many reaction reactants rendering includes exit code");
 }
 
+void test_parser_missing_reaction_arrow_diagnostic() {
+  const nerdss::core::Diagnostic diagnostic =
+      nerdss::parser::MakeMissingReactionArrowDiagnostic("A+B");
+  const std::string formatted = nerdss::core::FormatDiagnostic(diagnostic);
+
+  require_true(diagnostic.category == nerdss::error::ErrorCategory::input,
+               "missing reaction arrow should use input category");
+  require_true(diagnostic.exit_code == nerdss::error::ExitCode::input,
+               "missing reaction arrow should use input exit code");
+  require_contains(
+      diagnostic.message,
+      "invalid reaction 'A+B': missing reaction arrow; expected '->' or "
+      "'<->'",
+      "missing reaction arrow message includes accepted arrows");
+  require_contains(formatted, "ERROR [input]",
+                   "missing reaction arrow rendering includes category");
+  require_contains(formatted, "exit_code=input(2)",
+                   "missing reaction arrow rendering includes exit code");
+}
+
+void test_parser_ambiguous_reaction_type_diagnostic() {
+  const nerdss::core::Diagnostic diagnostic =
+      nerdss::parser::MakeAmbiguousReactionTypeDiagnostic("null->0");
+  const std::string formatted = nerdss::core::FormatDiagnostic(diagnostic);
+
+  require_true(diagnostic.category == nerdss::error::ErrorCategory::input,
+               "ambiguous reaction type should use input category");
+  require_true(diagnostic.exit_code == nerdss::error::ExitCode::input,
+               "ambiguous reaction type should use input exit code");
+  require_contains(
+      diagnostic.message,
+      "invalid reaction 'null->0': cannot determine reaction type when both "
+      "sides are null",
+      "ambiguous reaction type message includes null/null cause");
+  require_contains(formatted, "ERROR [input]",
+                   "ambiguous reaction type rendering includes category");
+  require_contains(formatted, "exit_code=input(2)",
+                   "ambiguous reaction type rendering includes exit code");
+}
+
+void test_parser_invalid_reaction_keyword_diagnostic() {
+  const nerdss::core::Diagnostic diagnostic =
+      nerdss::parser::MakeInvalidReactionKeywordDiagnostic("badkey",
+                                                           "A(a)->A(b)");
+  const std::string formatted = nerdss::core::FormatDiagnostic(diagnostic);
+
+  require_true(diagnostic.category == nerdss::error::ErrorCategory::input,
+               "invalid reaction keyword should use input category");
+  require_true(diagnostic.exit_code == nerdss::error::ExitCode::input,
+               "invalid reaction keyword should use input exit code");
+  require_contains(
+      diagnostic.message,
+      "invalid reaction parameter keyword 'badkey' for reaction 'A(a)->A(b)'",
+      "invalid reaction keyword message includes keyword and reaction");
+  require_contains(formatted, "ERROR [input]",
+                   "invalid reaction keyword rendering includes category");
+  require_contains(formatted, "exit_code=input(2)",
+                   "invalid reaction keyword rendering includes exit code");
+}
+
+void test_parser_incomplete_reaction_diagnostic() {
+  const nerdss::core::Diagnostic diagnostic =
+      nerdss::parser::MakeIncompleteReactionDiagnostic(
+          "A(a)+B(b)->A(a!1).B(b!1)", "missing onrate3dka");
+  const std::string formatted = nerdss::core::FormatDiagnostic(diagnostic);
+
+  require_true(diagnostic.category == nerdss::error::ErrorCategory::input,
+               "incomplete reaction should use input category");
+  require_true(diagnostic.exit_code == nerdss::error::ExitCode::input,
+               "incomplete reaction should use input exit code");
+  require_contains(
+      diagnostic.message,
+      "invalid reaction 'A(a)+B(b)->A(a!1).B(b!1)': missing onrate3dka",
+      "incomplete reaction message includes reaction and reason");
+  require_contains(formatted, "ERROR [input]",
+                   "incomplete reaction rendering includes category");
+  require_contains(formatted, "exit_code=input(2)",
+                   "incomplete reaction rendering includes exit code");
+}
+
 void test_parser_unknown_observable_type_diagnostic() {
   const nerdss::core::Diagnostic diagnostic =
       nerdss::parser::MakeUnknownObservableTypeDiagnostic("species");
@@ -416,6 +496,10 @@ int main() {
   test_setup_sphere_compartment_conflict_diagnostic();
   test_setup_compartment_water_box_clearance_diagnostic();
   test_parser_too_many_reaction_reactants_diagnostic();
+  test_parser_missing_reaction_arrow_diagnostic();
+  test_parser_ambiguous_reaction_type_diagnostic();
+  test_parser_invalid_reaction_keyword_diagnostic();
+  test_parser_incomplete_reaction_diagnostic();
   test_parser_unknown_observable_type_diagnostic();
   test_parser_unknown_state_interface_diagnostic();
   test_parser_unknown_reaction_molecule_template_diagnostic();
