@@ -16,18 +16,22 @@ void determine_exiting_compartment_probability(double distToCompartment, const s
     if (moleculeList[pro1Index].isDissociated != true) {
         // This movestat check is if you allow just dissociated proteins to avoid overlap
         if (transmissionRxns[rxnIndex].rateList[0].rate > 0) {
-            double ktemp { nerdss::core::ProbabilityEngine::SurfaceAssociationRate3DTo2D(
-                transmissionRxns[rxnIndex].rateList[0].rate) };
+            const auto transmissionParams {
+                nerdss::core::ProbabilityEngine::CompartmentTransmissionSetup(
+                    transmissionRxns[rxnIndex].rateList[0].rate,
+                    transmissionRxns[rxnIndex].bindRadius, Dtot,
+                    parameters.timeStep, membraneObject.compartmentR,
+                    membraneObject.droplet.rho) };
             double rxnProb {};
 
             paramsIL params3D {};
-            params3D.R2D = 0.0;
-            params3D.sigma = transmissionRxns[rxnIndex].bindRadius;
-            params3D.Dtot = Dtot;
-            params3D.ka = ktemp;
-            params3D.dt = parameters.timeStep;
-            params3D.compartmentR = membraneObject.compartmentR;
-            params3D.compartSiteRho = membraneObject.droplet.rho; // This is to be defined
+            params3D.R2D = transmissionParams.reaction_radius_2d;
+            params3D.sigma = transmissionParams.binding_radius;
+            params3D.Dtot = transmissionParams.diffusion_total;
+            params3D.ka = transmissionParams.association_rate;
+            params3D.dt = transmissionParams.time;
+            params3D.compartmentR = transmissionParams.compartment_radius;
+            params3D.compartSiteRho = transmissionParams.site_density; // This is to be defined
 
             rxnProb = prob_exiting_compartment(distToCompartment, params3D);
             //std::cerr << "Reaction Prob: " << rxnProb << std::endl;
