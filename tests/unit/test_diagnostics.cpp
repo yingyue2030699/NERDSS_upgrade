@@ -256,6 +256,68 @@ void test_error_mpi_molecule_diagnostic() {
                    "MPI molecule diagnostic rendering includes exit code");
 }
 
+void test_error_mpi_subcell_assignment_diagnostic() {
+  const nerdss::core::Diagnostic diagnostic =
+      nerdss::error::MakeMpiSubcellAssignmentDiagnostic(
+          2, 8, 1250, 42, 7, 3, "Kinase", 1.5, -2.0, 0.25, -1, 4, 0, -5, 10,
+          12, 3, 360, 6);
+  const std::string formatted = nerdss::core::FormatDiagnostic(diagnostic);
+
+  require_true(diagnostic.category == nerdss::error::ErrorCategory::mpi,
+               "MPI subcell assignment should use mpi category");
+  require_true(diagnostic.exit_code == nerdss::error::ExitCode::mpi,
+               "MPI subcell assignment should use mpi exit code");
+  require_contains(
+      diagnostic.message,
+      "invalid MPI subcell assignment (rank=2, nprocs=8, simItr=1250",
+      "MPI subcell assignment message includes rank and iteration");
+  require_contains(diagnostic.message,
+                   "mol.id=42, mol.index=7, mol.type.index=3",
+                   "MPI subcell assignment message includes molecule ids");
+  require_contains(diagnostic.message, "mol.type.name=Kinase",
+                   "MPI subcell assignment message includes molecule type");
+  require_contains(diagnostic.message,
+                   "xItr=-1, yItr=4, zItr=0, currBin=-5",
+                   "MPI subcell assignment message includes bin indices");
+  require_contains(diagnostic.message, "numSubCells=[10, 12, 3]",
+                   "MPI subcell assignment message includes subcell shape");
+  require_contains(diagnostic.message, "mpi.xOffset=6",
+                   "MPI subcell assignment message includes rank offset");
+  require_contains(formatted, "ERROR [mpi]",
+                   "MPI subcell assignment rendering includes category");
+  require_contains(formatted, "exit_code=mpi(13)",
+                   "MPI subcell assignment rendering includes exit code");
+}
+
+void test_error_mpi_membrane_placement_diagnostic() {
+  const nerdss::core::Diagnostic diagnostic =
+      nerdss::error::MakeMpiMembranePlacementDiagnostic(
+          1, 4, 25, 11, 5, 2, "Lipid", 0.1, 0.2, 9.0, -10.0, 1.5,
+          "error_coord_dump.xyz");
+  const std::string formatted = nerdss::core::FormatDiagnostic(diagnostic);
+
+  require_true(diagnostic.category == nerdss::error::ErrorCategory::mpi,
+               "MPI membrane placement should use mpi category");
+  require_true(diagnostic.exit_code == nerdss::error::ExitCode::mpi,
+               "MPI membrane placement should use mpi exit code");
+  require_contains(
+      diagnostic.message,
+      "MPI molecule is off membrane (rank=1, nprocs=4, simItr=25",
+      "MPI membrane placement message includes rank and iteration");
+  require_contains(diagnostic.message, "mol.type.name=Lipid",
+                   "MPI membrane placement message includes molecule type");
+  require_contains(diagnostic.message,
+                   "membrane.min.z=-10, RS3Dinput=1.5",
+                   "MPI membrane placement message includes membrane context");
+  require_contains(diagnostic.message,
+                   "coordinate_dump='error_coord_dump.xyz'",
+                   "MPI membrane placement message includes dump path");
+  require_contains(formatted, "ERROR [mpi]",
+                   "MPI membrane placement rendering includes category");
+  require_contains(formatted, "exit_code=mpi(13)",
+                   "MPI membrane placement rendering includes exit code");
+}
+
 void test_setup_invalid_state_character_diagnostic() {
   const nerdss::core::Diagnostic diagnostic =
       nerdss::setup::MakeInvalidStateCharacterDiagnostic('@', "Lipid",
@@ -609,6 +671,8 @@ int main() {
   test_parser_invalid_molecule_bond_count_diagnostic();
   test_error_mpi_rank_diagnostic();
   test_error_mpi_molecule_diagnostic();
+  test_error_mpi_subcell_assignment_diagnostic();
+  test_error_mpi_membrane_placement_diagnostic();
   test_setup_invalid_state_character_diagnostic();
   test_setup_implicit_lipid_ordering_diagnostic();
   test_setup_implicit_molecule_interface_count_diagnostic();
