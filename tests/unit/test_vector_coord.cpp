@@ -696,6 +696,35 @@ void test_probability_engine_facade()
         0.0,
         "zero rotational diffusion should contribute no total diffusion");
     require_close(
+        nerdss::core::ProbabilityEngine::InterfaceRadius1D(-3.0),
+        3.0,
+        "1D interface radius should preserve absolute x distance");
+    require_close(
+        nerdss::core::ProbabilityEngine::InterfaceRadius2D(3.0, 4.0),
+        5.0,
+        "2D interface radius should preserve planar distance");
+    require_close(
+        nerdss::core::ProbabilityEngine::InterfaceRadius3D(2.0, 3.0, 6.0),
+        7.0,
+        "3D interface radius should preserve spatial distance");
+    require_close(
+        nerdss::core::ProbabilityEngine::MeanTranslationalDiffusion3D(
+            1.0, 2.0, 3.0, 4.0, 5.0, 6.0),
+        7.0,
+        "setup Dtot helper should preserve legacy mean translational diffusion");
+    require_close(
+        nerdss::core::ProbabilityEngine::RotationalDiffusionContribution(
+            0.5, 0.02, 25.0, 2),
+        2.0 * 25.0 * (1.0 - std::cos(std::sqrt(2.0 * 0.5 * 0.02)))
+            / (4.0 * 0.02),
+        "2D rotational contribution should match legacy setup cosine formula");
+    require_close(
+        nerdss::core::ProbabilityEngine::RotationalDiffusionContribution(
+            0.5, 0.02, 25.0, 3),
+        2.0 * 25.0 * (1.0 - std::cos(std::sqrt(4.0 * 0.5 * 0.02)))
+            / (6.0 * 0.02),
+        "3D rotational contribution should match legacy setup cosine formula");
+    require_close(
         nerdss::core::ProbabilityEngine::TranslationalDiffusionDisplacement(1.25, 0.04, 3.0),
         std::sqrt(0.3),
         "translational displacement helper should preserve Einstein relation");
@@ -813,6 +842,11 @@ void test_probability_engine_facade()
         nerdss::core::ProbabilityEngine::ReactionSearchRadius3D(0.5, 0.25, 1.2),
         3.798076211353316,
         "3D reaction search radius should preserve legacy RMax arithmetic");
+    require_close(
+        nerdss::core::ProbabilityEngine::SetupRMaxLimit3D(
+            0.5, 0.25, 1.2, 2.0, 3.0),
+        8.798076211353316,
+        "setup RMax helper should add interface radii to the 3D search radius");
     const auto separated_contact =
         nerdss::core::ProbabilityEngine::NormalizeAssociationContact(
             0.4, 1.6, 0.8);
