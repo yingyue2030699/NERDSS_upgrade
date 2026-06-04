@@ -376,6 +376,22 @@ void test_math_engine_facade()
     require_close(rotation_partition.positive_angle, 1.5, "rotation partition positive angle");
     require_close(rotation_partition.negative_angle, -0.5, "rotation partition negative angle");
 
+    const nerdss::core::AssociationRotationDiffusion rotating_first {
+        0.0, 0.0, 0.0, 3.0, false
+    };
+    const nerdss::core::AssociationRotationDiffusion rotating_second {
+        0.0, 0.0, 0.0, 1.0, false
+    };
+    const auto association_rotation_partition =
+        nerdss::core::MathEngine::PartitionAssociationRotationAngle(
+            2.5, 0.5, rotating_first, rotating_second);
+    require_close(association_rotation_partition.positive_angle,
+                  rotation_partition.positive_angle,
+                  "association rotation policy Dr positive angle");
+    require_close(association_rotation_partition.negative_angle,
+                  rotation_partition.negative_angle,
+                  "association rotation policy Dr negative angle");
+
     Complex react_com1;
     Complex react_com2;
     react_com1.Dr.x = 3.0;
@@ -392,6 +408,21 @@ void test_math_engine_facade()
     react_com2.D.x = 3.0;
     const auto surface_partition =
         nerdss::core::MathEngine::PartitionRotationAngle(2.5, 0.5, 1.0, 3.0);
+    const nerdss::core::AssociationRotationDiffusion surface_first {
+        1.0, 0.0, 0.0, 99.0, true
+    };
+    const nerdss::core::AssociationRotationDiffusion surface_second {
+        3.0, 0.0, 0.0, 99.0, true
+    };
+    const auto association_surface_partition =
+        nerdss::core::MathEngine::PartitionAssociationRotationAngle(
+            2.5, 0.5, surface_first, surface_second);
+    require_close(association_surface_partition.positive_angle,
+                  surface_partition.positive_angle,
+                  "association rotation policy surface positive angle");
+    require_close(association_surface_partition.negative_angle,
+                  surface_partition.negative_angle,
+                  "association rotation policy surface negative angle");
     determine_rotation_angles(2.5, 0.5, rot_ang_pos, rot_ang_neg, react_com1, react_com2);
     require_close(rot_ang_pos, surface_partition.positive_angle, "rotation wrapper surface positive angle");
     require_close(rot_ang_neg, surface_partition.negative_angle, "rotation wrapper surface negative angle");
@@ -404,6 +435,21 @@ void test_math_engine_facade()
     react_com2.D = Coord { 6.0, 9.0, 12.0 };
     const auto translation_partition =
         nerdss::core::MathEngine::PartitionRotationAngle(2.5, 0.5, 6.0, 9.0);
+    const nerdss::core::AssociationRotationDiffusion translation_first {
+        3.0, 6.0, 9.0, 0.0, false
+    };
+    const nerdss::core::AssociationRotationDiffusion translation_second {
+        6.0, 9.0, 12.0, 0.0, false
+    };
+    const auto association_translation_partition =
+        nerdss::core::MathEngine::PartitionAssociationRotationAngle(
+            2.5, 0.5, translation_first, translation_second);
+    require_close(association_translation_partition.positive_angle,
+                  translation_partition.positive_angle,
+                  "association rotation policy translation positive angle");
+    require_close(association_translation_partition.negative_angle,
+                  translation_partition.negative_angle,
+                  "association rotation policy translation negative angle");
     determine_rotation_angles(2.5, 0.5, rot_ang_pos, rot_ang_neg, react_com1, react_com2);
     require_close(rot_ang_pos, translation_partition.positive_angle, "rotation wrapper translation positive angle");
     require_close(rot_ang_neg, translation_partition.negative_angle, "rotation wrapper translation negative angle");
