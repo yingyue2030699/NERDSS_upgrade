@@ -744,6 +744,36 @@ void test_probability_engine_facade()
         nerdss::core::ProbabilityEngine::ReactionSearchRadius3D(0.5, 0.25, 1.2),
         3.798076211353316,
         "3D reaction search radius should preserve legacy RMax arithmetic");
+    const auto separated_contact =
+        nerdss::core::ProbabilityEngine::NormalizeAssociationContact(
+            0.4, 1.6, 0.8);
+    require_close(
+        separated_contact.separation, 0.4,
+        "contact setup should preserve separated distance");
+    require_close(
+        separated_contact.radius, 1.6,
+        "contact setup should preserve separated radius");
+    require_close(
+        separated_contact.radius_ratio, 0.5,
+        "contact setup should expose separated binding-radius ratio");
+    require_true(
+        !separated_contact.was_overlapping,
+        "contact setup should not flag separated interfaces");
+    const auto overlapping_contact =
+        nerdss::core::ProbabilityEngine::NormalizeAssociationContact(
+            -0.2, 0.6, 0.8);
+    require_close(
+        overlapping_contact.separation, 0.0,
+        "contact setup should clamp negative separation");
+    require_close(
+        overlapping_contact.radius, 0.8,
+        "contact setup should clamp overlapping radius to binding radius");
+    require_close(
+        overlapping_contact.radius_ratio, 1.0,
+        "contact setup should preserve overlapping ratio normalization");
+    require_true(
+        overlapping_contact.was_overlapping,
+        "contact setup should flag overlapping interfaces");
     require_close(
         nerdss::core::ProbabilityEngine::QuantizeDiffusionFor2DTable(9.6e-5),
         1.0e-4,
