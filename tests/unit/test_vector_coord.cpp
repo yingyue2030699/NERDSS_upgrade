@@ -2,6 +2,7 @@
 #include "classes/class_Vector.hpp"
 #include "core/diagnostics.hpp"
 #include "core/math_engine.hpp"
+#include "core/probability/association_probability_service.hpp"
 #include "core/probability_engine.hpp"
 #include "core/trajectory_engine.hpp"
 #include "parser/parser_diagnostics.hpp"
@@ -542,14 +543,26 @@ void test_parser_file_open_diagnostic()
 
 void test_probability_engine_facade()
 {
+    const double service_passoc3d =
+        nerdss::core::AssociationProbabilityService::AssociationProbability3D(
+            2.0, 0.1, 1.5, 0.7, 0.25, 0.9);
     const double passoc3d = nerdss::core::ProbabilityEngine::AssociationProbability3D(
         2.0, 0.1, 1.5, 0.7, 0.25, 0.9);
+    require_close(
+        service_passoc3d, passoc3d,
+        "3D association service should match probability facade");
     require_close(
         passoc3d, passocF(2.0, 0.1, 1.5, 0.7, 0.25, 0.9),
         "3D association facade should match legacy wrapper");
 
+    const double service_passoc1d =
+        nerdss::core::AssociationProbabilityService::AssociationProbability1D(
+            2.0, 0.1, 1.5, 0.7, 0.25);
     const double passoc1d = nerdss::core::ProbabilityEngine::AssociationProbability1D(
         2.0, 0.1, 1.5, 0.7, 0.25);
+    require_close(
+        service_passoc1d, passoc1d,
+        "1D association service should match probability facade");
     require_close(
         passoc1d, passocF_1D(2.0, 0.1, 1.5, 0.7, 0.25),
         "1D association facade should match legacy wrapper");
@@ -568,11 +581,21 @@ void test_probability_engine_facade()
     const double ratio3d = nerdss::core::ProbabilityEngine::RebindingProbabilityRatio3D(
         1.9, 2.0, 0.1, 1.5, 0.7, 0.25, 0.8, 1.0e-12);
     require_close(
+        nerdss::core::AssociationProbabilityService::RebindingProbabilityRatio3D(
+            1.9, 2.0, 0.1, 1.5, 0.7, 0.25, 0.8, 1.0e-12),
+        ratio3d,
+        "3D rebinding service should match probability facade");
+    require_close(
         ratio3d, pirr_pfree_ratio_psF(1.9, 2.0, 0.1, 1.5, 0.7, 0.25, 0.8, 1.0e-12),
         "3D rebinding ratio facade should match legacy wrapper");
 
     const double ratio1d = nerdss::core::ProbabilityEngine::RebindingProbabilityRatio1D(
         1.9, 2.0, 0.1, 1.5, 0.7, 0.25, 0.8);
+    require_close(
+        nerdss::core::AssociationProbabilityService::RebindingProbabilityRatio1D(
+            1.9, 2.0, 0.1, 1.5, 0.7, 0.25, 0.8),
+        ratio1d,
+        "1D rebinding service should match probability facade");
     require_close(
         ratio1d, pirr_pfree_ratio_psF_1D(1.9, 2.0, 0.1, 1.5, 0.7, 0.25, 0.8),
         "1D rebinding ratio facade should match legacy wrapper");
