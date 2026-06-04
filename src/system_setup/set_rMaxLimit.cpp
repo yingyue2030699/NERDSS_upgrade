@@ -1,3 +1,4 @@
+#include "core/probability_engine.hpp"
 #include "system_setup/system_setup.hpp"
 #include "tracing.hpp"
 
@@ -40,10 +41,9 @@ void set_rMaxLimit(Parameters &params,
                          rxnIface2.absIfaceIndex - numDoubleBeforeAdd));
       }
 
-      double scal{1.0 / 3.0};
-      double Dtot{(scal * (pro1Temp.D.x + pro2Temp.D.x)) +
-                  (scal * (pro1Temp.D.y + pro2Temp.D.y)) +
-                  (scal * (pro1Temp.D.z + pro2Temp.D.z))};
+      double Dtot{nerdss::core::ProbabilityEngine::MeanTranslationalDiffusion3D(
+          pro1Temp.D.x, pro1Temp.D.y, pro1Temp.D.z, pro2Temp.D.x,
+          pro2Temp.D.y, pro2Temp.D.z)};
       // TODO: add rotational diffusion contribution
 
       /*Now calculate distance from the interface to the protein COM.*/
@@ -51,53 +51,52 @@ void set_rMaxLimit(Parameters &params,
       double pro2R1{0};
       // pro1
       if (pro1Temp.isPromoter) {
-        double R2 = (iface1.iCoord.x * iface1.iCoord.x);
-        pro1R1 = sqrt(R2);
+        pro1R1 = nerdss::core::ProbabilityEngine::InterfaceRadius1D(
+            iface1.iCoord.x);
       }
       // if (std::abs(pro1Temp.D.z) < 1E-10) {
       if (pro1Temp.isImplicitLipid || pro1Temp.isLipid) {
         double R2 = (iface1.iCoord.x * iface1.iCoord.x) +
                     (iface1.iCoord.y * iface1.iCoord.y);
-        pro1R1 = sqrt(R2);
-        double einsStks = cos(sqrt(2.0 * pro1Temp.Dr.z * params.timeStep));
-        double Dr = 2.0 * R2 * (1.0 - einsStks);
-        Dtot += Dr / (4.0 * params.timeStep);
+        pro1R1 = nerdss::core::ProbabilityEngine::InterfaceRadius2D(
+            iface1.iCoord.x, iface1.iCoord.y);
+        Dtot += nerdss::core::ProbabilityEngine::RotationalDiffusionContribution(
+            pro1Temp.Dr.z, params.timeStep, R2, 2);
       } else {
         double R2 = (iface1.iCoord.x * iface1.iCoord.x) +
                     (iface1.iCoord.y * iface1.iCoord.y) +
                     (iface1.iCoord.z * iface1.iCoord.z);
-        pro1R1 = sqrt(R2);
-        double einsStks = cos(sqrt(4.0 * pro1Temp.Dr.z * params.timeStep));
-        double Dr = 2.0 * R2 * (1.0 - einsStks);
-        Dtot += Dr / (6.0 * params.timeStep);
+        pro1R1 = nerdss::core::ProbabilityEngine::InterfaceRadius3D(
+            iface1.iCoord.x, iface1.iCoord.y, iface1.iCoord.z);
+        Dtot += nerdss::core::ProbabilityEngine::RotationalDiffusionContribution(
+            pro1Temp.Dr.z, params.timeStep, R2, 3);
       }
 
       // pro2
       if (pro2Temp.isPromoter) {
-        double R2 = (iface2.iCoord.x * iface2.iCoord.x);
-        pro2R1 = sqrt(R2);
+        pro2R1 = nerdss::core::ProbabilityEngine::InterfaceRadius1D(
+            iface2.iCoord.x);
       }
       // if (std::abs(pro2Temp.D.z) < 1E-10) {
       else if (pro2Temp.isImplicitLipid || pro2Temp.isLipid) {
         double R2 = (iface2.iCoord.x * iface2.iCoord.x) +
                     (iface2.iCoord.y * iface2.iCoord.y);
-        pro2R1 = sqrt(R2);
-        double einsStks = cos(sqrt(2.0 * pro2Temp.Dr.z * params.timeStep));
-        double Dr = 2.0 * R2 * (1.0 - einsStks);
-        Dtot += Dr / (4.0 * params.timeStep);
+        pro2R1 = nerdss::core::ProbabilityEngine::InterfaceRadius2D(
+            iface2.iCoord.x, iface2.iCoord.y);
+        Dtot += nerdss::core::ProbabilityEngine::RotationalDiffusionContribution(
+            pro2Temp.Dr.z, params.timeStep, R2, 2);
       } else {
         double R2 = (iface2.iCoord.x * iface2.iCoord.x) +
                     (iface2.iCoord.y * iface2.iCoord.y) +
                     (iface2.iCoord.z * iface2.iCoord.z);
-        pro2R1 = sqrt(R2);
-        double einsStks = cos(sqrt(4.0 * pro2Temp.Dr.z * params.timeStep));
-        double Dr = 2.0 * R2 * (1.0 - einsStks);
-        Dtot += Dr / (6.0 * params.timeStep);
+        pro2R1 = nerdss::core::ProbabilityEngine::InterfaceRadius3D(
+            iface2.iCoord.x, iface2.iCoord.y, iface2.iCoord.z);
+        Dtot += nerdss::core::ProbabilityEngine::RotationalDiffusionContribution(
+            pro2Temp.Dr.z, params.timeStep, R2, 3);
       }
 
-      double RmaxDiff =
-          3.0 * sqrt(6.0 * Dtot * params.timeStep) + oneRxn.bindRadius;
-      rMaxTot = RmaxDiff + pro1R1 + pro2R1;
+      rMaxTot = nerdss::core::ProbabilityEngine::SetupRMaxLimit3D(
+          Dtot, params.timeStep, oneRxn.bindRadius, pro1R1, pro2R1);
       if (rMaxTot > params.rMaxLimit) {
         params.rMaxLimit = rMaxTot;
         params.rMaxRadius = pro1R1 + pro2R1;

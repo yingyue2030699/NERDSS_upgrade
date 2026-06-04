@@ -386,6 +386,25 @@ public:
            / (2.0 * static_cast<double>(dimensions) * time);
   }
 
+  static double InterfaceRadius1D(double x) {
+    return std::sqrt(x * x);
+  }
+
+  static double InterfaceRadius2D(double x, double y) {
+    return std::sqrt(x * x + y * y);
+  }
+
+  static double InterfaceRadius3D(double x, double y, double z) {
+    return std::sqrt(x * x + y * y + z * z);
+  }
+
+  static double MeanTranslationalDiffusion3D(
+      double first_x, double first_y, double first_z, double second_x,
+      double second_y, double second_z) {
+    return (first_x + first_y + first_z + second_x + second_y + second_z)
+           / 3.0;
+  }
+
   static double TranslationalDiffusionDisplacement(double diffusion_total,
                                                    double time,
                                                    double dimensions) {
@@ -513,6 +532,14 @@ public:
   static double ReactionSearchRadius3D(double diffusion_total, double time,
                                        double binding_radius) {
     return 3.0 * std::sqrt(6.0 * diffusion_total * time) + binding_radius;
+  }
+
+  static double SetupRMaxLimit3D(double diffusion_total, double time,
+                                 double binding_radius,
+                                 double first_reactant_radius,
+                                 double second_reactant_radius) {
+    return ReactionSearchRadius3D(diffusion_total, time, binding_radius)
+           + first_reactant_radius + second_reactant_radius;
   }
 
   struct AssociationContactGeometry {
