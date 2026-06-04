@@ -145,6 +145,26 @@ void test_parser_invalid_numeric_array_token_diagnostic() {
                    "invalid numeric array token rendering includes exit code");
 }
 
+void test_parser_invalid_boundary_value_diagnostic() {
+  const nerdss::core::Diagnostic diagnostic =
+      nerdss::parser::MakeInvalidBoundaryValueDiagnostic(
+          "sphereR", "wide", "stod");
+  const std::string formatted = nerdss::core::FormatDiagnostic(diagnostic);
+
+  require_true(diagnostic.category == nerdss::error::ErrorCategory::input,
+               "invalid boundary value should use input category");
+  require_true(diagnostic.exit_code == nerdss::error::ExitCode::input,
+               "invalid boundary value should use input exit code");
+  require_contains(diagnostic.message,
+                   "invalid boundary value for 'sphereR' 'wide': stod",
+                   "invalid boundary value message includes keyword and "
+                   "value");
+  require_contains(formatted, "ERROR [input]",
+                   "invalid boundary value rendering includes category");
+  require_contains(formatted, "exit_code=input(2)",
+                   "invalid boundary value rendering includes exit code");
+}
+
 void test_parser_invalid_molecule_count_diagnostic() {
   const nerdss::core::Diagnostic diagnostic =
       nerdss::parser::MakeInvalidMoleculeCountDiagnostic(
@@ -519,6 +539,7 @@ int main() {
   test_parser_section_order_diagnostic();
   test_parser_invalid_boolean_diagnostic();
   test_parser_invalid_numeric_array_token_diagnostic();
+  test_parser_invalid_boundary_value_diagnostic();
   test_parser_invalid_molecule_count_diagnostic();
   test_setup_invalid_state_character_diagnostic();
   test_setup_implicit_lipid_ordering_diagnostic();

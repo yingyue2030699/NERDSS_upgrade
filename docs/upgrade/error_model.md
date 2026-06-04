@@ -171,6 +171,15 @@ number and is not one of the legacy aliases `pi`, `m_pi`, or `nan`. This
 replaces the previous ad hoc thrown string path with a structured `input`
 diagnostic while preserving the accepted token set and `ExitCode::input`.
 
+## Parser Boundary Value Diagnostics
+
+Boundary scalar, boolean, and array values read by `Membrane::set_value_BC`
+now use `nerdss::parser::MakeInvalidBoundaryValueDiagnostic` and
+`ExitWithInvalidBoundaryValueDiagnostic` when conversion fails. This replaces
+the previous raw `std::cout` plus `exit(1)` catch path with a structured
+`input` diagnostic that includes the boundary keyword and bad value while
+preserving accepted boundary syntax.
+
 ## Parser Molecule Copy-Number Diagnostics
 
 The main input and add-file `startMolecules` sections now use
