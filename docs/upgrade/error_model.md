@@ -215,6 +215,23 @@ through `nerdss::error::MakeMpiRankDiagnostic` and
 legacy helper boundary, includes rank and molecule context in structured
 `mpi` diagnostics, and does not introduce a new `MPI_Abort` policy.
 
+## Restart Reaction Diagnostics
+
+Restart reaction-type parsing now uses
+`nerdss::parser::MakeInvalidRestartReactionTypeDiagnostic` and
+`ExitWithInvalidRestartReactionTypeDiagnostic` for explicit invalid reaction
+type sentinels in forward and coupled reaction records. This moves the previous
+raw `std::cerr` plus `exit(1)` branches in `read_restart` to structured
+`input` diagnostics while preserving restart layout and reaction
+reconstruction behavior.
+
+Malformed restart-stream catch paths now use
+`nerdss::parser::MakeMalformedRestartDiagnostic` and
+`ExitWithMalformedRestartDiagnostic`. This converts the remaining
+`read_restart` raw `std::cerr` plus `exit(1)` exception handlers to structured
+`input` diagnostics with the restart section context and exception reason,
+without changing restart field ordering or reconstruction state.
+
 ## Setup State Diagnostics
 
 The state setup path now uses
