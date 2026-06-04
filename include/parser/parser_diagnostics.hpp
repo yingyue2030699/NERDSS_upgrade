@@ -125,6 +125,21 @@ inline core::Diagnostic MakeIncompleteReactionDiagnostic(
   return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
 }
 
+inline core::Diagnostic MakeInvalidReactionMoleculeSyntaxDiagnostic(
+    const std::string& molecule_expression, const std::string& reason) {
+  std::ostringstream message;
+  message << "invalid reaction molecule";
+  if (!molecule_expression.empty()) {
+    message << " '" << molecule_expression << "'";
+  }
+  if (!reason.empty()) {
+    message << ": " << reason;
+  }
+  message << "; expected BNGL-like molecule syntax such as "
+             "'Mol(iface~state!*)' or 'Mol(iface!1)'";
+  return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
+}
+
 inline core::Diagnostic
 MakeUnknownObservableTypeDiagnostic(const std::string& observable_type) {
   std::ostringstream message;
@@ -232,6 +247,12 @@ inline void ExitWithIncompleteReactionDiagnostic(const std::string& reaction,
                                                  const std::string& reason) {
   core::ExitWithDiagnostic(
       MakeIncompleteReactionDiagnostic(reaction, reason));
+}
+
+inline void ExitWithInvalidReactionMoleculeSyntaxDiagnostic(
+    const std::string& molecule_expression, const std::string& reason) {
+  core::ExitWithDiagnostic(MakeInvalidReactionMoleculeSyntaxDiagnostic(
+      molecule_expression, reason));
 }
 
 inline void ExitWithUnknownObservableTypeDiagnostic(

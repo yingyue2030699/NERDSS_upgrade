@@ -20,6 +20,21 @@ int parse_copy_number_token(const std::string& token,
     return 0;
 }
 
+int parse_reaction_bond_index_token(const std::string& token,
+    const std::string& moleculeExpression)
+{
+    try {
+        return std::stoi(token);
+    } catch (const std::invalid_argument&) {
+        nerdss::parser::ExitWithInvalidReactionMoleculeSyntaxDiagnostic(
+            moleculeExpression, "cannot read bond index token '" + token + "'");
+    } catch (const std::out_of_range&) {
+        nerdss::parser::ExitWithInvalidReactionMoleculeSyntaxDiagnostic(
+            moleculeExpression, "bond index token '" + token + "' is out of range");
+    }
+    return 0;
+}
+
 std::string invalid_character_reason(char character)
 {
     return std::string("invalid character '") + character + "'";
@@ -90,10 +105,9 @@ ParsedMol parse_molecule_bngl(int& totSpecies, bool isProductSide,
                      * -unless it has a state then, add to possiblyInvolvedIfaceList, since the state could change
                      */
                     if (!isWildcard) {
-                        // TODO: Write this
-                        std::cerr
-                            << "Error, no indexed interactions are allowed in the reactants. Converting to wildcard.\n";
-                        exit(1);
+                        nerdss::parser::ExitWithInvalidReactionMoleculeSyntaxDiagnostic(
+                            oneMol.first,
+                            "indexed interactions are not allowed on the reactant side; use wildcard bonds like '!*'");
                     }
 
                     // if a state existed, create an Iface with that state required
@@ -115,14 +129,18 @@ ParsedMol parse_molecule_bngl(int& totSpecies, bool isProductSide,
                         auto state = iface[stateLocation + 1];
                         iface = iface.substr(0, stateLocation);
                         tmpMol.interfaceList.emplace_back(
-                            iface, state, true, std::stoi(buffer), Involvement::interactionChange, oneMol.second);
+                            iface, state, true,
+                            parse_reaction_bond_index_token(buffer, oneMol.first),
+                            Involvement::interactionChange, oneMol.second);
                     } else if ((stateLocation != std::string::npos) && isWildcard) {
                         auto state = iface[stateLocation + 1];
                         iface = iface.substr(0, stateLocation);
                         tmpMol.interfaceList.emplace_back(iface, state, true, 0, Involvement::possible, oneMol.second);
                     } else if ((stateLocation == std::string::npos) && !isWildcard)
                         tmpMol.interfaceList.emplace_back(
-                            iface, '\0', true, std::stoi(buffer), Involvement::interactionChange, oneMol.second);
+                            iface, '\0', true,
+                            parse_reaction_bond_index_token(buffer, oneMol.first),
+                            Involvement::interactionChange, oneMol.second);
                     else
                         tmpMol.interfaceList.emplace_back(iface, '\0', true, 0, Involvement::ancillary, oneMol.second);
                 }
@@ -145,9 +163,8 @@ ParsedMol parse_molecule_bngl(int& totSpecies, bool isProductSide,
                 break;
             }
             default: {
-                //                gen_read_err(__func__, __LINE__);
-                std::cerr << "ERROR: Character " << *molIterator << " is not valid in reactions. Exiting...\n.";
-                exit(1);
+                nerdss::parser::ExitWithInvalidReactionMoleculeSyntaxDiagnostic(
+                    oneMol.first, invalid_character_reason(*molIterator));
             }
             }
         }
