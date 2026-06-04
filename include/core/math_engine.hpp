@@ -33,6 +33,20 @@ struct RotationAnglePartition {
       : positive_angle(positive), negative_angle(negative) {}
 };
 
+struct AssociationRotationDiffusion {
+  Scalar translational_x {};
+  Scalar translational_y {};
+  Scalar translational_z {};
+  Scalar rotational_x {};
+  bool on_surface {};
+
+  AssociationRotationDiffusion() = default;
+  AssociationRotationDiffusion(Scalar tx, Scalar ty, Scalar tz, Scalar rx,
+                               bool surface)
+      : translational_x(tx), translational_y(ty), translational_z(tz),
+        rotational_x(rx), on_surface(surface) {}
+};
+
 class MathEngine {
 public:
   static MathBackend backend() { return MathBackend::kCpuScalar; }
@@ -673,6 +687,38 @@ public:
     return RotationAnglePartition(
         delta * (positive_diffusion / total_diffusion),
         -delta * (negative_diffusion / total_diffusion));
+  }
+
+  static RotationAnglePartition PartitionAssociationRotationAngle(
+      Scalar target_angle, Scalar current_angle,
+      AssociationRotationDiffusion first,
+      AssociationRotationDiffusion second,
+      Scalar rotational_tolerance = 1.0e-11) {
+    if (first.on_surface && second.on_surface) {
+      return PartitionRotationAngle(target_angle, current_angle,
+                                    first.translational_x,
+                                    second.translational_x);
+    }
+
+    const Scalar total_rotational_x { first.rotational_x
+                                      + second.rotational_x };
+    if (total_rotational_x < rotational_tolerance) {
+      const Scalar first_translation {
+          (first.translational_x + first.translational_y
+           + first.translational_z)
+          / 3.0
+      };
+      const Scalar second_translation {
+          (second.translational_x + second.translational_y
+           + second.translational_z)
+          / 3.0
+      };
+      return PartitionRotationAngle(target_angle, current_angle,
+                                    first_translation, second_translation);
+    }
+
+    return PartitionRotationAngle(target_angle, current_angle,
+                                  first.rotational_x, second.rotational_x);
   }
 };
 
