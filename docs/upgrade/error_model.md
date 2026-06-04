@@ -215,6 +215,14 @@ through `nerdss::error::MakeMpiRankDiagnostic` and
 legacy helper boundary, includes rank and molecule context in structured
 `mpi` diagnostics, and does not introduce a new `MPI_Abort` policy.
 
+MPI subcell assignment failures in `SimulVolume::update_memberMolLists` now use
+`nerdss::error::MakeMpiSubcellAssignmentDiagnostic`, including rank, iteration,
+molecule identity, molecule type, coordinates, subcell indices, subcell shape,
+and `xOffset`. The off-membrane MPI fatal path now writes the legacy coordinate
+dump and then exits through
+`nerdss::error::MakeMpiMembranePlacementDiagnostic`, preserving the dump
+artifact while making the fatal message rank-aware and structured.
+
 ## Restart Reaction Diagnostics
 
 Restart reaction-type parsing now uses
