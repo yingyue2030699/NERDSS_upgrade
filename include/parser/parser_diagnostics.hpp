@@ -61,6 +61,23 @@ inline core::Diagnostic MakeInvalidNumericArrayTokenDiagnostic(
   return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
 }
 
+inline core::Diagnostic MakeInvalidBoundaryValueDiagnostic(
+    const std::string& keyword, const std::string& value,
+    const std::string& reason) {
+  std::ostringstream message;
+  message << "invalid boundary value";
+  if (!keyword.empty()) {
+    message << " for '" << keyword << "'";
+  }
+  if (!value.empty()) {
+    message << " '" << value << "'";
+  }
+  if (!reason.empty()) {
+    message << ": " << reason;
+  }
+  return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
+}
+
 inline core::Diagnostic MakeInvalidMoleculeCountDiagnostic(
     const std::string& molecule_name, const std::string& expression,
     const std::string& reason) {
@@ -212,6 +229,13 @@ inline void ExitWithInvalidNumericArrayTokenDiagnostic(
     const std::string& token, const std::string& input) {
   core::ExitWithDiagnostic(
       MakeInvalidNumericArrayTokenDiagnostic(token, input));
+}
+
+inline void ExitWithInvalidBoundaryValueDiagnostic(
+    const std::string& keyword, const std::string& value,
+    const std::string& reason) {
+  core::ExitWithDiagnostic(
+      MakeInvalidBoundaryValueDiagnostic(keyword, value, reason));
 }
 
 inline void ExitWithInvalidMoleculeCountDiagnostic(
