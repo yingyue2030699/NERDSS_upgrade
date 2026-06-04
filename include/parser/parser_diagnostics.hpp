@@ -175,6 +175,19 @@ inline core::Diagnostic MakeInvalidReactionMoleculeSyntaxDiagnostic(
   return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
 }
 
+inline core::Diagnostic MakeInvalidRestartReactionTypeDiagnostic(
+    int reaction_index, const char* context, int raw_reaction_type) {
+  std::ostringstream message;
+  message << "invalid restart reaction type " << raw_reaction_type;
+  if (context && context[0] != '\0') {
+    message << " for " << context;
+  } else {
+    message << " for reaction";
+  }
+  message << " " << reaction_index;
+  return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
+}
+
 inline core::Diagnostic
 MakeUnknownObservableTypeDiagnostic(const std::string& observable_type) {
   std::ostringstream message;
@@ -302,6 +315,12 @@ inline void ExitWithInvalidReactionMoleculeSyntaxDiagnostic(
     const std::string& molecule_expression, const std::string& reason) {
   core::ExitWithDiagnostic(MakeInvalidReactionMoleculeSyntaxDiagnostic(
       molecule_expression, reason));
+}
+
+inline void ExitWithInvalidRestartReactionTypeDiagnostic(
+    int reaction_index, const char* context, int raw_reaction_type) {
+  core::ExitWithDiagnostic(MakeInvalidRestartReactionTypeDiagnostic(
+      reaction_index, context, raw_reaction_type));
 }
 
 inline void ExitWithUnknownObservableTypeDiagnostic(
