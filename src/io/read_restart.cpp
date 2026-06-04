@@ -1192,10 +1192,10 @@ void read_restart(long long int& simItr, std::ifstream& restartFile, Parameters&
             // }
         }
     } catch (const std::string& msg) {
-        std::cerr << msg << '\n';
-        exit(1);
+        nerdss::parser::ExitWithMalformedRestartDiagnostic(
+            "restart stream", msg);
     } catch (const std::length_error& e) {
-        std::cerr << "Error in reading template vectors for " << e.what() << '\n';
-        exit(1);
+        nerdss::parser::ExitWithMalformedRestartDiagnostic(
+            "template vectors", e.what());
     }
 }

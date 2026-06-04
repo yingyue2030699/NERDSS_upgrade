@@ -225,6 +225,13 @@ raw `std::cerr` plus `exit(1)` branches in `read_restart` to structured
 `input` diagnostics while preserving restart layout and reaction
 reconstruction behavior.
 
+Malformed restart-stream catch paths now use
+`nerdss::parser::MakeMalformedRestartDiagnostic` and
+`ExitWithMalformedRestartDiagnostic`. This converts the remaining
+`read_restart` raw `std::cerr` plus `exit(1)` exception handlers to structured
+`input` diagnostics with the restart section context and exception reason,
+without changing restart field ordering or reconstruction state.
+
 ## Setup State Diagnostics
 
 The state setup path now uses
