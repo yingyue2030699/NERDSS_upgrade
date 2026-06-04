@@ -46,7 +46,10 @@ void determine_3D_implicitlipid_reaction_probability(int simItr, int rxnIndex, i
                 forwardRxns[rxnIndex].rateList[rateIndex].rate) };
 
             // Evaluate probability of reaction, implicit-lipid method doesn't need reweighting
-            if (sep < 0) {
+            const auto contact_geometry {
+                nerdss::core::ProbabilityEngine::NormalizeAssociationContact(
+                    sep, R1, forwardRxns[rxnIndex].bindRadius) };
+            if (contact_geometry.was_overlapping) {
                 // std::cout << "*****************************************************\n"
                 //           << " WARNING AT ITERATION " << simItr << "\n";
                 // std::cout << "SEPARATION BETWEEN INTERFACE " << biMolData.relIface1 << " ON MOLECULE "
@@ -58,9 +61,9 @@ void determine_3D_implicitlipid_reaction_probability(int simItr, int rxnIndex, i
                 // std::cout << "IFACE1: "
                 //           << moleculeList[biMolData.pro1Index].interfaceList[biMolData.relIface1].coord << '\n';
                 // std::cout << "*****************************************************\n";
-                sep = 0;
-                R1 = forwardRxns[rxnIndex].bindRadius;
             }
+            sep = contact_geometry.separation;
+            R1 = contact_geometry.radius;
             int proA = biMolData.pro1Index;
             int ifaceA = biMolData.relIface1;
             int proB = biMolData.pro2Index;

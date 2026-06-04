@@ -91,7 +91,11 @@ trajectory math, restart semantics, or legacy input/output compatibility.
    3D reaction path. Compartment entry/exit transmission now also shares a pure
    setup helper for the doubled surface association rate and compartment
    probability parameter bundle while the legacy wrappers retain molecule
-   probability mutation and warning behavior.
+   probability mutation and warning behavior. Contact-geometry normalization
+   for overlapping 2D/3D bimolecular and 3D implicit-lipid candidates now
+   lives behind a pure `ProbabilityEngine` setup helper; the legacy wrappers
+   still perform candidate search, warning emission, reweighting, and
+   probability-vector mutation.
 4. Separate mutable topology operations from probability calculations.
 5. Introduce backend-neutral data-shape documentation for future GPU work:
    structure-of-arrays candidates, batchable kernels, and RNG constraints.

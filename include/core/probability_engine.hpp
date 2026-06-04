@@ -515,6 +515,28 @@ public:
     return 3.0 * std::sqrt(6.0 * diffusion_total * time) + binding_radius;
   }
 
+  struct AssociationContactGeometry {
+    double separation {};
+    double radius {};
+    double radius_ratio {};
+    bool was_overlapping {};
+  };
+
+  static AssociationContactGeometry NormalizeAssociationContact(
+      double separation, double radius, double binding_radius) {
+    AssociationContactGeometry geometry {};
+    geometry.separation = separation;
+    geometry.radius = radius;
+    geometry.radius_ratio = binding_radius / radius;
+    geometry.was_overlapping = separation < 0.0;
+    if (geometry.was_overlapping) {
+      geometry.separation = 0.0;
+      geometry.radius = binding_radius;
+      geometry.radius_ratio = 1.0;
+    }
+    return geometry;
+  }
+
   static double QuantizeDiffusionFor2DTable(double diffusion_total) {
     double scaled_diffusion {};
     if (diffusion_total < 0.0001) {

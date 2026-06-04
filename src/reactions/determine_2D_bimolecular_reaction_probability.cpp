@@ -83,8 +83,10 @@ void determine_2D_bimolecular_reaction_probability(int simItr, int rxnIndex, int
             }
             probValExists = false; // reset
 
-            double ratio = forwardRxns[rxnIndex].bindRadius / R1;
-            if (sep < 0) {
+            const auto contact_geometry {
+                nerdss::core::ProbabilityEngine::NormalizeAssociationContact(
+                    sep, R1, forwardRxns[rxnIndex].bindRadius) };
+            if (contact_geometry.was_overlapping) {
                 // if (biMolData.com1Index != biMolData.com2Index) {
                 //     // && i1!=0 && i2!=0) {
                 //     // std::cout << "*****************************************************\n"
@@ -118,10 +120,8 @@ void determine_2D_bimolecular_reaction_probability(int simItr, int rxnIndex, int
                 //     // std::cout << "P2 COORDS: " << moleculeList[biMolData.pro2Index].comCoord
                 //     //           << " freelist.size(): " << moleculeList[biMolData.pro2Index].freelist.size() << '\n';
                 // }
-                sep = 0;
-                ratio = 1;
-                R1 = forwardRxns[rxnIndex].bindRadius;
             }
+            R1 = contact_geometry.radius;
             double currnorm { 1.0 };
             double p0_ratio { 1.0 };
 
