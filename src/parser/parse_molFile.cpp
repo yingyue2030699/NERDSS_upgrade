@@ -1,6 +1,35 @@
 #include "parser/parser_diagnostics.hpp"
 #include "parser/parser_functions.hpp"
 
+#include <cstddef>
+#include <exception>
+#include <string>
+
+namespace {
+
+int parse_bond_count(const std::string& value, const std::string& molPath)
+{
+    std::size_t parsedLength { 0 };
+    int count { 0 };
+    try {
+        count = std::stoi(value, &parsedLength);
+    } catch (const std::exception& e) {
+        nerdss::parser::ExitWithInvalidMoleculeBondCountDiagnostic(
+            molPath, value, e.what());
+    }
+    if (parsedLength != value.size()) {
+        nerdss::parser::ExitWithInvalidMoleculeBondCountDiagnostic(
+            molPath, value, "unexpected trailing characters");
+    }
+    if (count < 0) {
+        nerdss::parser::ExitWithInvalidMoleculeBondCountDiagnostic(
+            molPath, value, "bond count cannot be negative");
+    }
+    return count;
+}
+
+} // namespace
+
 MolTemplate parse_molFile(std::string& mol)
 {
     /* NOTE: need to edit both this and enum class MolKeyword if you want to add keywords  */
@@ -74,7 +103,7 @@ MolTemplate parse_molFile(std::string& mol)
                 } else if (keyFind->second == MolKeyword::bonds) {
                     // std::cout << "Found bonds for molecule " << tmpTemplate.molName << ".\n";
                     std::cout << "Bonds: " << std::endl;
-                    int numBonds = std::stoi(line);
+                    int numBonds = parse_bond_count(line, molPath);
                     read_bonds(numBonds, molFile, tmpTemplate);
                     break;
                 } else {
