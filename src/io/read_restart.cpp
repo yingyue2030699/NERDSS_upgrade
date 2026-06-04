@@ -1,4 +1,5 @@
 #include "io/io.hpp"
+#include "parser/parser_diagnostics.hpp"
 #include "tracing.hpp"
 #include <chrono>
 #include <ctime>
@@ -395,9 +396,8 @@ void read_restart(long long int& simItr, std::ifstream& restartFile, Parameters&
                 if (rxnType != -1) {
                     tmpRxn.rxnType = static_cast<ReactionType>(rxnType); // turn the int rxnType into ReactionType
                 } else {
-                    std::cerr << "ERROR: Cannot parse reaction type for reaction " << tmpRxn.absRxnIndex
-                              << ". Exiting.\n";
-                    exit(1);
+                    nerdss::parser::ExitWithInvalidRestartReactionTypeDiagnostic(
+                        tmpRxn.absRxnIndex, "forward reaction", rxnType);
                 }
                 restartFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 restartFile >> tmpRxn.isObserved;
@@ -452,9 +452,9 @@ void read_restart(long long int& simItr, std::ifstream& restartFile, Parameters&
                     if (rxnType != -1) {
                         tmpRxn.coupledRxn.rxnType = static_cast<ReactionType>(rxnType);
                     } else {
-                        std::cerr << "ERROR: Cannot parse reaction type for reaction coupled to reaction "
-                                  << tmpRxn.absRxnIndex << ". Exiting.\n";
-                        exit(1);
+                        nerdss::parser::ExitWithInvalidRestartReactionTypeDiagnostic(
+                            tmpRxn.absRxnIndex,
+                            "coupled reaction attached to reaction", rxnType);
                     }
                 }
                 restartFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -579,9 +579,9 @@ void read_restart(long long int& simItr, std::ifstream& restartFile, Parameters&
                     if (rxnType != -1) {
                         tmpRxn.coupledRxn.rxnType = static_cast<ReactionType>(rxnType);
                     } else {
-                        std::cerr << "ERROR: Cannot parse reaction type for reaction coupled to reaction "
-                                  << tmpRxn.absRxnIndex << ". Exiting.\n";
-                        exit(1);
+                        nerdss::parser::ExitWithInvalidRestartReactionTypeDiagnostic(
+                            tmpRxn.absRxnIndex,
+                            "coupled reaction attached to reaction", rxnType);
                     }
                 }
                 restartFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
