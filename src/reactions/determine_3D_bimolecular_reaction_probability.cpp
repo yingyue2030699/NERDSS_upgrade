@@ -50,8 +50,10 @@ void determine_3D_bimolecular_reaction_probability(int simItr, int rxnIndex, int
          * overlap*/
         if (withinRmax && forwardRxns[rxnIndex].rateList[rateIndex].rate > 0) {
             /*Evaluate probability of reaction, with reweighting*/
-            double ratio { forwardRxns[rxnIndex].bindRadius / R1 };
-            if (sep < 0) {
+            const auto contact_geometry {
+                nerdss::core::ProbabilityEngine::NormalizeAssociationContact(
+                    sep, R1, forwardRxns[rxnIndex].bindRadius) };
+            if (contact_geometry.was_overlapping) {
                 if (biMolData.com1Index != biMolData.com2Index) {
                     // std::cout << "*****************************************************\n"
                     //           << " WARNING AT ITERATION " << simItr << "\n";
@@ -72,10 +74,8 @@ void determine_3D_bimolecular_reaction_probability(int simItr, int rxnIndex, int
                     // std::cout << "*****************************************************\n";
                 }
 
-                sep = 0;
-                ratio = 1;
-                R1 = forwardRxns[rxnIndex].bindRadius;
             }
+            R1 = contact_geometry.radius;
 
             /*If one particle (lipid) is bound in the membrane, reaction prob
             is half due to flux across only top half of particle.
