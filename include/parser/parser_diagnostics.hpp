@@ -188,6 +188,19 @@ inline core::Diagnostic MakeInvalidRestartReactionTypeDiagnostic(
   return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
 }
 
+inline core::Diagnostic MakeMalformedRestartDiagnostic(
+    const std::string& context, const std::string& reason) {
+  std::ostringstream message;
+  message << "malformed restart file";
+  if (!context.empty()) {
+    message << " while reading " << context;
+  }
+  if (!reason.empty()) {
+    message << ": " << reason;
+  }
+  return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
+}
+
 inline core::Diagnostic
 MakeUnknownObservableTypeDiagnostic(const std::string& observable_type) {
   std::ostringstream message;
@@ -321,6 +334,12 @@ inline void ExitWithInvalidRestartReactionTypeDiagnostic(
     int reaction_index, const char* context, int raw_reaction_type) {
   core::ExitWithDiagnostic(MakeInvalidRestartReactionTypeDiagnostic(
       reaction_index, context, raw_reaction_type));
+}
+
+inline void ExitWithMalformedRestartDiagnostic(
+    const std::string& context, const std::string& reason) {
+  core::ExitWithDiagnostic(
+      MakeMalformedRestartDiagnostic(context, reason));
 }
 
 inline void ExitWithUnknownObservableTypeDiagnostic(
