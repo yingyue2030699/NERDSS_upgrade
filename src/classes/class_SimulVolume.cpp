@@ -11,11 +11,11 @@
  * ***
  */
 #include "classes/class_SimulVolume.hpp"
+#include "core/diagnostics.hpp"
+#include "error/error_diagnostics.hpp"
 #include "io/io.hpp"
-#include "error/error.hpp"
 
 #include <chrono>
-#include <classes/class_SimulVolume.hpp>
 #include <iostream>
 
 /* SIMULBOX::SUBBOX */
@@ -499,21 +499,15 @@ void SimulVolume::update_memberMolLists(
     if (simItr % itrCheck != 0) {
       /*just assign bins, don't check bin limits/errors*/
       mol.mySubVolIndex = currBin;
-      if (currBin >= numSubCells.tot) {
-        std::cerr << "Molecule " << mol.index << " (ID=" << mol.id << ")"
-                  << " seems outside simulation volume, with center of mass "
-                     "coordinates ["
-                  << mol.comCoord << "].\n";
-        std::cerr << "numSubCells.x = " << numSubCells.x
-                  << ", numSubCells.y = " << numSubCells.y
-                  << ", numSubCells.z = " << numSubCells.z << "\n";
-        std::cerr << "xItr = " << xItr << ", yItr = " << yItr
-                  << ", zItr = " << zItr << "\n";
-        std::cerr << "currBin = " << currBin
-                  << ", numSubCells.tot = " << numSubCells.tot
-                  << ", mpiContext.xOffset = " << mpiContext.xOffset << "\n";
-        error("mol outside box.");
-        exit(1);
+      if (currBin >= numSubCells.tot || currBin < 0) {
+        const MolTemplate& molTemplate = molTemplateList[mol.molTypeIndex];
+        nerdss::core::ExitWithDiagnostic(
+            nerdss::error::MakeMpiSubcellAssignmentDiagnostic(
+                mpiContext.rank, mpiContext.nprocs, simItr, mol.id, mol.index,
+                mol.molTypeIndex, molTemplate.molName, mol.comCoord.x,
+                mol.comCoord.y, mol.comCoord.z, xItr, yItr, zItr, currBin,
+                numSubCells.x, numSubCells.y, numSubCells.z, numSubCells.tot,
+                mpiContext.xOffset));
       }
       subCellList[currBin].memberMolList.push_back(molItr);
     } else {
@@ -539,18 +533,15 @@ void SimulVolume::update_memberMolLists(
         if (mol.comCoord.z - 0.1 >
                 -membraneObject.waterBox.z * 0.5 + RS3Dinput &&
             mol.isImplicitLipid == false) {
-          //            && std::abs(mol.comCoord.z) -
-          //            std::abs((membraneObject.waterBox.z / 2)) > 1E-6)
-          std::cerr
-              << "Molecule " << mol.index << " of type "
-              << molTemplateList[mol.molTypeIndex].molName
-              << " is off the membrane. Writing coordinates and exiting.\n";
-          //  std::cout << mol.molTypeIndex << "\t" <<
-          //  -membraneObject.waterBox.z * 0.5 + RS3Dinput << "\t" << RS3Dinput
-          //  << "\n";
-          write_xyz(std::string{"error_coord_dump.xyz"}, params, moleculeList,
-                    molTemplateList);
-          exit(1);
+          const std::string dumpPath{"error_coord_dump.xyz"};
+          write_xyz(dumpPath, params, moleculeList, molTemplateList);
+          const MolTemplate& molTemplate = molTemplateList[mol.molTypeIndex];
+          nerdss::core::ExitWithDiagnostic(
+              nerdss::error::MakeMpiMembranePlacementDiagnostic(
+                  mpiContext.rank, mpiContext.nprocs, simItr, mol.id,
+                  mol.index, mol.molTypeIndex, molTemplate.molName,
+                  mol.comCoord.x, mol.comCoord.y, mol.comCoord.z,
+                  -membraneObject.waterBox.z * 0.5, RS3Dinput, dumpPath));
         }
       }
 
