@@ -97,6 +97,24 @@ inline core::Diagnostic MakeInvalidMoleculeCountDiagnostic(
   return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
 }
 
+inline core::Diagnostic MakeInvalidMoleculeBondCountDiagnostic(
+    const std::string& path, const std::string& value,
+    const std::string& reason) {
+  std::ostringstream message;
+  message << "invalid molecule bond count";
+  if (!path.empty()) {
+    message << " in '" << path << "'";
+  }
+  if (!value.empty()) {
+    message << " '" << value << "'";
+  }
+  if (!reason.empty()) {
+    message << ": " << reason;
+  }
+  message << "; expected a non-negative integer after 'bonds ='";
+  return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
+}
+
 inline core::Diagnostic
 MakeTooManyReactionReactantsDiagnostic(const std::string& reaction,
                                        std::size_t reactant_count) {
@@ -243,6 +261,13 @@ inline void ExitWithInvalidMoleculeCountDiagnostic(
     const std::string& reason) {
   core::ExitWithDiagnostic(
       MakeInvalidMoleculeCountDiagnostic(molecule_name, expression, reason));
+}
+
+inline void ExitWithInvalidMoleculeBondCountDiagnostic(
+    const std::string& path, const std::string& value,
+    const std::string& reason) {
+  core::ExitWithDiagnostic(
+      MakeInvalidMoleculeBondCountDiagnostic(path, value, reason));
 }
 
 inline void ExitWithTooManyReactionReactantsDiagnostic(

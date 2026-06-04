@@ -1,4 +1,5 @@
 #include "core/diagnostics.hpp"
+#include "error/error_diagnostics.hpp"
 #include "parser/parser_diagnostics.hpp"
 #include "system_setup/setup_diagnostics.hpp"
 
@@ -189,6 +190,70 @@ void test_parser_invalid_molecule_count_diagnostic() {
                    "invalid molecule count rendering includes category");
   require_contains(formatted, "exit_code=input(2)",
                    "invalid molecule count rendering includes exit code");
+}
+
+void test_parser_invalid_molecule_bond_count_diagnostic() {
+  const nerdss::core::Diagnostic diagnostic =
+      nerdss::parser::MakeInvalidMoleculeBondCountDiagnostic(
+          "Kinase.mol", "two", "stoi");
+  const std::string formatted = nerdss::core::FormatDiagnostic(diagnostic);
+
+  require_true(diagnostic.category == nerdss::error::ErrorCategory::input,
+               "invalid molecule bond count should use input category");
+  require_true(diagnostic.exit_code == nerdss::error::ExitCode::input,
+               "invalid molecule bond count should use input exit code");
+  require_contains(
+      diagnostic.message,
+      "invalid molecule bond count in 'Kinase.mol' 'two': stoi",
+      "invalid molecule bond count message includes path and value");
+  require_contains(diagnostic.message,
+                   "expected a non-negative integer after 'bonds ='",
+                   "invalid molecule bond count message includes expected "
+                   "format");
+  require_contains(formatted, "ERROR [input]",
+                   "invalid molecule bond count rendering includes category");
+  require_contains(formatted, "exit_code=input(2)",
+                   "invalid molecule bond count rendering includes exit code");
+}
+
+void test_error_mpi_rank_diagnostic() {
+  const nerdss::core::Diagnostic diagnostic =
+      nerdss::error::MakeMpiRankDiagnostic(3, "missing input");
+  const std::string formatted = nerdss::core::FormatDiagnostic(diagnostic);
+
+  require_true(diagnostic.category == nerdss::error::ErrorCategory::mpi,
+               "MPI rank diagnostic should use mpi category");
+  require_true(diagnostic.exit_code == nerdss::error::ExitCode::mpi,
+               "MPI rank diagnostic should use mpi exit code");
+  require_contains(diagnostic.message, "missing input (rank=3)",
+                   "MPI rank diagnostic message includes rank");
+  require_contains(formatted, "ERROR [mpi]",
+                   "MPI rank diagnostic rendering includes category");
+  require_contains(formatted, "exit_code=mpi(13)",
+                   "MPI rank diagnostic rendering includes exit code");
+}
+
+void test_error_mpi_molecule_diagnostic() {
+  const nerdss::core::Diagnostic diagnostic =
+      nerdss::error::MakeMpiMoleculeDiagnostic(4, "bad molecule", 9, 2, 12, 1,
+                                               99);
+  const std::string formatted = nerdss::core::FormatDiagnostic(diagnostic);
+
+  require_true(diagnostic.category == nerdss::error::ErrorCategory::mpi,
+               "MPI molecule diagnostic should use mpi category");
+  require_true(diagnostic.exit_code == nerdss::error::ExitCode::mpi,
+               "MPI molecule diagnostic should use mpi exit code");
+  require_contains(diagnostic.message,
+                   "bad molecule (rank=4, mol.id=9, mol.index=2",
+                   "MPI molecule diagnostic message includes molecule ids");
+  require_contains(diagnostic.message, "moleculeList.size()=12",
+                   "MPI molecule diagnostic message includes list size");
+  require_contains(diagnostic.message, "mol.complex.id=99",
+                   "MPI molecule diagnostic message includes complex id");
+  require_contains(formatted, "ERROR [mpi]",
+                   "MPI molecule diagnostic rendering includes category");
+  require_contains(formatted, "exit_code=mpi(13)",
+                   "MPI molecule diagnostic rendering includes exit code");
 }
 
 void test_setup_invalid_state_character_diagnostic() {
@@ -541,6 +606,9 @@ int main() {
   test_parser_invalid_numeric_array_token_diagnostic();
   test_parser_invalid_boundary_value_diagnostic();
   test_parser_invalid_molecule_count_diagnostic();
+  test_parser_invalid_molecule_bond_count_diagnostic();
+  test_error_mpi_rank_diagnostic();
+  test_error_mpi_molecule_diagnostic();
   test_setup_invalid_state_character_diagnostic();
   test_setup_implicit_lipid_ordering_diagnostic();
   test_setup_implicit_molecule_interface_count_diagnostic();

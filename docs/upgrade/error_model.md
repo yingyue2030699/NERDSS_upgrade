@@ -200,6 +200,21 @@ direct `std::cerr` plus `exit(1)` paths and unstructured `std::stoi`
 exceptions to stable `input` diagnostics while preserving accepted reaction
 molecule parsing.
 
+Molecule configuration bond-count parsing now uses
+`nerdss::parser::MakeInvalidMoleculeBondCountDiagnostic` and
+`ExitWithInvalidMoleculeBondCountDiagnostic` when a `bonds =` value is not a
+complete non-negative integer. This converts uncaught `std::stoi` failures and
+partial-token parses to stable `input` diagnostics while preserving accepted
+`.mol` bond-count syntax.
+
+## MPI Diagnostics
+
+The legacy `error(MpiContext&, ...)` overloads now format rank-aware messages
+through `nerdss::error::MakeMpiRankDiagnostic` and
+`MakeMpiMoleculeDiagnostic`. This keeps MPI failures local to the existing
+legacy helper boundary, includes rank and molecule context in structured
+`mpi` diagnostics, and does not introduce a new `MPI_Abort` policy.
+
 ## Setup State Diagnostics
 
 The state setup path now uses
