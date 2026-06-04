@@ -96,6 +96,10 @@ trajectory math, restart semantics, or legacy input/output compatibility.
    lives behind a pure `ProbabilityEngine` setup helper; the legacy wrappers
    still perform candidate search, warning emission, reweighting, and
    probability-vector mutation.
+   Association rotation-angle diffusion-policy selection now also lives behind
+   `MathEngine::PartitionAssociationRotationAngle`; the legacy
+   `determine_rotation_angles` wrapper only adapts `Complex` diffusion fields
+   and leaves association coordinate/topology mutation in existing callers.
 4. Separate mutable topology operations from probability calculations.
 5. Introduce backend-neutral data-shape documentation for future GPU work:
    structure-of-arrays candidates, batchable kernels, and RNG constraints.
