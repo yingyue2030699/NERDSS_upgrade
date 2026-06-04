@@ -182,6 +182,15 @@ Invalid characters and malformed state count tokens in `parse_number_bngl`
 also report the same stable diagnostic while preserving accepted legacy count
 syntax.
 
+Reaction molecule BNGL parsing now uses
+`nerdss::parser::MakeInvalidReactionMoleculeSyntaxDiagnostic` and
+`ExitWithInvalidReactionMoleculeSyntaxDiagnostic` for malformed reaction
+molecule syntax, including invalid characters, numeric bond-index parse
+failures, and indexed reactant-side interactions. This moves the previous
+direct `std::cerr` plus `exit(1)` paths and unstructured `std::stoi`
+exceptions to stable `input` diagnostics while preserving accepted reaction
+molecule parsing.
+
 ## Setup State Diagnostics
 
 The state setup path now uses
@@ -277,8 +286,6 @@ of exiting, matching the previous optional-artifact behavior.
   exceptions, or write direct `std::cerr` messages include remaining paths in
   `src/parser/parse_input.cpp` outside the migrated file-open, molecule
   keyword, section-order, and molecule copy-number checks,
-  `src/parser/parse_molecule_bngl.cpp` outside the migrated starting molecule
-  copy-number parser,
   `src/parser/parse_input_for_a_new_simulation.cpp`,
   `src/parser/parse_input_for_a_restart_simulation.cpp`, and
   `src/parser/parse_input_for_add_file.cpp`. Other `parse_molFile` semantic
