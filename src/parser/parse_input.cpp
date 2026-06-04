@@ -13,6 +13,39 @@ std::map<const std::string, BoundaryKeyword> bcKeywords = {
     { "compartmentsited", BoundaryKeyword::compartmentSiteD }, { "compartmentsiterho", BoundaryKeyword::compartmentSiteRho }
 };
 
+namespace {
+
+const char* boundary_keyword_name(BoundaryKeyword keyword)
+{
+    switch (keyword) {
+    case BoundaryKeyword::implicitLipid:
+        return "implicitLipid";
+    case BoundaryKeyword::waterBox:
+        return "waterBox";
+    case BoundaryKeyword::xBCtype:
+        return "xBCtype";
+    case BoundaryKeyword::yBCtype:
+        return "yBCtype";
+    case BoundaryKeyword::zBCtype:
+        return "zBCtype";
+    case BoundaryKeyword::isSphere:
+        return "isSphere";
+    case BoundaryKeyword::sphereR:
+        return "sphereR";
+    case BoundaryKeyword::hasCompartment:
+        return "hasCompartment";
+    case BoundaryKeyword::compartmentR:
+        return "compartmentR";
+    case BoundaryKeyword::compartmentSiteD:
+        return "compartmentSiteD";
+    case BoundaryKeyword::compartmentSiteRho:
+        return "compartmentSiteRho";
+    }
+    return "<unknown>";
+}
+
+} // namespace
+
 void Membrane::set_value_BC(std::string value, BoundaryKeyword keywords)
 {
     try {
@@ -69,11 +102,12 @@ void Membrane::set_value_BC(std::string value, BoundaryKeyword keywords)
             std::cout << "Read in compartmentSiteRho: " << this->droplet.rho << " nm^-2" << std::endl;
             break;
         default:
-            throw std::invalid_argument("Not a valid keyword.");
+            nerdss::parser::ExitWithInvalidKeywordDiagnostic(
+                boundary_keyword_name(keywords), "boundary", "");
         }
-    } catch (std::invalid_argument& e) {
-        std::cout << e.what() << '\n';
-        exit(1);
+    } catch (const std::exception& e) {
+        nerdss::parser::ExitWithInvalidBoundaryValueDiagnostic(
+            boundary_keyword_name(keywords), value, e.what());
     }
 }
 
