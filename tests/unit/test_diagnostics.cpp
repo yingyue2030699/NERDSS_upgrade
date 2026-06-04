@@ -379,6 +379,36 @@ void test_parser_incomplete_reaction_diagnostic() {
                    "incomplete reaction rendering includes exit code");
 }
 
+void test_parser_invalid_reaction_molecule_syntax_diagnostic() {
+  const nerdss::core::Diagnostic diagnostic =
+      nerdss::parser::MakeInvalidReactionMoleculeSyntaxDiagnostic(
+          "A(site!1)", "indexed interactions are not allowed on the reactant "
+                       "side; use wildcard bonds like '!*'");
+  const std::string formatted = nerdss::core::FormatDiagnostic(diagnostic);
+
+  require_true(diagnostic.category == nerdss::error::ErrorCategory::input,
+               "invalid reaction molecule syntax should use input category");
+  require_true(diagnostic.exit_code == nerdss::error::ExitCode::input,
+               "invalid reaction molecule syntax should use input exit code");
+  require_contains(
+      diagnostic.message,
+      "invalid reaction molecule 'A(site!1)': indexed interactions are not "
+      "allowed on the reactant side",
+      "invalid reaction molecule syntax message includes expression and "
+      "reason");
+  require_contains(
+      diagnostic.message,
+      "expected BNGL-like molecule syntax such as 'Mol(iface~state!*)' or "
+      "'Mol(iface!1)'",
+      "invalid reaction molecule syntax message includes expected grammar");
+  require_contains(formatted, "ERROR [input]",
+                   "invalid reaction molecule syntax rendering includes "
+                   "category");
+  require_contains(formatted, "exit_code=input(2)",
+                   "invalid reaction molecule syntax rendering includes exit "
+                   "code");
+}
+
 void test_parser_unknown_observable_type_diagnostic() {
   const nerdss::core::Diagnostic diagnostic =
       nerdss::parser::MakeUnknownObservableTypeDiagnostic("species");
@@ -500,6 +530,7 @@ int main() {
   test_parser_ambiguous_reaction_type_diagnostic();
   test_parser_invalid_reaction_keyword_diagnostic();
   test_parser_incomplete_reaction_diagnostic();
+  test_parser_invalid_reaction_molecule_syntax_diagnostic();
   test_parser_unknown_observable_type_diagnostic();
   test_parser_unknown_state_interface_diagnostic();
   test_parser_unknown_reaction_molecule_template_diagnostic();
