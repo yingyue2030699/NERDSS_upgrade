@@ -1,4 +1,5 @@
 #include "error/error.hpp"
+#include "error/error_diagnostics.hpp"
 
 #include <cstring>
 #include <iostream>
@@ -17,19 +18,13 @@ void error(string errorString) {
 }
 
 void error(MpiContext &mpiContext, string errorString) {
-  error(errorString + ": Rank=" + to_string(mpiContext.rank) + ":\n");
+  nerdss::core::ExitWithDiagnostic(
+      nerdss::error::MakeMpiRankDiagnostic(mpiContext.rank, errorString));
 }
 
 void error(MpiContext &mpiContext, Molecule &mol, string errorString) {
-  cerr << "!!! ################################## !!! "
-          "################################## !!!"
-       << endl;
-  cerr << "mol.id = " << mol.id << endl;
-  cerr << "mol.index = " << mol.index << endl;
-  cerr << "moleculeList.size() = " << (*(mpiContext.moleculeList)).size()
-       << endl;
-  cerr << "mol.myComIndex = " << mol.myComIndex << endl;
-  cerr << "mol.my complex id = "
-       << (*(mpiContext.complexList))[mol.myComIndex].id << endl;
-  error(mpiContext, errorString);
+  const int complexId = (*(mpiContext.complexList))[mol.myComIndex].id;
+  nerdss::core::ExitWithDiagnostic(nerdss::error::MakeMpiMoleculeDiagnostic(
+      mpiContext.rank, errorString, mol.id, mol.index,
+      (*(mpiContext.moleculeList)).size(), mol.myComIndex, complexId));
 }
