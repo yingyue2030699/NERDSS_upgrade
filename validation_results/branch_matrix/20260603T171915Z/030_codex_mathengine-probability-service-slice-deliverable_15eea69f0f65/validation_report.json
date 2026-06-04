@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-06-03T18:04:14+00:00",
+  "repo": {
+    "commit": "15eea69f0f65e774404629c23ea707879eda597c",
+    "branch": null,
+    "dirty": false,
+    "status_short": []
+  },
+  "status": "failed",
+  "steps": [
+    {
+      "name": "smoke",
+      "command": [
+        "/opt/anaconda3/bin/python3",
+        "-B",
+        "/private/tmp/nerdss-matrix-030_codex_mathengine-probability-service-slice-deliverable_15eea69f0f65/tools/run_smoke_tests.py",
+        "--artifact-dir",
+        "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/030_codex_mathengine-probability-service-slice-deliverable_15eea69f0f65/smoke"
+      ],
+      "cwd": "/private/tmp/nerdss-matrix-030_codex_mathengine-probability-service-slice-deliverable_15eea69f0f65",
+      "exit_code": 1,
+      "runtime_seconds": 513.470746,
+      "stdout_path": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/030_codex_mathengine-probability-service-slice-deliverable_15eea69f0f65/smoke.stdout.txt",
+      "stderr_path": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/030_codex_mathengine-probability-service-slice-deliverable_15eea69f0f65/smoke.stderr.txt",
+      "skipped": false,
+      "passed": false
+    }
+  ]
+}

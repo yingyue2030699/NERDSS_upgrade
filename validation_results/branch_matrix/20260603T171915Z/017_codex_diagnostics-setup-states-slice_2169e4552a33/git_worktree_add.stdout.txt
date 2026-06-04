@@ -1,0 +1,1 @@
+HEAD is now at 2169e45 Add setup state character diagnostics

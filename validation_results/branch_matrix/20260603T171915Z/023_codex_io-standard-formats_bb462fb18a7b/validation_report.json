@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-06-03T17:46:40+00:00",
+  "repo": {
+    "commit": "bb462fb18a7be82829b17b38297ea4061907f797",
+    "branch": null,
+    "dirty": false,
+    "status_short": []
+  },
+  "status": "failed",
+  "steps": [
+    {
+      "name": "smoke",
+      "command": [
+        "/opt/anaconda3/bin/python3",
+        "-B",
+        "/private/tmp/nerdss-matrix-023_codex_io-standard-formats_bb462fb18a7b/tools/run_smoke_tests.py",
+        "--artifact-dir",
+        "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/023_codex_io-standard-formats_bb462fb18a7b/smoke"
+      ],
+      "cwd": "/private/tmp/nerdss-matrix-023_codex_io-standard-formats_bb462fb18a7b",
+      "exit_code": 1,
+      "runtime_seconds": 535.228693,
+      "stdout_path": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/023_codex_io-standard-formats_bb462fb18a7b/smoke.stdout.txt",
+      "stderr_path": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/023_codex_io-standard-formats_bb462fb18a7b/smoke.stderr.txt",
+      "skipped": false,
+      "passed": false
+    }
+  ]
+}

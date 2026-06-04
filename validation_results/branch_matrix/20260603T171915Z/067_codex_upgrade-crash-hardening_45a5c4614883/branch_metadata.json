@@ -1,0 +1,10 @@
+{
+  "branch_names": [
+    "codex/upgrade-crash-hardening",
+    "codex/upgrade-crash-hardening"
+  ],
+  "primary_branch": "codex/upgrade-crash-hardening",
+  "commit": "45a5c46148838197c1abd564845e88f1400499db",
+  "worktree_path": "/tmp/nerdss-matrix-067_codex_upgrade-crash-hardening_45a5c4614883",
+  "created_at_utc": "2026-06-03T17:19:15Z"
+}

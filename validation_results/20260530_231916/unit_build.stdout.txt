@@ -1,0 +1,3 @@
+[  0%] Building CXX object CMakeFiles/nerdss_unit_tests.dir/tests/unit/test_vector_coord.cpp.o
+[  9%] Linking CXX executable nerdss_unit_tests
+[100%] Built target nerdss_unit_tests

@@ -1,0 +1,18 @@
+Start testing: Jun 03 16:27 EDT
+----------------------------------------------------------
+1/1 Testing: nerdss_unit_tests
+1/1 Test: nerdss_unit_tests
+Command: "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/069_codex_upgrade-expanded-validation_74d763ad4627/unit-build/nerdss_unit_tests"
+Directory: /Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/069_codex_upgrade-expanded-validation_74d763ad4627/unit-build
+"nerdss_unit_tests" start time: Jun 03 16:27 EDT
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   1.03 sec
+----------------------------------------------------------
+Test Passed.
+"nerdss_unit_tests" end time: Jun 03 16:27 EDT
+"nerdss_unit_tests" time elapsed: 00:00:01
+----------------------------------------------------------
+
+End testing: Jun 03 16:27 EDT

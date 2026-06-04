@@ -1,0 +1,11 @@
+{
+  "branch_names": [
+    "codex/upgrade-benchmark-harness",
+    "codex/upgrade-benchmark-harness",
+    "codex/upgrade-benchmark-harness"
+  ],
+  "primary_branch": "codex/upgrade-benchmark-harness",
+  "commit": "ca08177562191551b1075c53453dc0c270e4b38b",
+  "worktree_path": "/tmp/nerdss-matrix-065_codex_upgrade-benchmark-harness_ca0817756219",
+  "created_at_utc": "2026-06-03T17:19:15Z"
+}

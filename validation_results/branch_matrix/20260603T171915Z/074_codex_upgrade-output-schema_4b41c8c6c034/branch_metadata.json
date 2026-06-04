@@ -1,0 +1,10 @@
+{
+  "branch_names": [
+    "codex/upgrade-output-schema",
+    "codex/upgrade-output-schema"
+  ],
+  "primary_branch": "codex/upgrade-output-schema",
+  "commit": "4b41c8c6c034b19b10c280e88b39c34315fbc696",
+  "worktree_path": "/tmp/nerdss-matrix-074_codex_upgrade-output-schema_4b41c8c6c034",
+  "created_at_utc": "2026-06-03T17:19:15Z"
+}

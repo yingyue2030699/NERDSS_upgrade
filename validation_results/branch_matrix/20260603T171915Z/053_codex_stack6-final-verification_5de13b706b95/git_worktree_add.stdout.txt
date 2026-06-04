@@ -1,0 +1,1 @@
+HEAD is now at 5de13b7 Document final stack 6 verification

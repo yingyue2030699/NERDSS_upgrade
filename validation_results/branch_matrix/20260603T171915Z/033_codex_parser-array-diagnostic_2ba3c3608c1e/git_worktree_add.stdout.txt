@@ -1,0 +1,1 @@
+HEAD is now at 2ba3c36 Use structured diagnostic for numeric array tokens

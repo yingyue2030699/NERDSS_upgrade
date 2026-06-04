@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-06-01T16:29:57+00:00",
+  "repo": {
+    "commit": "092d64314d591fa94518efb0165e7f0b671fa74a",
+    "branch": "codex/diagnostics-next-parser-slice",
+    "dirty": true,
+    "status_short": [
+      "M docs/upgrade/core_computation_refactor_plan.md",
+      " M docs/upgrade/error_model.md",
+      " M docs/upgrade/output_formats.md",
+      " M include/core/probability_engine.hpp",
+      " M include/parser/parser_diagnostics.hpp",
+      " M src/io/init_speciesFile.cpp",
+      " M src/parser/read_boolean.cpp",
+      " M src/reactions/functions_implicitlipid.cpp",
+      " M tests/io/run_standard_format_tests.py",
+      " M tests/io/test_standard_formats.cpp",
+      " M tests/unit/test_diagnostics.cpp",
+      " M tests/unit/test_vector_coord.cpp",
+      "?? validation_results/"
+    ]
+  },
+  "status": "passed",
+  "steps": [
+    {
+      "name": "smoke",
+      "command": [
+        "/opt/homebrew/opt/python@3.13/bin/python3.13",
+        "-B",
+        "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/tools/run_smoke_tests.py",
+        "--artifact-dir",
+        "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260601_122945/smoke"
+      ],
+      "cwd": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade",
+      "exit_code": 0,
+      "runtime_seconds": 0.170612,
+      "stdout_path": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260601_122945/smoke.stdout.txt",
+      "stderr_path": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260601_122945/smoke.stderr.txt",
+      "skipped": false,
+      "passed": true
+    },
+    {
+      "name": "unit_configure",
+      "command": [
+        "cmake",
+        "-S",
+        "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade",
+        "-B",
+        "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/build-upgrade-validation"
+      ],
+      "cwd": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade",
+      "exit_code": 0,
+      "runtime_seconds": 0.200016,
+      "stdout_path": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260601_122945/unit_configure.stdout.txt",
+      "stderr_path": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260601_122945/unit_configure.stderr.txt",
+      "skipped": false,
+      "passed": true
+    },
+    {
+      "name": "unit_build",
+      "command": [
+        "cmake",
+        "--build",
+        "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/build-upgrade-validation",
+        "--target",
+        "nerdss_unit_tests"
+      ],
+      "cwd": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade",
+      "exit_code": 0,
+      "runtime_seconds": 8.531917,
+      "stdout_path": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260601_122945/unit_build.stdout.txt",
+      "stderr_path": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260601_122945/unit_build.stderr.txt",
+      "skipped": false,
+      "passed": true
+    },
+    {
+      "name": "unit_ctest",
+      "command": [
+        "ctest",
+        "--test-dir",
+        "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/build-upgrade-validation",
+        "--output-on-failure"
+      ],
+      "cwd": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade",
+      "exit_code": 0,
+      "runtime_seconds": 0.592503,
+      "stdout_path": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260601_122945/unit_ctest.stdout.txt",
+      "stderr_path": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260601_122945/unit_ctest.stderr.txt",
+      "skipped": false,
+      "passed": true
+    },
+    {
+      "name": "regression",
+      "command": [
+        "/opt/homebrew/opt/python@3.13/bin/python3.13",
+        "-B",
+        "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/tests/regression/run_regression.py",
+        "--binary",
+        "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/bin/nerdss",
+        "--tmp-root",
+        "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260601_122945/regression_tmp",
+        "--json-output",
+        "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260601_122945/regression_report.json"
+      ],
+      "cwd": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade",
+      "exit_code": 0,
+      "runtime_seconds": 1.960575,
+      "stdout_path": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260601_122945/regression.stdout.txt",
+      "stderr_path": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260601_122945/regression.stderr.txt",
+      "skipped": false,
+      "passed": true
+    },
+    {
+      "name": "benchmarks",
+      "command": [],
+      "cwd": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade",
+      "exit_code": 0,
+      "runtime_seconds": 0.0,
+      "stdout_path": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260601_122945/benchmarks.stdout.txt",
+      "stderr_path": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260601_122945/benchmarks.stderr.txt",
+      "skipped": true,
+      "passed": true
+    }
+  ]
+}

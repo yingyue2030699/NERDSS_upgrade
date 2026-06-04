@@ -1,0 +1,13 @@
+In file included from /private/tmp/nerdss-matrix-106_master_bf8ced1b655b/tests/unit/test_vector_coord.cpp:1:
+In file included from /private/tmp/nerdss-matrix-106_master_bf8ced1b655b/include/classes/class_Coord.hpp:10:
+/private/tmp/nerdss-matrix-106_master_bf8ced1b655b/include/classes/class_Parameters.hpp:202:19: error: duplicate member 'bondedComplexWrite'
+  202 |     long long int bondedComplexWrite { -1 }; //!< timestep interval to write bonded complex JSON files
+      |                   ^
+/private/tmp/nerdss-matrix-106_master_bf8ced1b655b/include/classes/class_Parameters.hpp:199:19: note: previous declaration is here
+  199 |     long long int bondedComplexWrite { -1 }; //!< interval to write bonded complex JSON snapshots
+      |                   ^
+1 error generated.
+make[3]: *** [CMakeFiles/nerdss_unit_tests.dir/tests/unit/test_vector_coord.cpp.o] Error 1
+make[2]: *** [CMakeFiles/nerdss_unit_tests.dir/all] Error 2
+make[1]: *** [CMakeFiles/nerdss_unit_tests.dir/rule] Error 2
+make: *** [nerdss_unit_tests] Error 2

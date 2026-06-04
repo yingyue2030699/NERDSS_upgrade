@@ -1,0 +1,7 @@
+In file included from src/boundary_conditions/reflect_complex_compartment.cpp:12:
+In file included from include/boundary_conditions/reflect_functions.hpp:9:
+include/classes/class_Membrane.hpp:10:10: fatal error: 'classes/mpi_functions.hpp' file not found
+   10 | #include "classes/mpi_functions.hpp"
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+1 error generated.
+make: *** [obj/release/boundary_conditions/reflect_complex_compartment.o] Error 1

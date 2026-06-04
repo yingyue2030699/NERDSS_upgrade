@@ -1,0 +1,1 @@
+HEAD is now at ebc5a35 Restore bonded complex write parameter wiring

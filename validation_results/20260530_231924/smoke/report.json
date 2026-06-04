@@ -1,0 +1,192 @@
+{
+  "status": "passed",
+  "message": "Serial NERDSS build and minimal smoke simulation succeeded.",
+  "repo_root": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade",
+  "build_system": "make",
+  "executable": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/bin/nerdss",
+  "smoke_dir": "/var/folders/sb/kq7xx1cx5cq2j75_xd4w1nd40000gn/T/nerdss-smoke-yf2bj4p5",
+  "artifact_dir": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260530_231924/smoke",
+  "dependency_checks": {
+    "gsl-config": {
+      "available": true,
+      "path": "/opt/homebrew/bin/gsl-config",
+      "version": "2.8",
+      "exit_code": 0
+    },
+    "make": {
+      "available": true,
+      "path": "/usr/bin/make",
+      "version": "GNU Make 3.81",
+      "exit_code": 0
+    },
+    "g++": {
+      "available": true,
+      "path": "/usr/bin/g++",
+      "version": "Apple clang version 16.0.0 (clang-1600.0.26.6)",
+      "exit_code": 0
+    }
+  },
+  "environment": {
+    "python": "3.13.3",
+    "platform": "macOS-14.5-arm64-arm-64bit-Mach-O",
+    "machine": "arm64"
+  },
+  "build": null,
+  "run": {
+    "command": [
+      "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/bin/nerdss",
+      "-f",
+      "smoke.inp",
+      "-s",
+      "123"
+    ],
+    "cwd": "/var/folders/sb/kq7xx1cx5cq2j75_xd4w1nd40000gn/T/nerdss-smoke-yf2bj4p5",
+    "exit_code": 0,
+    "runtime_seconds": 0.007047,
+    "stdout": "Command: /Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/bin/nerdss -f smoke.inp -s 123\n\nStart date: 2026-05-30 23:19:24\nRNG Seed: 123\n\nParsing Input: \nThis is a new simulation with input file: smoke.inp\nParsing simulation parameters...\nRead in nItr: 10 timeSteps\nRead in timeStep: 0.1 us\nRead in timeWrite: 5 timeSteps\nRead in trajWrite: 5 timeSteps\nRead in restartWrite: 5 timeSteps\nRead in pdbWrite: 5 timeSteps\nRead in transitionWrite: 5 timeSteps\nRead in fromRestart: false\nRead in overlapSepLimit: 2.3 nm\nRead in scaleMaxDisplace: 30\nParsing simulation boundary conditions...\nRead in waterBox: [100 nm, 100 nm, 100 nm]\nRead in xBCtype: reflect\nRead in yBCtype: reflect\nRead in zBCtype: reflect\nParsing mol file information...\nA.mol\nRead in D: [1um^2s^-1, 1um^2s^-1, 1um^2s^-1]\nRead in Dr: [0rad^2s^-1, 0rad^2s^-1, 0rad^2s^-1]\nCoordinates: \nCOM: [0nm, 0nm, 0nm]\na: [0nm, 0nm, 0nm]\nBonds: \ncom-a, \nradius calculated from the ifacesCoord: 0.0001 nm\nmass auto calculated from the radius: 0.0001\n\nParsing reactions...\n\nInput file parsing complete\nNUMBER OF MOLECULE TYPES: 1NUMBER OF INTERFACES PLUS STATES, including PRODUCTS: 1\nNUMBER OF MOLECULES IN GEN COORDS: 1\nFinding and fixing overlapping proteins.\nIteration: 1\nOverlapping Proteins (false): 0\nNo overlapping proteins found.\n\nPartitioning simulation box into sub-boxes...\nRmaxlimit: 40\nSimulation volume parameters:\nTotal sub-volumes: 16\n\tDimensions: [2, 2, 4]\n\tMaximum sub-volume neighbors: 13\n\tSub-volume size: [50, 50, 25]\n Total species calculated from init_speciesFile.cpp: 1\nInitialized copyNumSpecies. Printing all values. total species: 1\n absolute index: 0 Copy nums: 1\nsize of proPairlist: 0 Number of pairs: 1 numMolTypes: 1\n\nSimulation Parameters\nNumber of iterations: 10 timesteps\nTimestep: 0.1 us\nTimestep log interval (timeWrite): 5 timesteps\nRestart file write interval: 5 timesteps\nCoordinate write interval (trajWrite): 5 timesteps\nPDB Coordinate write interval: 5 timesteps\nCheckpoint write interval: 1 timesteps\noverlapSepLimit: 2.3 nm\nTransition matrix write interval: 5 timesteps\nClusterOverlapCheck: false\nRNGwrite: false\nMolecule specific parameters:\nNumber of unique molecule types: 1\nTotal number of unique interfaces and states, including product states: 1\nTotal number of complexes in system at start: 1\nTotal number of units (molecules + interfaces) in system at start: 2\nMaximum allowed number of unique 2D reactions: 10000\n isSphere? false\n sphere Radius 0\n hasCompartment? false\n compartment Radius 0\n BOX geometry, dimensions: \n100 100 100\n hasImplicitLipid? false\n\nMolecule Information\nMolecule template 0\nName: A\nCopy number:1\n Diffusion trans: 1 1 1\n Diffusion Rot: 0 0 0\nIs a promoter: false\nIs a rod: false\nIs a point: true\nRadius: 0.0001\n\nInterfaces:\nName: a\nRelative index: 0\nAbsolute index: 0\n\n\nReactions\n*************** BEGIN SIMULATION **************** \n------------------- \nEnd iteration: 5, simulation time: 5.000000e-07 seconds.\nSystem time: 2026-05-30 23:19:24\nElapsed time: 0 minutes\nNumber of molecules: 1\nNumber of complexes: 1\nTotal reaction matches: 0\nAvg timestep duration: 1.998799e-03, iterations remaining: 5, Time left: 0 minutes\nEstimated end time: 2026-05-30 23:19:24\n------------------------------------------------- \n------------------------------------------------- \nEnd simulation\nEnd date: 2026-05-30 23:19:24\n\tWall Time: 3.974000e-03 seconds\n",
+    "stderr": "",
+    "timed_out": false
+  },
+  "cli_checks": [
+    {
+      "command": [
+        "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/bin/nerdss",
+        "--help"
+      ],
+      "cwd": "/var/folders/sb/kq7xx1cx5cq2j75_xd4w1nd40000gn/T/nerdss-cli-check-1s3b1lvg",
+      "exit_code": 0,
+      "runtime_seconds": 0.002797,
+      "stdout": "Command: /Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/bin/nerdss --help\nUsage: /Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/bin/nerdss -f <input.inp> [-s <seed>] [-a <add.inp>] [-c <coords.dat>]\n       /Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/bin/nerdss -r <restart.dat> [-s <seed>]\n",
+      "stderr": "",
+      "timed_out": false
+    },
+    {
+      "command": [
+        "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/bin/nerdss",
+        "-f"
+      ],
+      "cwd": "/var/folders/sb/kq7xx1cx5cq2j75_xd4w1nd40000gn/T/nerdss-cli-check-1s3b1lvg",
+      "exit_code": 2,
+      "runtime_seconds": 0.002889,
+      "stdout": "Command: /Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/bin/nerdss -f\nUsage: /Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/bin/nerdss -f <input.inp> [-s <seed>] [-a <add.inp>] [-c <coords.dat>]\n       /Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/bin/nerdss -r <restart.dat> [-s <seed>]\n",
+      "stderr": "\nERROR [input]: missing value for -f\n",
+      "timed_out": false
+    },
+    {
+      "command": [
+        "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/bin/nerdss",
+        "-f",
+        "smoke.inp",
+        "-s"
+      ],
+      "cwd": "/var/folders/sb/kq7xx1cx5cq2j75_xd4w1nd40000gn/T/nerdss-cli-check-1s3b1lvg",
+      "exit_code": 2,
+      "runtime_seconds": 0.002822,
+      "stdout": "Command: /Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/bin/nerdss -f smoke.inp -s\nUsage: /Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/bin/nerdss -f <input.inp> [-s <seed>] [-a <add.inp>] [-c <coords.dat>]\n       /Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/bin/nerdss -r <restart.dat> [-s <seed>]\n",
+      "stderr": "\nERROR [input]: missing value for -s\n",
+      "timed_out": false
+    }
+  ],
+  "produced_files": [
+    {
+      "path": "DATA/assoc_dissoc_time.dat",
+      "size_bytes": 0
+    },
+    {
+      "path": "DATA/bound_pair_time.dat",
+      "size_bytes": 178
+    },
+    {
+      "path": "DATA/copy_numbers_time.dat",
+      "size_bytes": 34
+    },
+    {
+      "path": "DATA/event_counters_time.dat",
+      "size_bytes": 44
+    },
+    {
+      "path": "DATA/final_coords.xyz",
+      "size_bytes": 107
+    },
+    {
+      "path": "DATA/histogram_complexes_time.dat",
+      "size_bytes": 71
+    },
+    {
+      "path": "DATA/initial_crds.xyz",
+      "size_bytes": 107
+    },
+    {
+      "path": "DATA/mono_dimer_time.dat",
+      "size_bytes": 58
+    },
+    {
+      "path": "DATA/observables_time.dat",
+      "size_bytes": 0
+    },
+    {
+      "path": "DATA/restart.dat",
+      "size_bytes": 2014
+    },
+    {
+      "path": "DATA/system.psf",
+      "size_bytes": 306
+    },
+    {
+      "path": "DATA/trajectory.xyz",
+      "size_bytes": 309
+    },
+    {
+      "path": "DATA/transition_matrix_time.dat",
+      "size_bytes": 233
+    },
+    {
+      "path": "PDB/0.pdb",
+      "size_bytes": 274
+    },
+    {
+      "path": "PDB/5.pdb",
+      "size_bytes": 274
+    },
+    {
+      "path": "PDB/9.pdb",
+      "size_bytes": 274
+    },
+    {
+      "path": "RESTARTS/restart1.dat",
+      "size_bytes": 2014
+    },
+    {
+      "path": "RESTARTS/restart2.dat",
+      "size_bytes": 2014
+    },
+    {
+      "path": "RESTARTS/restart3.dat",
+      "size_bytes": 2014
+    },
+    {
+      "path": "RESTARTS/restart4.dat",
+      "size_bytes": 2014
+    },
+    {
+      "path": "RESTARTS/restart5.dat",
+      "size_bytes": 2014
+    },
+    {
+      "path": "RESTARTS/restart6.dat",
+      "size_bytes": 2014
+    },
+    {
+      "path": "RESTARTS/restart7.dat",
+      "size_bytes": 2014
+    },
+    {
+      "path": "RESTARTS/restart8.dat",
+      "size_bytes": 2014
+    },
+    {
+      "path": "RESTARTS/restart9.dat",
+      "size_bytes": 2014
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+In file included from src/reactions/break_interaction.cpp:2:
+include/reactions/topology/topology_operations.hpp:7:17: warning: nested namespace definition is a C++17 extension; define each namespace separately [-Wc++17-extensions]
+    7 | namespace nerdss::reactions::topology {
+      |                 ^~~~~~~~~~~~~~~~~~~~~
+      |                  { namespace reactions { namespace topology
+1 warning generated.

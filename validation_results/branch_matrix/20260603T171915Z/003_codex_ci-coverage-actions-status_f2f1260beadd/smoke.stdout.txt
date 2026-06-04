@@ -1,0 +1,6 @@
+NERDSS smoke status: failed
+Serial NERDSS build failed. See captured build stderr/stdout.
+Build system: make
+Build: exit=2 runtime=523.86s cmd='make serial'
+Artifacts: /Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/003_codex_ci-coverage-actions-status_f2f1260beadd/smoke
+Produced files: 0

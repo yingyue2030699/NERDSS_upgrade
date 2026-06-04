@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-06-03T18:12:51+00:00",
+  "repo": {
+    "commit": "2c51fa3218d743cf0692155ab1d5255b2d7f0da4",
+    "branch": null,
+    "dirty": false,
+    "status_short": []
+  },
+  "status": "failed",
+  "steps": [
+    {
+      "name": "smoke",
+      "command": [
+        "/opt/anaconda3/bin/python3",
+        "-B",
+        "/private/tmp/nerdss-matrix-034_codex_parser-molecule-count-diagnostics-slice_2c51fa3218d7/tools/run_smoke_tests.py",
+        "--artifact-dir",
+        "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/034_codex_parser-molecule-count-diagnostics-slice_2c51fa3218d7/smoke"
+      ],
+      "cwd": "/private/tmp/nerdss-matrix-034_codex_parser-molecule-count-diagnostics-slice_2c51fa3218d7",
+      "exit_code": 1,
+      "runtime_seconds": 514.302831,
+      "stdout_path": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/034_codex_parser-molecule-count-diagnostics-slice_2c51fa3218d7/smoke.stdout.txt",
+      "stderr_path": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/034_codex_parser-molecule-count-diagnostics-slice_2c51fa3218d7/smoke.stderr.txt",
+      "skipped": false,
+      "passed": false
+    }
+  ]
+}

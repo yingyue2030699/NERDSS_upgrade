@@ -1,0 +1,1 @@
+HEAD is now at 5371606 Move trajectory boundary dispatch behind core facade

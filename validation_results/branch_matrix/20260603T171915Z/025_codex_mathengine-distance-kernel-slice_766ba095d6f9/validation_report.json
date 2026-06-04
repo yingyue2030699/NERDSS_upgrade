@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-06-03T17:46:45+00:00",
+  "repo": {
+    "commit": "766ba095d6f99effb00f6396c71d54eb0f1b36b3",
+    "branch": null,
+    "dirty": false,
+    "status_short": []
+  },
+  "status": "failed",
+  "steps": [
+    {
+      "name": "smoke",
+      "command": [
+        "/opt/anaconda3/bin/python3",
+        "-B",
+        "/private/tmp/nerdss-matrix-025_codex_mathengine-distance-kernel-slice_766ba095d6f9/tools/run_smoke_tests.py",
+        "--artifact-dir",
+        "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/025_codex_mathengine-distance-kernel-slice_766ba095d6f9/smoke"
+      ],
+      "cwd": "/private/tmp/nerdss-matrix-025_codex_mathengine-distance-kernel-slice_766ba095d6f9",
+      "exit_code": 1,
+      "runtime_seconds": 536.280192,
+      "stdout_path": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/025_codex_mathengine-distance-kernel-slice_766ba095d6f9/smoke.stdout.txt",
+      "stderr_path": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/025_codex_mathengine-distance-kernel-slice_766ba095d6f9/smoke.stderr.txt",
+      "skipped": false,
+      "passed": false
+    }
+  ]
+}

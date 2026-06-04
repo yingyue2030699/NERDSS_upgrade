@@ -1,0 +1,11 @@
+{
+  "branch_names": [
+    "codex/ci-coverage-actions",
+    "codex/ci-coverage-actions-unblock",
+    "codex/ci-coverage-actions-unblock"
+  ],
+  "primary_branch": "codex/ci-coverage-actions",
+  "commit": "922afa6ca2a5bfcdae1cf347721d838e1ecf25ab",
+  "worktree_path": "/tmp/nerdss-matrix-001_codex_ci-coverage-actions_922afa6ca2a5",
+  "created_at_utc": "2026-06-03T17:19:15Z"
+}

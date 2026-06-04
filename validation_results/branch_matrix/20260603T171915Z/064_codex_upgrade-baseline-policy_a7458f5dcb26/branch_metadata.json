@@ -1,0 +1,11 @@
+{
+  "branch_names": [
+    "codex/upgrade-baseline-policy",
+    "codex/upgrade-baseline-policy",
+    "codex/upgrade-baseline-policy"
+  ],
+  "primary_branch": "codex/upgrade-baseline-policy",
+  "commit": "a7458f5dcb266afcbe191cb58ddf2b79ecef3793",
+  "worktree_path": "/tmp/nerdss-matrix-064_codex_upgrade-baseline-policy_a7458f5dcb26",
+  "created_at_utc": "2026-06-03T17:19:15Z"
+}

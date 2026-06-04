@@ -1,0 +1,1 @@
+HEAD is now at bb79b5b Document main loop extraction seams

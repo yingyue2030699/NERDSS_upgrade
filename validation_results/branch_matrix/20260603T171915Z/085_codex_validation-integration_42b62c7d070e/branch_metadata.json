@@ -1,0 +1,11 @@
+{
+  "branch_names": [
+    "codex/validation-integration",
+    "codex/validation-integration",
+    "codex/validation-integration-stack"
+  ],
+  "primary_branch": "codex/validation-integration",
+  "commit": "42b62c7d070e1434a67338f45b3b31bc597954ee",
+  "worktree_path": "/tmp/nerdss-matrix-085_codex_validation-integration_42b62c7d070e",
+  "created_at_utc": "2026-06-03T17:19:15Z"
+}

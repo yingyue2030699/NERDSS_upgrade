@@ -1,0 +1,2 @@
+FAIL smoke (596.74s)
+Report: /Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/062_codex_trajectory-engine-boundary_53716064500f/validation_report.json

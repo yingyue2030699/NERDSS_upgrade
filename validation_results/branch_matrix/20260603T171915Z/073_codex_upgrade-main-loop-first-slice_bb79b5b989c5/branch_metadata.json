@@ -1,0 +1,10 @@
+{
+  "branch_names": [
+    "codex/upgrade-main-loop-first-slice",
+    "codex/upgrade-main-loop-first-slice"
+  ],
+  "primary_branch": "codex/upgrade-main-loop-first-slice",
+  "commit": "bb79b5b989c58378401703d14ef2a411816a979c",
+  "worktree_path": "/tmp/nerdss-matrix-073_codex_upgrade-main-loop-first-slice_bb79b5b989c5",
+  "created_at_utc": "2026-06-03T17:19:15Z"
+}

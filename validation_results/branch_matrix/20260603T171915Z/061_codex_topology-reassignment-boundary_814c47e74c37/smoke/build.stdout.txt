@@ -1,0 +1,506 @@
+Compiling src/boundary_conditions/check_if_spans.cpp to obj/release/boundary_conditions/check_if_spans.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/check_if_spans.cpp -o obj/release/boundary_conditions/check_if_spans.o  
+------------
+Compiling src/boundary_conditions/check_if_spans_box.cpp to obj/release/boundary_conditions/check_if_spans_box.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/check_if_spans_box.cpp -o obj/release/boundary_conditions/check_if_spans_box.o  
+------------
+Compiling src/boundary_conditions/check_if_spans_sphere.cpp to obj/release/boundary_conditions/check_if_spans_sphere.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/check_if_spans_sphere.cpp -o obj/release/boundary_conditions/check_if_spans_sphere.o  
+------------
+Compiling src/boundary_conditions/reflect_complex_compartment.cpp to obj/release/boundary_conditions/reflect_complex_compartment.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/reflect_complex_compartment.cpp -o obj/release/boundary_conditions/reflect_complex_compartment.o  
+------------
+Compiling src/boundary_conditions/reflect_complex_rad_rot.cpp to obj/release/boundary_conditions/reflect_complex_rad_rot.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/reflect_complex_rad_rot.cpp -o obj/release/boundary_conditions/reflect_complex_rad_rot.o  
+------------
+Compiling src/boundary_conditions/reflect_complex_rad_rot_box.cpp to obj/release/boundary_conditions/reflect_complex_rad_rot_box.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/reflect_complex_rad_rot_box.cpp -o obj/release/boundary_conditions/reflect_complex_rad_rot_box.o  
+------------
+Compiling src/boundary_conditions/reflect_complex_rad_rot_sphere.cpp to obj/release/boundary_conditions/reflect_complex_rad_rot_sphere.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/reflect_complex_rad_rot_sphere.cpp -o obj/release/boundary_conditions/reflect_complex_rad_rot_sphere.o  
+------------
+Compiling src/boundary_conditions/reflect_traj_check_span.cpp to obj/release/boundary_conditions/reflect_traj_check_span.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/reflect_traj_check_span.cpp -o obj/release/boundary_conditions/reflect_traj_check_span.o  
+------------
+Compiling src/boundary_conditions/reflect_traj_check_span_box.cpp to obj/release/boundary_conditions/reflect_traj_check_span_box.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/reflect_traj_check_span_box.cpp -o obj/release/boundary_conditions/reflect_traj_check_span_box.o  
+------------
+Compiling src/boundary_conditions/reflect_traj_check_span_sphere.cpp to obj/release/boundary_conditions/reflect_traj_check_span_sphere.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/reflect_traj_check_span_sphere.cpp -o obj/release/boundary_conditions/reflect_traj_check_span_sphere.o  
+------------
+Compiling src/boundary_conditions/reflect_traj_complex_compartment.cpp to obj/release/boundary_conditions/reflect_traj_complex_compartment.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/reflect_traj_complex_compartment.cpp -o obj/release/boundary_conditions/reflect_traj_complex_compartment.o  
+------------
+Compiling src/boundary_conditions/reflect_traj_complex_rad_rot.cpp to obj/release/boundary_conditions/reflect_traj_complex_rad_rot.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/reflect_traj_complex_rad_rot.cpp -o obj/release/boundary_conditions/reflect_traj_complex_rad_rot.o  
+------------
+Compiling src/boundary_conditions/reflect_traj_complex_rad_rot_box.cpp to obj/release/boundary_conditions/reflect_traj_complex_rad_rot_box.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/reflect_traj_complex_rad_rot_box.cpp -o obj/release/boundary_conditions/reflect_traj_complex_rad_rot_box.o  
+------------
+Compiling src/boundary_conditions/reflect_traj_complex_rad_rot_nocheck.cpp to obj/release/boundary_conditions/reflect_traj_complex_rad_rot_nocheck.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/reflect_traj_complex_rad_rot_nocheck.cpp -o obj/release/boundary_conditions/reflect_traj_complex_rad_rot_nocheck.o  
+------------
+Compiling src/boundary_conditions/reflect_traj_complex_rad_rot_nocheck_box.cpp to obj/release/boundary_conditions/reflect_traj_complex_rad_rot_nocheck_box.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/reflect_traj_complex_rad_rot_nocheck_box.cpp -o obj/release/boundary_conditions/reflect_traj_complex_rad_rot_nocheck_box.o  
+------------
+Compiling src/boundary_conditions/reflect_traj_complex_rad_rot_nocheck_sphere.cpp to obj/release/boundary_conditions/reflect_traj_complex_rad_rot_nocheck_sphere.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/reflect_traj_complex_rad_rot_nocheck_sphere.cpp -o obj/release/boundary_conditions/reflect_traj_complex_rad_rot_nocheck_sphere.o  
+------------
+Compiling src/boundary_conditions/reflect_traj_complex_rad_rot_sphere.cpp to obj/release/boundary_conditions/reflect_traj_complex_rad_rot_sphere.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/reflect_traj_complex_rad_rot_sphere.cpp -o obj/release/boundary_conditions/reflect_traj_complex_rad_rot_sphere.o  
+------------
+Compiling src/boundary_conditions/reflect_traj_tmp_crds.cpp to obj/release/boundary_conditions/reflect_traj_tmp_crds.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/reflect_traj_tmp_crds.cpp -o obj/release/boundary_conditions/reflect_traj_tmp_crds.o  
+------------
+Compiling src/boundary_conditions/reflect_traj_tmp_crds_box.cpp to obj/release/boundary_conditions/reflect_traj_tmp_crds_box.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/reflect_traj_tmp_crds_box.cpp -o obj/release/boundary_conditions/reflect_traj_tmp_crds_box.o  
+------------
+Compiling src/boundary_conditions/reflect_traj_tmp_crds_compartment.cpp to obj/release/boundary_conditions/reflect_traj_tmp_crds_compartment.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/reflect_traj_tmp_crds_compartment.cpp -o obj/release/boundary_conditions/reflect_traj_tmp_crds_compartment.o  
+------------
+Compiling src/boundary_conditions/reflect_traj_tmp_crds_sphere.cpp to obj/release/boundary_conditions/reflect_traj_tmp_crds_sphere.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/reflect_traj_tmp_crds_sphere.cpp -o obj/release/boundary_conditions/reflect_traj_tmp_crds_sphere.o  
+------------
+Compiling src/classes/class_Cluster.cpp to obj/release/classes/class_Cluster.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/classes/class_Cluster.cpp -o obj/release/classes/class_Cluster.o  
+------------
+Compiling src/classes/class_Coord.cpp to obj/release/classes/class_Coord.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/classes/class_Coord.cpp -o obj/release/classes/class_Coord.o  
+------------
+Compiling src/classes/class_MDTimer.cpp to obj/release/classes/class_MDTimer.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/classes/class_MDTimer.cpp -o obj/release/classes/class_MDTimer.o  
+------------
+Compiling src/classes/class_MolTemplate.cpp to obj/release/classes/class_MolTemplate.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/classes/class_MolTemplate.cpp -o obj/release/classes/class_MolTemplate.o  
+------------
+Compiling src/classes/class_Molecule_Complex.cpp to obj/release/classes/class_Molecule_Complex.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/classes/class_Molecule_Complex.cpp -o obj/release/classes/class_Molecule_Complex.o  
+------------
+Compiling src/classes/class_Observable.cpp to obj/release/classes/class_Observable.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/classes/class_Observable.cpp -o obj/release/classes/class_Observable.o  
+------------
+Compiling src/classes/class_Parameters.cpp to obj/release/classes/class_Parameters.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/classes/class_Parameters.cpp -o obj/release/classes/class_Parameters.o  
+------------
+Compiling src/classes/class_Quat.cpp to obj/release/classes/class_Quat.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/classes/class_Quat.cpp -o obj/release/classes/class_Quat.o  
+------------
+Compiling src/classes/class_Rxns.cpp to obj/release/classes/class_Rxns.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/classes/class_Rxns.cpp -o obj/release/classes/class_Rxns.o  
+------------
+Compiling src/classes/class_SimulVolume.cpp to obj/release/classes/class_SimulVolume.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/classes/class_SimulVolume.cpp -o obj/release/classes/class_SimulVolume.o  
+------------
+Compiling src/classes/class_Vector.cpp to obj/release/classes/class_Vector.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/classes/class_Vector.cpp -o obj/release/classes/class_Vector.o  
+------------
+Compiling src/classes/class_bngl_parser_functions.cpp to obj/release/classes/class_bngl_parser_functions.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/classes/class_bngl_parser_functions.cpp -o obj/release/classes/class_bngl_parser_functions.o  
+------------
+Compiling src/classes/mpi_functions.cpp to obj/release/classes/mpi_functions.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/classes/mpi_functions.cpp -o obj/release/classes/mpi_functions.o  
+------------
+Compiling src/error/error.cpp to obj/release/error/error.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/error/error.cpp -o obj/release/error/error.o  
+------------
+Compiling src/math/Faddeeva.cpp to obj/release/math/Faddeeva.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/math/Faddeeva.cpp -o obj/release/math/Faddeeva.o  
+------------
+Compiling src/math/math_functions.cpp to obj/release/math/math_functions.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/math/math_functions.cpp -o obj/release/math/math_functions.o  
+------------
+Compiling src/math/matrix_functions.cpp to obj/release/math/matrix_functions.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/math/matrix_functions.cpp -o obj/release/math/matrix_functions.o  
+------------
+Compiling src/math/rand_gsl.cpp to obj/release/math/rand_gsl.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/math/rand_gsl.cpp -o obj/release/math/rand_gsl.o  
+------------
+Compiling src/parser/areSameExceptState.cpp to obj/release/parser/areSameExceptState.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/parser/areSameExceptState.cpp -o obj/release/parser/areSameExceptState.o  
+------------
+Compiling src/parser/check_for_state_change.cpp to obj/release/parser/check_for_state_change.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/parser/check_for_state_change.cpp -o obj/release/parser/check_for_state_change.o  
+------------
+Compiling src/parser/check_for_valid_states.cpp to obj/release/parser/check_for_valid_states.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/parser/check_for_valid_states.cpp -o obj/release/parser/check_for_valid_states.o  
+------------
+Compiling src/parser/create_conjugate_reaction_itrs.cpp to obj/release/parser/create_conjugate_reaction_itrs.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/parser/create_conjugate_reaction_itrs.cpp -o obj/release/parser/create_conjugate_reaction_itrs.o  
+------------
+Compiling src/parser/determine_bound_iface_index.cpp to obj/release/parser/determine_bound_iface_index.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/parser/determine_bound_iface_index.cpp -o obj/release/parser/determine_bound_iface_index.o  
+------------
+Compiling src/parser/determine_iface_indices.cpp to obj/release/parser/determine_iface_indices.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/parser/determine_iface_indices.cpp -o obj/release/parser/determine_iface_indices.o  
+------------
+Compiling src/parser/display_all_MolTemplates.cpp to obj/release/parser/display_all_MolTemplates.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/parser/display_all_MolTemplates.cpp -o obj/release/parser/display_all_MolTemplates.o  
+------------
+Compiling src/parser/display_all_reactions.cpp to obj/release/parser/display_all_reactions.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/parser/display_all_reactions.cpp -o obj/release/parser/display_all_reactions.o  
+------------
+Compiling src/parser/parse_command.cpp to obj/release/parser/parse_command.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/parser/parse_command.cpp -o obj/release/parser/parse_command.o  
+------------
+Compiling src/parser/parse_input.cpp to obj/release/parser/parse_input.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/parser/parse_input.cpp -o obj/release/parser/parse_input.o  
+------------
+Compiling src/parser/parse_input_array.cpp to obj/release/parser/parse_input_array.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/parser/parse_input_array.cpp -o obj/release/parser/parse_input_array.o  
+------------
+Compiling src/parser/parse_input_for_a_new_simulation.cpp to obj/release/parser/parse_input_for_a_new_simulation.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/parser/parse_input_for_a_new_simulation.cpp -o obj/release/parser/parse_input_for_a_new_simulation.o  
+------------
+Compiling src/parser/parse_input_for_a_restart_simulation.cpp to obj/release/parser/parse_input_for_a_restart_simulation.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/parser/parse_input_for_a_restart_simulation.cpp -o obj/release/parser/parse_input_for_a_restart_simulation.o  
+------------
+Compiling src/parser/parse_input_for_add_file.cpp to obj/release/parser/parse_input_for_add_file.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/parser/parse_input_for_add_file.cpp -o obj/release/parser/parse_input_for_add_file.o  
+------------
+Compiling src/parser/parse_molFile.cpp to obj/release/parser/parse_molFile.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/parser/parse_molFile.cpp -o obj/release/parser/parse_molFile.o  
+------------
+Compiling src/parser/parse_molecule_bngl.cpp to obj/release/parser/parse_molecule_bngl.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/parser/parse_molecule_bngl.cpp -o obj/release/parser/parse_molecule_bngl.o  
+------------
+Compiling src/parser/parse_observable.cpp to obj/release/parser/parse_observable.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/parser/parse_observable.cpp -o obj/release/parser/parse_observable.o  
+------------
+Compiling src/parser/parse_reaction.cpp to obj/release/parser/parse_reaction.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/parser/parse_reaction.cpp -o obj/release/parser/parse_reaction.o  
+------------
+Compiling src/parser/parse_states.cpp to obj/release/parser/parse_states.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/parser/parse_states.cpp -o obj/release/parser/parse_states.o  
+------------
+Compiling src/parser/populate_reaction_lists.cpp to obj/release/parser/populate_reaction_lists.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/parser/populate_reaction_lists.cpp -o obj/release/parser/populate_reaction_lists.o  
+------------
+Compiling src/parser/read_bonds.cpp to obj/release/parser/read_bonds.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/parser/read_bonds.cpp -o obj/release/parser/read_bonds.o  
+------------
+Compiling src/parser/read_boolean.cpp to obj/release/parser/read_boolean.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/parser/read_boolean.cpp -o obj/release/parser/read_boolean.o  
+------------
+Compiling src/parser/read_internal_coordinates.cpp to obj/release/parser/read_internal_coordinates.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/parser/read_internal_coordinates.cpp -o obj/release/parser/read_internal_coordinates.o  
+------------
+Compiling src/parser/remove_comment.cpp to obj/release/parser/remove_comment.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/parser/remove_comment.cpp -o obj/release/parser/remove_comment.o  
+------------
+Compiling src/parser/write_mol_iface.cpp to obj/release/parser/write_mol_iface.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/parser/write_mol_iface.cpp -o obj/release/parser/write_mol_iface.o  
+------------
+Compiling src/reactions/DDpirr_pfree_ratio_ps.cpp to obj/release/reactions/DDpirr_pfree_ratio_ps.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/DDpirr_pfree_ratio_ps.cpp -o obj/release/reactions/DDpirr_pfree_ratio_ps.o  
+------------
+Compiling src/reactions/angleSignIsCorrect.cpp to obj/release/reactions/angleSignIsCorrect.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/angleSignIsCorrect.cpp -o obj/release/reactions/angleSignIsCorrect.o  
+------------
+Compiling src/reactions/areParallel.cpp to obj/release/reactions/areParallel.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/areParallel.cpp -o obj/release/reactions/areParallel.o  
+------------
+Compiling src/reactions/areSameAngle.cpp to obj/release/reactions/areSameAngle.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/areSameAngle.cpp -o obj/release/reactions/areSameAngle.o  
+------------
+Compiling src/reactions/associate.cpp to obj/release/reactions/associate.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/associate.cpp -o obj/release/reactions/associate.o  
+------------
+Compiling src/reactions/associate_ImplicitLipid.cpp to obj/release/reactions/associate_ImplicitLipid.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/associate_ImplicitLipid.cpp -o obj/release/reactions/associate_ImplicitLipid.o  
+------------
+Compiling src/reactions/associate_ImplicitLipid_box.cpp to obj/release/reactions/associate_ImplicitLipid_box.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/associate_ImplicitLipid_box.cpp -o obj/release/reactions/associate_ImplicitLipid_box.o  
+------------
+Compiling src/reactions/associate_ImplicitLipid_sphere.cpp to obj/release/reactions/associate_ImplicitLipid_sphere.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/associate_ImplicitLipid_sphere.cpp -o obj/release/reactions/associate_ImplicitLipid_sphere.o  
+------------
+Compiling src/reactions/associate_box.cpp to obj/release/reactions/associate_box.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/associate_box.cpp -o obj/release/reactions/associate_box.o  
+------------
+Compiling src/reactions/associate_sphere.cpp to obj/release/reactions/associate_sphere.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/associate_sphere.cpp -o obj/release/reactions/associate_sphere.o  
+------------
+Compiling src/reactions/break_interaction.cpp to obj/release/reactions/break_interaction.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/break_interaction.cpp -o obj/release/reactions/break_interaction.o  
+------------
+Compiling src/reactions/break_interaction_implicitlipid.cpp to obj/release/reactions/break_interaction_implicitlipid.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/break_interaction_implicitlipid.cpp -o obj/release/reactions/break_interaction_implicitlipid.o  
+------------
+Compiling src/reactions/calc_angular_displacement.cpp to obj/release/reactions/calc_angular_displacement.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/calc_angular_displacement.cpp -o obj/release/reactions/calc_angular_displacement.o  
+------------
+Compiling src/reactions/calc_one_angular_displacement.cpp to obj/release/reactions/calc_one_angular_displacement.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/calc_one_angular_displacement.cpp -o obj/release/reactions/calc_one_angular_displacement.o  
+------------
+Compiling src/reactions/calc_pirr.cpp to obj/release/reactions/calc_pirr.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/calc_pirr.cpp -o obj/release/reactions/calc_pirr.o  
+------------
+Compiling src/reactions/calculate_omega.cpp to obj/release/reactions/calculate_omega.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/calculate_omega.cpp -o obj/release/reactions/calculate_omega.o  
+------------
+Compiling src/reactions/calculate_phi.cpp to obj/release/reactions/calculate_phi.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/calculate_phi.cpp -o obj/release/reactions/calculate_phi.o  
+------------
+Compiling src/reactions/check_bases.cpp to obj/release/reactions/check_bases.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/check_bases.cpp -o obj/release/reactions/check_bases.o  
+------------
+Compiling src/reactions/check_bimolecular_reactions.cpp to obj/release/reactions/check_bimolecular_reactions.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/check_bimolecular_reactions.cpp -o obj/release/reactions/check_bimolecular_reactions.o  
+------------
+Compiling src/reactions/check_compartment_reaction.cpp to obj/release/reactions/check_compartment_reaction.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/check_compartment_reaction.cpp -o obj/release/reactions/check_compartment_reaction.o  
+------------
+Compiling src/reactions/check_dissociation.cpp to obj/release/reactions/check_dissociation.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/check_dissociation.cpp -o obj/release/reactions/check_dissociation.o  
+------------
+Compiling src/reactions/check_dissociation_implicitlipid.cpp to obj/release/reactions/check_dissociation_implicitlipid.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/check_dissociation_implicitlipid.cpp -o obj/release/reactions/check_dissociation_implicitlipid.o  
+------------
+Compiling src/reactions/check_for_structure_overlap.cpp to obj/release/reactions/check_for_structure_overlap.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/check_for_structure_overlap.cpp -o obj/release/reactions/check_for_structure_overlap.o  
+------------
+Compiling src/reactions/check_for_structure_overlap_system.cpp to obj/release/reactions/check_for_structure_overlap_system.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/check_for_structure_overlap_system.cpp -o obj/release/reactions/check_for_structure_overlap_system.o  
+------------
+Compiling src/reactions/check_for_unimolecular_reactions.cpp to obj/release/reactions/check_for_unimolecular_reactions.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/check_for_unimolecular_reactions.cpp -o obj/release/reactions/check_for_unimolecular_reactions.o  
+------------
+Compiling src/reactions/check_for_unimolecular_reactions_population.cpp to obj/release/reactions/check_for_unimolecular_reactions_population.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/check_for_unimolecular_reactions_population.cpp -o obj/release/reactions/check_for_unimolecular_reactions_population.o  
+------------
+Compiling src/reactions/check_for_unimolstatechange_reactions.cpp to obj/release/reactions/check_for_unimolstatechange_reactions.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/check_for_unimolstatechange_reactions.cpp -o obj/release/reactions/check_for_unimolstatechange_reactions.o  
+------------
+Compiling src/reactions/check_for_zeroth_order_creation.cpp to obj/release/reactions/check_for_zeroth_order_creation.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/check_for_zeroth_order_creation.cpp -o obj/release/reactions/check_for_zeroth_order_creation.o  
+------------
+Compiling src/reactions/check_implicit_reactions.cpp to obj/release/reactions/check_implicit_reactions.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/check_implicit_reactions.cpp -o obj/release/reactions/check_implicit_reactions.o  
+------------
+Compiling src/reactions/check_overlap.cpp to obj/release/reactions/check_overlap.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/check_overlap.cpp -o obj/release/reactions/check_overlap.o  
+------------
+Compiling src/reactions/check_perform_zeroth_first_order_reactions.cpp to obj/release/reactions/check_perform_zeroth_first_order_reactions.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/check_perform_zeroth_first_order_reactions.cpp -o obj/release/reactions/check_perform_zeroth_first_order_reactions.o  
+------------
+Compiling src/reactions/com_of_two_tmp_complexes.cpp to obj/release/reactions/com_of_two_tmp_complexes.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/com_of_two_tmp_complexes.cpp -o obj/release/reactions/com_of_two_tmp_complexes.o  
+------------
+Compiling src/reactions/conservedMags.cpp to obj/release/reactions/conservedMags.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/conservedMags.cpp -o obj/release/reactions/conservedMags.o  
+------------
+Compiling src/reactions/conservedRigid.cpp to obj/release/reactions/conservedRigid.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/conservedRigid.cpp -o obj/release/reactions/conservedRigid.o  
+------------
+Compiling src/reactions/correct_structutre.cpp to obj/release/reactions/correct_structutre.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/correct_structutre.cpp -o obj/release/reactions/correct_structutre.o  
+------------
+Compiling src/reactions/create_DDMatrices.cpp to obj/release/reactions/create_DDMatrices.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/create_DDMatrices.cpp -o obj/release/reactions/create_DDMatrices.o  
+------------
+Compiling src/reactions/create_arbitrary_vector.cpp to obj/release/reactions/create_arbitrary_vector.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/create_arbitrary_vector.cpp -o obj/release/reactions/create_arbitrary_vector.o  
+------------
+Compiling src/reactions/create_molecule_and_complex_from_rxn.cpp to obj/release/reactions/create_molecule_and_complex_from_rxn.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/create_molecule_and_complex_from_rxn.cpp -o obj/release/reactions/create_molecule_and_complex_from_rxn.o  
+------------
+Compiling src/reactions/create_molecule_and_complex_from_transmission_rxn.cpp to obj/release/reactions/create_molecule_and_complex_from_transmission_rxn.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/create_molecule_and_complex_from_transmission_rxn.cpp -o obj/release/reactions/create_molecule_and_complex_from_transmission_rxn.o  
+------------
+Compiling src/reactions/create_normMatrix.cpp to obj/release/reactions/create_normMatrix.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/create_normMatrix.cpp -o obj/release/reactions/create_normMatrix.o  
+------------
+Compiling src/reactions/create_pirMatrix.cpp to obj/release/reactions/create_pirMatrix.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/create_pirMatrix.cpp -o obj/release/reactions/create_pirMatrix.o  
+------------
+Compiling src/reactions/create_survMatrix.cpp to obj/release/reactions/create_survMatrix.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/create_survMatrix.cpp -o obj/release/reactions/create_survMatrix.o  
+------------
+Compiling src/reactions/determine_1D_bimolecular_reaction_probability.cpp to obj/release/reactions/determine_1D_bimolecular_reaction_probability.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/determine_1D_bimolecular_reaction_probability.cpp -o obj/release/reactions/determine_1D_bimolecular_reaction_probability.o  
+------------
+Compiling src/reactions/determine_2D_bimolecular_reaction_probability.cpp to obj/release/reactions/determine_2D_bimolecular_reaction_probability.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/determine_2D_bimolecular_reaction_probability.cpp -o obj/release/reactions/determine_2D_bimolecular_reaction_probability.o  
+------------
+Compiling src/reactions/determine_2D_implicitlipid_reaction_probability.cpp to obj/release/reactions/determine_2D_implicitlipid_reaction_probability.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/determine_2D_implicitlipid_reaction_probability.cpp -o obj/release/reactions/determine_2D_implicitlipid_reaction_probability.o  
+------------
+Compiling src/reactions/determine_3D_bimolecular_reaction_probability.cpp to obj/release/reactions/determine_3D_bimolecular_reaction_probability.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/determine_3D_bimolecular_reaction_probability.cpp -o obj/release/reactions/determine_3D_bimolecular_reaction_probability.o  
+------------
+Compiling src/reactions/determine_3D_implicitlipid_reaction_probability.cpp to obj/release/reactions/determine_3D_implicitlipid_reaction_probability.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/determine_3D_implicitlipid_reaction_probability.cpp -o obj/release/reactions/determine_3D_implicitlipid_reaction_probability.o  
+------------
+Compiling src/reactions/determine_entering_compartment_probability.cpp to obj/release/reactions/determine_entering_compartment_probability.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/determine_entering_compartment_probability.cpp -o obj/release/reactions/determine_entering_compartment_probability.o  
+------------
+Compiling src/reactions/determine_exiting_compartment_probability.cpp to obj/release/reactions/determine_exiting_compartment_probability.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/determine_exiting_compartment_probability.cpp -o obj/release/reactions/determine_exiting_compartment_probability.o  
+------------
+Compiling src/reactions/determine_if_reaction_occurs.cpp to obj/release/reactions/determine_if_reaction_occurs.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/determine_if_reaction_occurs.cpp -o obj/release/reactions/determine_if_reaction_occurs.o  
+------------
+Compiling src/reactions/determine_normal.cpp to obj/release/reactions/determine_normal.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/determine_normal.cpp -o obj/release/reactions/determine_normal.o  
+------------
+Compiling src/reactions/determine_parent_complex.cpp to obj/release/reactions/determine_parent_complex.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/determine_parent_complex.cpp -o obj/release/reactions/determine_parent_complex.o  
+------------
+Compiling src/reactions/determine_parent_complex_IL.cpp to obj/release/reactions/determine_parent_complex_IL.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/determine_parent_complex_IL.cpp -o obj/release/reactions/determine_parent_complex_IL.o  
+------------
+Compiling src/reactions/determine_rotation_angles.cpp to obj/release/reactions/determine_rotation_angles.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/determine_rotation_angles.cpp -o obj/release/reactions/determine_rotation_angles.o  
+------------
+Compiling src/reactions/evaluate_binding_within_complex.cpp to obj/release/reactions/evaluate_binding_within_complex.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/evaluate_binding_within_complex.cpp -o obj/release/reactions/evaluate_binding_within_complex.o  
+------------
+Compiling src/reactions/find_reaction_rate_state.cpp to obj/release/reactions/find_reaction_rate_state.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/find_reaction_rate_state.cpp -o obj/release/reactions/find_reaction_rate_state.o  
+------------
+Compiling src/reactions/find_which_reaction.cpp to obj/release/reactions/find_which_reaction.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/find_which_reaction.cpp -o obj/release/reactions/find_which_reaction.o  
+------------
+Compiling src/reactions/find_which_state_change_reaction.cpp to obj/release/reactions/find_which_state_change_reaction.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/find_which_state_change_reaction.cpp -o obj/release/reactions/find_which_state_change_reaction.o  
+------------
+Compiling src/reactions/functions_for_spherical_system.cpp to obj/release/reactions/functions_for_spherical_system.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/functions_for_spherical_system.cpp -o obj/release/reactions/functions_for_spherical_system.o  
+------------
+Compiling src/reactions/functions_implicitlipid.cpp to obj/release/reactions/functions_implicitlipid.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/functions_implicitlipid.cpp -o obj/release/reactions/functions_implicitlipid.o  
+------------
+Compiling src/reactions/get_distance.cpp to obj/release/reactions/get_distance.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/get_distance.cpp -o obj/release/reactions/get_distance.o  
+------------
+Compiling src/reactions/get_distance_to_surface.cpp to obj/release/reactions/get_distance_to_surface.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/get_distance_to_surface.cpp -o obj/release/reactions/get_distance_to_surface.o  
+------------
+Compiling src/reactions/get_geodesic_distance.cpp to obj/release/reactions/get_geodesic_distance.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/get_geodesic_distance.cpp -o obj/release/reactions/get_geodesic_distance.o  
+------------
+Compiling src/reactions/get_prevNorm.cpp to obj/release/reactions/get_prevNorm.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/get_prevNorm.cpp -o obj/release/reactions/get_prevNorm.o  
+------------
+Compiling src/reactions/get_prevSurv.cpp to obj/release/reactions/get_prevSurv.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/get_prevSurv.cpp -o obj/release/reactions/get_prevSurv.o  
+------------
+Compiling src/reactions/hasIntangibles.cpp to obj/release/reactions/hasIntangibles.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/hasIntangibles.cpp -o obj/release/reactions/hasIntangibles.o  
+------------
+Compiling src/reactions/init_association_events.cpp to obj/release/reactions/init_association_events.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/init_association_events.cpp -o obj/release/reactions/init_association_events.o  
+------------
+Compiling src/reactions/initialize_molecule_after_reaction.cpp to obj/release/reactions/initialize_molecule_after_reaction.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/initialize_molecule_after_reaction.cpp -o obj/release/reactions/initialize_molecule_after_reaction.o  
+------------
+Compiling src/reactions/initialize_molecule_after_transmission_reaction.cpp to obj/release/reactions/initialize_molecule_after_transmission_reaction.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/initialize_molecule_after_transmission_reaction.cpp -o obj/release/reactions/initialize_molecule_after_transmission_reaction.o  
+------------
+Compiling src/reactions/integrator.cpp to obj/release/reactions/integrator.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/integrator.cpp -o obj/release/reactions/integrator.o  
+------------
+Compiling src/reactions/isReactant.cpp to obj/release/reactions/isReactant.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/isReactant.cpp -o obj/release/reactions/isReactant.o  
+------------
+Compiling src/reactions/measure_complex_displacement.cpp to obj/release/reactions/measure_complex_displacement.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/measure_complex_displacement.cpp -o obj/release/reactions/measure_complex_displacement.o  
+------------
+Compiling src/reactions/measure_overlap_free_protein_interfaces.cpp to obj/release/reactions/measure_overlap_free_protein_interfaces.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/measure_overlap_free_protein_interfaces.cpp -o obj/release/reactions/measure_overlap_free_protein_interfaces.o  
+------------
+Compiling src/reactions/measure_overlap_protein_interfaces.cpp to obj/release/reactions/measure_overlap_protein_interfaces.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/measure_overlap_protein_interfaces.cpp -o obj/release/reactions/measure_overlap_protein_interfaces.o  
+------------
+Compiling src/reactions/measure_separations_to_identify_possible_reactions.cpp to obj/release/reactions/measure_separations_to_identify_possible_reactions.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/measure_separations_to_identify_possible_reactions.cpp -o obj/release/reactions/measure_separations_to_identify_possible_reactions.o  
+------------
+Compiling src/reactions/norm_function.cpp to obj/release/reactions/norm_function.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/norm_function.cpp -o obj/release/reactions/norm_function.o  
+------------
+Compiling src/reactions/omega_rotation.cpp to obj/release/reactions/omega_rotation.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/omega_rotation.cpp -o obj/release/reactions/omega_rotation.o  
+------------
+Compiling src/reactions/orient_crds_to_template.cpp to obj/release/reactions/orient_crds_to_template.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/orient_crds_to_template.cpp -o obj/release/reactions/orient_crds_to_template.o  
+------------
+Compiling src/reactions/passocF.cpp to obj/release/reactions/passocF.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/passocF.cpp -o obj/release/reactions/passocF.o  
+------------
+Compiling src/reactions/passocF_1D.cpp to obj/release/reactions/passocF_1D.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/passocF_1D.cpp -o obj/release/reactions/passocF_1D.o  
+------------
+Compiling src/reactions/perform_bimolecular_reactions.cpp to obj/release/reactions/perform_bimolecular_reactions.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/perform_bimolecular_reactions.cpp -o obj/release/reactions/perform_bimolecular_reactions.o  
+------------
+Compiling src/reactions/perform_bimolecular_state_change.cpp to obj/release/reactions/perform_bimolecular_state_change.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/perform_bimolecular_state_change.cpp -o obj/release/reactions/perform_bimolecular_state_change.o  
+------------
+Compiling src/reactions/perform_bimolecular_state_change_box.cpp to obj/release/reactions/perform_bimolecular_state_change_box.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/perform_bimolecular_state_change_box.cpp -o obj/release/reactions/perform_bimolecular_state_change_box.o  
+------------
+Compiling src/reactions/perform_bimolecular_state_change_sphere.cpp to obj/release/reactions/perform_bimolecular_state_change_sphere.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/perform_bimolecular_state_change_sphere.cpp -o obj/release/reactions/perform_bimolecular_state_change_sphere.o  
+------------
+Compiling src/reactions/perform_implicitlipid_state_change.cpp to obj/release/reactions/perform_implicitlipid_state_change.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/perform_implicitlipid_state_change.cpp -o obj/release/reactions/perform_implicitlipid_state_change.o  
+------------
+Compiling src/reactions/perform_implicitlipid_state_change_box.cpp to obj/release/reactions/perform_implicitlipid_state_change_box.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/perform_implicitlipid_state_change_box.cpp -o obj/release/reactions/perform_implicitlipid_state_change_box.o  
+------------
+Compiling src/reactions/perform_implicitlipid_state_change_sphere.cpp to obj/release/reactions/perform_implicitlipid_state_change_sphere.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/perform_implicitlipid_state_change_sphere.cpp -o obj/release/reactions/perform_implicitlipid_state_change_sphere.o  
+------------
+Compiling src/reactions/perform_transmission_reaction.cpp to obj/release/reactions/perform_transmission_reaction.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/perform_transmission_reaction.cpp -o obj/release/reactions/perform_transmission_reaction.o  
+------------
+Compiling src/reactions/phi_rotation.cpp to obj/release/reactions/phi_rotation.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/phi_rotation.cpp -o obj/release/reactions/phi_rotation.o  
+------------
+Compiling src/reactions/pir_function.cpp to obj/release/reactions/pir_function.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/pir_function.cpp -o obj/release/reactions/pir_function.o  
+------------
+Compiling src/reactions/pirr_pfree_ratio_psF.cpp to obj/release/reactions/pirr_pfree_ratio_psF.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/pirr_pfree_ratio_psF.cpp -o obj/release/reactions/pirr_pfree_ratio_psF.o  
+------------
+Compiling src/reactions/pirr_pfree_ratio_psF_1D.cpp to obj/release/reactions/pirr_pfree_ratio_psF_1D.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/pirr_pfree_ratio_psF_1D.cpp -o obj/release/reactions/pirr_pfree_ratio_psF_1D.o  
+------------
+Compiling src/reactions/print_association_events.cpp to obj/release/reactions/print_association_events.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/print_association_events.cpp -o obj/release/reactions/print_association_events.o  
+------------
+Compiling src/reactions/remove_empty_slots.cpp to obj/release/reactions/remove_empty_slots.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/remove_empty_slots.cpp -o obj/release/reactions/remove_empty_slots.o  
+------------
+Compiling src/reactions/requiresSignFlip.cpp to obj/release/reactions/requiresSignFlip.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/requiresSignFlip.cpp -o obj/release/reactions/requiresSignFlip.o  
+------------
+Compiling src/reactions/reverse_rotation.cpp to obj/release/reactions/reverse_rotation.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/reverse_rotation.cpp -o obj/release/reactions/reverse_rotation.o  
+------------
+Compiling src/reactions/rotate.cpp to obj/release/reactions/rotate.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/rotate.cpp -o obj/release/reactions/rotate.o  
+------------
+Compiling src/reactions/save_mem_orientation.cpp to obj/release/reactions/save_mem_orientation.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/save_mem_orientation.cpp -o obj/release/reactions/save_mem_orientation.o  
+------------
+Compiling src/reactions/size_lookup.cpp to obj/release/reactions/size_lookup.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/size_lookup.cpp -o obj/release/reactions/size_lookup.o  
+------------
+Compiling src/reactions/subtract_off_com_position.cpp to obj/release/reactions/subtract_off_com_position.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/subtract_off_com_position.cpp -o obj/release/reactions/subtract_off_com_position.o  
+------------
+Compiling src/reactions/survival_function.cpp to obj/release/reactions/survival_function.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/survival_function.cpp -o obj/release/reactions/survival_function.o  
+------------
+Compiling src/reactions/theta_rotation.cpp to obj/release/reactions/theta_rotation.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/theta_rotation.cpp -o obj/release/reactions/theta_rotation.o  
+------------
+Compiling src/reactions/track_association_events.cpp to obj/release/reactions/track_association_events.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/track_association_events.cpp -o obj/release/reactions/track_association_events.o  
+------------
+Compiling src/reactions/transform.cpp to obj/release/reactions/transform.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/transform.cpp -o obj/release/reactions/transform.o  
+------------
+Compiling src/reactions/update_Nboundpairs.cpp to obj/release/reactions/update_Nboundpairs.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/reactions/update_Nboundpairs.cpp -o obj/release/reactions/update_Nboundpairs.o  

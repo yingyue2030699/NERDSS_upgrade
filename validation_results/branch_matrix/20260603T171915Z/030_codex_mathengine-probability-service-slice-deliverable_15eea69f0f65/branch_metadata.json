@@ -1,0 +1,10 @@
+{
+  "branch_names": [
+    "codex/mathengine-probability-service-slice",
+    "codex/mathengine-probability-service-slice-deliverable"
+  ],
+  "primary_branch": "codex/mathengine-probability-service-slice-deliverable",
+  "commit": "15eea69f0f65e774404629c23ea707879eda597c",
+  "worktree_path": "/tmp/nerdss-matrix-030_codex_mathengine-probability-service-slice-deliverable_15eea69f0f65",
+  "created_at_utc": "2026-06-03T17:19:15Z"
+}

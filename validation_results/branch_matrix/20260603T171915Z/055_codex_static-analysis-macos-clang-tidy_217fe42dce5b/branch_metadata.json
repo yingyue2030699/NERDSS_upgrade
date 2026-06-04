@@ -1,0 +1,10 @@
+{
+  "branch_names": [
+    "codex/static-analysis-macos-clang-tidy",
+    "codex/static-analysis-macos-clang-tidy"
+  ],
+  "primary_branch": "codex/static-analysis-macos-clang-tidy",
+  "commit": "217fe42dce5b46ca1c6c6d4b1c7e0f992e6c3b56",
+  "worktree_path": "/tmp/nerdss-matrix-055_codex_static-analysis-macos-clang-tidy_217fe42dce5b",
+  "created_at_utc": "2026-06-03T17:19:15Z"
+}

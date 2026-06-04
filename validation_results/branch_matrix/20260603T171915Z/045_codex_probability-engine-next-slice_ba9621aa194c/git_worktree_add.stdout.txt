@@ -1,0 +1,1 @@
+HEAD is now at ba9621a Move loop closure probability behind ProbabilityEngine

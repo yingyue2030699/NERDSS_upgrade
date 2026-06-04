@@ -1,0 +1,7 @@
+In file included from src/boundary_conditions/reflect_complex_rad_rot_box.cpp:12:
+In file included from include/boundary_conditions/reflect_functions.hpp:10:
+include/classes/class_Molecule_Complex.hpp:30:10: fatal error: 'classes/class_MolTemplate.hpp' file not found
+   30 | #include "classes/class_MolTemplate.hpp"
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1 error generated.
+make: *** [obj/release/boundary_conditions/reflect_complex_rad_rot_box.o] Error 1

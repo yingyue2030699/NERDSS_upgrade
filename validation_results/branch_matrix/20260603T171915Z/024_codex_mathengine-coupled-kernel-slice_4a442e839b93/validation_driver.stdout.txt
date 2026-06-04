@@ -1,0 +1,2 @@
+FAIL smoke (535.80s)
+Report: /Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/024_codex_mathengine-coupled-kernel-slice_4a442e839b93/validation_report.json

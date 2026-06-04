@@ -1,0 +1,215 @@
+{
+  "binary": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/bin/nerdss",
+  "cases": [
+    {
+      "description": "Fresh fixed-seed create/destroy validation sample with a shortened runtime.",
+      "name": "create_destroy_fresh_small",
+      "runs": [
+        {
+          "label": "baseline",
+          "returncode": 0,
+          "run_dir": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260530_231924/regression_tmp/nerdss-regression-o784uayq/create_destroy_fresh_small/baseline"
+        },
+        {
+          "label": "candidate",
+          "returncode": 0,
+          "run_dir": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260530_231924/regression_tmp/nerdss-regression-o784uayq/create_destroy_fresh_small/candidate"
+        }
+      ],
+      "status": "pass",
+      "type": "deterministic"
+    },
+    {
+      "description": "Fixed seed-set ensemble check for create/destroy stochastic coherence using summary statistics and thresholds.",
+      "metrics": [
+        {
+          "column": 1,
+          "name": "final_created_species_count",
+          "path": "DATA/copy_numbers_time.dat",
+          "per_seed": [
+            {
+              "seed": 31001,
+              "value": 171.0
+            },
+            {
+              "seed": 31002,
+              "value": 193.0
+            },
+            {
+              "seed": 31003,
+              "value": 157.0
+            },
+            {
+              "seed": 31004,
+              "value": 184.0
+            },
+            {
+              "seed": 31005,
+              "value": 156.0
+            }
+          ],
+          "status": "pass",
+          "summary": {
+            "count": 5.0,
+            "max": 193.0,
+            "mean": 172.2,
+            "min": 156.0,
+            "range": 37.0,
+            "sem": 7.303423854604085,
+            "stdev": 16.330952207388275
+          },
+          "thresholds": {
+            "count": {
+              "equals": 5
+            },
+            "max": {
+              "max": 500
+            },
+            "mean": {
+              "max": 500,
+              "min": 0
+            },
+            "min": {
+              "min": 0
+            },
+            "range": {
+              "max": 500
+            }
+          },
+          "value": "last"
+        }
+      ],
+      "name": "create_destroy_stochastic_seed_set",
+      "runs": [
+        {
+          "returncode": 0,
+          "run_dir": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260530_231924/regression_tmp/nerdss-regression-o784uayq/create_destroy_stochastic_seed_set/seed_31001",
+          "seed": 31001
+        },
+        {
+          "returncode": 0,
+          "run_dir": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260530_231924/regression_tmp/nerdss-regression-o784uayq/create_destroy_stochastic_seed_set/seed_31002",
+          "seed": 31002
+        },
+        {
+          "returncode": 0,
+          "run_dir": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260530_231924/regression_tmp/nerdss-regression-o784uayq/create_destroy_stochastic_seed_set/seed_31003",
+          "seed": 31003
+        },
+        {
+          "returncode": 0,
+          "run_dir": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260530_231924/regression_tmp/nerdss-regression-o784uayq/create_destroy_stochastic_seed_set/seed_31004",
+          "seed": 31004
+        },
+        {
+          "returncode": 0,
+          "run_dir": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260530_231924/regression_tmp/nerdss-regression-o784uayq/create_destroy_stochastic_seed_set/seed_31005",
+          "seed": 31005
+        }
+      ],
+      "seeds": [
+        31001,
+        31002,
+        31003,
+        31004,
+        31005
+      ],
+      "status": "pass",
+      "type": "stochastic_ensemble"
+    },
+    {
+      "description": "Fresh fixed-seed Michaelis-Menten validation sample with a shortened runtime.",
+      "name": "michaelis_menten_fresh_small",
+      "runs": [
+        {
+          "label": "baseline",
+          "returncode": 0,
+          "run_dir": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260530_231924/regression_tmp/nerdss-regression-o784uayq/michaelis_menten_fresh_small/baseline"
+        },
+        {
+          "label": "candidate",
+          "returncode": 0,
+          "run_dir": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260530_231924/regression_tmp/nerdss-regression-o784uayq/michaelis_menten_fresh_small/candidate"
+        }
+      ],
+      "status": "pass",
+      "type": "deterministic"
+    },
+    {
+      "description": "Fresh fixed-seed implicit-lipid validation sample with a shortened runtime.",
+      "name": "implicit_lipid_fresh_small",
+      "runs": [
+        {
+          "label": "baseline",
+          "returncode": 0,
+          "run_dir": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260530_231924/regression_tmp/nerdss-regression-o784uayq/implicit_lipid_fresh_small/baseline"
+        },
+        {
+          "label": "candidate",
+          "returncode": 0,
+          "run_dir": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260530_231924/regression_tmp/nerdss-regression-o784uayq/implicit_lipid_fresh_small/candidate"
+        }
+      ],
+      "status": "pass",
+      "type": "deterministic"
+    },
+    {
+      "description": "Fresh fixed-seed spherical-boundary validation sample with a shortened runtime.",
+      "name": "sphere_fresh_small",
+      "runs": [
+        {
+          "label": "baseline",
+          "returncode": 0,
+          "run_dir": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260530_231924/regression_tmp/nerdss-regression-o784uayq/sphere_fresh_small/baseline"
+        },
+        {
+          "label": "candidate",
+          "returncode": 0,
+          "run_dir": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260530_231924/regression_tmp/nerdss-regression-o784uayq/sphere_fresh_small/candidate"
+        }
+      ],
+      "status": "pass",
+      "type": "deterministic"
+    },
+    {
+      "description": "Fresh fixed-seed heterotrimer validation sample with a shortened runtime.",
+      "name": "trimer_het_fresh_small",
+      "runs": [
+        {
+          "label": "baseline",
+          "returncode": 0,
+          "run_dir": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260530_231924/regression_tmp/nerdss-regression-o784uayq/trimer_het_fresh_small/baseline"
+        },
+        {
+          "label": "candidate",
+          "returncode": 0,
+          "run_dir": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260530_231924/regression_tmp/nerdss-regression-o784uayq/trimer_het_fresh_small/candidate"
+        }
+      ],
+      "status": "pass",
+      "type": "deterministic"
+    },
+    {
+      "description": "Restart-path smoke regression from a checked-in homoTrimer restart, shortened to a few iterations.",
+      "name": "homo_trimer_restart_from_1000",
+      "runs": [
+        {
+          "label": "baseline",
+          "returncode": 0,
+          "run_dir": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260530_231924/regression_tmp/nerdss-regression-o784uayq/homo_trimer_restart_from_1000/baseline"
+        },
+        {
+          "label": "candidate",
+          "returncode": 0,
+          "run_dir": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260530_231924/regression_tmp/nerdss-regression-o784uayq/homo_trimer_restart_from_1000/candidate"
+        }
+      ],
+      "status": "pass",
+      "type": "deterministic"
+    }
+  ],
+  "failures": [],
+  "manifest": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/tests/regression/manifest.json",
+  "mode": "run",
+  "status": "pass"
+}

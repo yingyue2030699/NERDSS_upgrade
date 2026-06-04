@@ -1,0 +1,1 @@
+fatal: '/tmp/nerdss-matrix-014_codex_diagnostics-parser-io-slice_9b40cb242d7e' is not a working tree

@@ -1,0 +1,1 @@
+HEAD is now at 0df9ca2 Use structured diagnostics for setup geometry checks

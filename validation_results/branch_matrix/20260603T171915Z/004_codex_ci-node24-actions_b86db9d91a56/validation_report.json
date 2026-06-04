@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-06-03T17:28:07+00:00",
+  "repo": {
+    "commit": "b86db9d91a567cc6815c1bd616859c65520161d3",
+    "branch": null,
+    "dirty": false,
+    "status_short": []
+  },
+  "status": "failed",
+  "steps": [
+    {
+      "name": "smoke",
+      "command": [
+        "/opt/anaconda3/bin/python3",
+        "-B",
+        "/private/tmp/nerdss-matrix-004_codex_ci-node24-actions_b86db9d91a56/tools/run_smoke_tests.py",
+        "--artifact-dir",
+        "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/004_codex_ci-node24-actions_b86db9d91a56/smoke"
+      ],
+      "cwd": "/private/tmp/nerdss-matrix-004_codex_ci-node24-actions_b86db9d91a56",
+      "exit_code": 1,
+      "runtime_seconds": 526.655138,
+      "stdout_path": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/004_codex_ci-node24-actions_b86db9d91a56/smoke.stdout.txt",
+      "stderr_path": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/004_codex_ci-node24-actions_b86db9d91a56/smoke.stderr.txt",
+      "skipped": false,
+      "passed": false
+    }
+  ]
+}

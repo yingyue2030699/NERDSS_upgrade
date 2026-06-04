@@ -1,0 +1,11 @@
+{
+  "branch_names": [
+    "codex/upgrade-smoke-runner",
+    "codex/upgrade-smoke-runner",
+    "codex/upgrade-smoke-runner"
+  ],
+  "primary_branch": "codex/upgrade-smoke-runner",
+  "commit": "2c6833014070c60412fb84e4fca05eb98f859825",
+  "worktree_path": "/tmp/nerdss-matrix-081_codex_upgrade-smoke-runner_2c6833014070",
+  "created_at_utc": "2026-06-03T17:19:15Z"
+}

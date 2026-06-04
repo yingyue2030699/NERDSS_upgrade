@@ -1,0 +1,1 @@
+HEAD is now at d838032 Document stack 19 validation

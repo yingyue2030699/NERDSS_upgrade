@@ -1,0 +1,1 @@
+HEAD is now at ac89e7f Document stack 20 validation

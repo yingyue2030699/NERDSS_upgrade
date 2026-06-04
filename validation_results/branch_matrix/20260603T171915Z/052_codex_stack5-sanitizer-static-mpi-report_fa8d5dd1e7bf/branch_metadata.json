@@ -1,0 +1,10 @@
+{
+  "branch_names": [
+    "codex/stack5-sanitizer-static-mpi-report",
+    "codex/stack5-sanitizer-static-mpi-report"
+  ],
+  "primary_branch": "codex/stack5-sanitizer-static-mpi-report",
+  "commit": "fa8d5dd1e7bf1a616d8c585dad60e52f60d4b5e7",
+  "worktree_path": "/tmp/nerdss-matrix-052_codex_stack5-sanitizer-static-mpi-report_fa8d5dd1e7bf",
+  "created_at_utc": "2026-06-03T17:19:15Z"
+}

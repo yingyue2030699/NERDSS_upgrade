@@ -1,0 +1,9 @@
+Test project /Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/build-upgrade-validation
+    Start 1: nerdss_unit_tests
+1/2 Test #1: nerdss_unit_tests ................   Passed    0.42 sec
+    Start 2: nerdss_diagnostics_tests
+2/2 Test #2: nerdss_diagnostics_tests .........   Passed    0.15 sec
+
+100% tests passed, 0 tests failed out of 2
+
+Total Test time (real) =   0.58 sec

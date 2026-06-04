@@ -1,0 +1,11 @@
+{
+  "branch_names": [
+    "codex/upgrade-sanitizer-static",
+    "codex/upgrade-sanitizer-static",
+    "codex/upgrade-sanitizer-static"
+  ],
+  "primary_branch": "codex/upgrade-sanitizer-static",
+  "commit": "1310c19617c45e22c478552151e0716f5709e915",
+  "worktree_path": "/tmp/nerdss-matrix-079_codex_upgrade-sanitizer-static_1310c19617c4",
+  "created_at_utc": "2026-06-03T17:19:15Z"
+}

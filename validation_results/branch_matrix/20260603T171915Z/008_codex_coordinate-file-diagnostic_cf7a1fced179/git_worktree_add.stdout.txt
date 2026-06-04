@@ -1,0 +1,1 @@
+HEAD is now at cf7a1fc Use structured diagnostic for missing coordinate file

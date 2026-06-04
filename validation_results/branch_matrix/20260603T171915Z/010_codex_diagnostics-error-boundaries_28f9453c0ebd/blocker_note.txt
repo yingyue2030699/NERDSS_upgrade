@@ -1,0 +1,1 @@
+Smoke build links x86_64 objects but cannot resolve GSL symbols from the installed /opt/homebrew toolchain.

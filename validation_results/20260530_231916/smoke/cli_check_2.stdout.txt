@@ -1,0 +1,3 @@
+Command: /Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/bin/nerdss -f
+Usage: /Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/bin/nerdss -f <input.inp> [-s <seed>] [-a <add.inp>] [-c <coords.dat>]
+       /Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/bin/nerdss -r <restart.dat> [-s <seed>]

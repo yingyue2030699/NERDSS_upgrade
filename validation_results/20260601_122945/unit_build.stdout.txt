@@ -1,0 +1,18 @@
+[  8%] Built target nerdss_diagnostics_tests
+[ 16%] Building CXX object CMakeFiles/nerdss_unit_tests.dir/src/reactions/calc_pirr.cpp.o
+[ 16%] Building CXX object CMakeFiles/nerdss_unit_tests.dir/src/reactions/create_arbitrary_vector.cpp.o
+[ 16%] Building CXX object CMakeFiles/nerdss_unit_tests.dir/src/reactions/requiresSignFlip.cpp.o
+[ 25%] Building CXX object CMakeFiles/nerdss_unit_tests.dir/src/reactions/passocF.cpp.o
+[ 25%] Building CXX object CMakeFiles/nerdss_unit_tests.dir/src/reactions/passocF_1D.cpp.o
+[ 33%] Building CXX object CMakeFiles/nerdss_unit_tests.dir/src/reactions/pirr_pfree_ratio_psF.cpp.o
+[ 33%] Building CXX object CMakeFiles/nerdss_unit_tests.dir/src/reactions/pirr_pfree_ratio_psF_1D.cpp.o
+[ 33%] Building CXX object CMakeFiles/nerdss_unit_tests.dir/src/reactions/functions_implicitlipid.cpp.o
+[ 41%] Building CXX object CMakeFiles/nerdss_unit_tests.dir/src/reactions/get_geodesic_distance.cpp.o
+[ 41%] Building CXX object CMakeFiles/nerdss_unit_tests.dir/src/reactions/get_prevNorm.cpp.o
+[ 50%] Building CXX object CMakeFiles/nerdss_unit_tests.dir/src/reactions/get_prevSurv.cpp.o
+[ 50%] Building CXX object CMakeFiles/nerdss_unit_tests.dir/src/reactions/norm_function.cpp.o
+[ 50%] Building CXX object CMakeFiles/nerdss_unit_tests.dir/src/reactions/pir_function.cpp.o
+[ 58%] Building CXX object CMakeFiles/nerdss_unit_tests.dir/src/reactions/size_lookup.cpp.o
+[ 58%] Building CXX object CMakeFiles/nerdss_unit_tests.dir/src/reactions/survival_function.cpp.o
+[ 66%] Linking CXX executable nerdss_unit_tests
+Built target nerdss_unit_tests

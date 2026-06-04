@@ -1,0 +1,2 @@
+[  8%] Built target nerdss_diagnostics_tests
+[100%] Built target nerdss_unit_tests

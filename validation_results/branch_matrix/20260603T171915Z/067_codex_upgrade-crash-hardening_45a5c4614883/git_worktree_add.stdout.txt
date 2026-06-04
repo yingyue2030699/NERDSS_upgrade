@@ -1,0 +1,1 @@
+HEAD is now at 45a5c46 Skip destroyed molecules during overlap checks

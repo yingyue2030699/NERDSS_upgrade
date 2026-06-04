@@ -1,0 +1,116 @@
+Command: /Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/bin/nerdss -f smoke.inp -s 123
+
+Start date: 2026-06-01 12:29:45
+RNG Seed: 123
+
+Parsing Input: 
+This is a new simulation with input file: smoke.inp
+Parsing simulation parameters...
+Read in nItr: 10 timeSteps
+Read in timeStep: 0.1 us
+Read in timeWrite: 5 timeSteps
+Read in trajWrite: 5 timeSteps
+Read in restartWrite: 5 timeSteps
+Read in pdbWrite: 5 timeSteps
+Read in transitionWrite: 5 timeSteps
+Read in fromRestart: false
+Read in overlapSepLimit: 2.3 nm
+Read in scaleMaxDisplace: 30
+Parsing simulation boundary conditions...
+Read in waterBox: [100 nm, 100 nm, 100 nm]
+Read in xBCtype: reflect
+Read in yBCtype: reflect
+Read in zBCtype: reflect
+Parsing mol file information...
+A.mol
+Read in D: [1um^2s^-1, 1um^2s^-1, 1um^2s^-1]
+Read in Dr: [0rad^2s^-1, 0rad^2s^-1, 0rad^2s^-1]
+Coordinates: 
+COM: [0nm, 0nm, 0nm]
+a: [0nm, 0nm, 0nm]
+Bonds: 
+com-a, 
+radius calculated from the ifacesCoord: 0.0001 nm
+mass auto calculated from the radius: 0.0001
+
+Parsing reactions...
+
+Input file parsing complete
+NUMBER OF MOLECULE TYPES: 1NUMBER OF INTERFACES PLUS STATES, including PRODUCTS: 1
+NUMBER OF MOLECULES IN GEN COORDS: 1
+Finding and fixing overlapping proteins.
+Iteration: 1
+Overlapping Proteins (false): 0
+No overlapping proteins found.
+
+Partitioning simulation box into sub-boxes...
+Rmaxlimit: 40
+Simulation volume parameters:
+Total sub-volumes: 16
+	Dimensions: [2, 2, 4]
+	Maximum sub-volume neighbors: 13
+	Sub-volume size: [50, 50, 25]
+ Total species calculated from init_speciesFile.cpp: 1
+Initialized copyNumSpecies. Printing all values. total species: 1
+ absolute index: 0 Copy nums: 1
+size of proPairlist: 0 Number of pairs: 1 numMolTypes: 1
+
+Simulation Parameters
+Number of iterations: 10 timesteps
+Timestep: 0.1 us
+Timestep log interval (timeWrite): 5 timesteps
+Restart file write interval: 5 timesteps
+Coordinate write interval (trajWrite): 5 timesteps
+PDB Coordinate write interval: 5 timesteps
+Checkpoint write interval: 1 timesteps
+overlapSepLimit: 2.3 nm
+Transition matrix write interval: 5 timesteps
+ClusterOverlapCheck: false
+RNGwrite: false
+Molecule specific parameters:
+Number of unique molecule types: 1
+Total number of unique interfaces and states, including product states: 1
+Total number of complexes in system at start: 1
+Total number of units (molecules + interfaces) in system at start: 2
+Maximum allowed number of unique 2D reactions: 10000
+ isSphere? false
+ sphere Radius 0
+ hasCompartment? false
+ compartment Radius 0
+ BOX geometry, dimensions: 
+100 100 100
+ hasImplicitLipid? false
+
+Molecule Information
+Molecule template 0
+Name: A
+Copy number:1
+ Diffusion trans: 1 1 1
+ Diffusion Rot: 0 0 0
+Is a promoter: false
+Is a rod: false
+Is a point: true
+Radius: 0.0001
+
+Interfaces:
+Name: a
+Relative index: 0
+Absolute index: 0
+
+
+Reactions
+*************** BEGIN SIMULATION **************** 
+------------------- 
+End iteration: 5, simulation time: 5.000000e-07 seconds.
+System time: 2026-06-01 12:29:45
+Elapsed time: 0 minutes
+Number of molecules: 1
+Number of complexes: 1
+Total reaction matches: 0
+Avg timestep duration: 2.004751e-03, iterations remaining: 5, Time left: 0 minutes
+Estimated end time: 2026-06-01 12:29:45
+------------------------------------------------- 
+------------------------------------------------- 
+End simulation
+End date: 2026-06-01 12:29:45
+	Wall Time: 4.116000e-03 seconds

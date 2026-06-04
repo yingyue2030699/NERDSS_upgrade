@@ -1,0 +1,10 @@
+{
+  "branch_names": [
+    "codex/upgrade-input-schema",
+    "codex/upgrade-input-schema"
+  ],
+  "primary_branch": "codex/upgrade-input-schema",
+  "commit": "082b2fbd49717d44204ac956888c9710b08ca9b6",
+  "worktree_path": "/tmp/nerdss-matrix-072_codex_upgrade-input-schema_082b2fbd4971",
+  "created_at_utc": "2026-06-03T17:19:15Z"
+}

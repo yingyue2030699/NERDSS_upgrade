@@ -1,0 +1,10 @@
+{
+  "branch_names": [
+    "codex/ci-workflow-stack8-publish",
+    "codex/ci-workflow-stack8-publish"
+  ],
+  "primary_branch": "codex/ci-workflow-stack8-publish",
+  "commit": "6e3deed9e121dbd036638e1ff1a23fe68408fb3b",
+  "worktree_path": "/tmp/nerdss-matrix-007_codex_ci-workflow-stack8-publish_6e3deed9e121",
+  "created_at_utc": "2026-06-03T17:19:15Z"
+}

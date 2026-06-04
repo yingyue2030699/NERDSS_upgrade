@@ -1,0 +1,1 @@
+HEAD is now at 5708ecd Add structured diagnostics for I/O artifact open failures

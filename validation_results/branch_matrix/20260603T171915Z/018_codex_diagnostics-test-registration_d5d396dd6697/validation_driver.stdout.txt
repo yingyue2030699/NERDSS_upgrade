@@ -1,0 +1,2 @@
+FAIL smoke (503.48s)
+Report: /Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/018_codex_diagnostics-test-registration_d5d396dd6697/validation_report.json

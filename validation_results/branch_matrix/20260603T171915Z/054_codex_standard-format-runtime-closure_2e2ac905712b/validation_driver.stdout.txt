@@ -1,0 +1,2 @@
+FAIL smoke (501.27s)
+Report: /Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/054_codex_standard-format-runtime-closure_2e2ac905712b/validation_report.json

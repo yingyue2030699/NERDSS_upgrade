@@ -1,0 +1,5 @@
+TITLE  PDB TIMESTEP 9 CREATED Sat May 30 23:20:35 2026
+CRYST1100      100      100      90     90     90      P 1
+ATOM      1 COM    A    1        69.1    71.5    29.6   1.0     0           A
+ATOM      2 a      A    1        69.1    71.5    29.6   1.0     0           A
+END

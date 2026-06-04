@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-06-03T18:21:30+00:00",
+  "repo": {
+    "commit": "d0df94dca5a6e3e0801f2889d41cbe42e51d8e00",
+    "branch": null,
+    "dirty": false,
+    "status_short": []
+  },
+  "status": "failed",
+  "steps": [
+    {
+      "name": "smoke",
+      "command": [
+        "/opt/anaconda3/bin/python3",
+        "-B",
+        "/private/tmp/nerdss-matrix-040_codex_probability-engine-compartment-transmission-slice_d0df94dca5a6/tools/run_smoke_tests.py",
+        "--artifact-dir",
+        "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/040_codex_probability-engine-compartment-transmission-slice_d0df94dca5a6/smoke"
+      ],
+      "cwd": "/private/tmp/nerdss-matrix-040_codex_probability-engine-compartment-transmission-slice_d0df94dca5a6",
+      "exit_code": 1,
+      "runtime_seconds": 509.012222,
+      "stdout_path": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/040_codex_probability-engine-compartment-transmission-slice_d0df94dca5a6/smoke.stdout.txt",
+      "stderr_path": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/040_codex_probability-engine-compartment-transmission-slice_d0df94dca5a6/smoke.stderr.txt",
+      "skipped": false,
+      "passed": false
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+HEAD is now at 0238417 Use structured diagnostic for missing restart file

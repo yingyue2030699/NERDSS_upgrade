@@ -1,0 +1,2 @@
+FAIL smoke (511.22s)
+Report: /Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/049_codex_setup-geometry-diagnostics-slice_0df9ca249961/validation_report.json

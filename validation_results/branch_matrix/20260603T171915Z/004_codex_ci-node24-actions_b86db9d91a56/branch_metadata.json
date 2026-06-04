@@ -1,0 +1,10 @@
+{
+  "branch_names": [
+    "codex/ci-node24-actions",
+    "codex/ci-node24-actions"
+  ],
+  "primary_branch": "codex/ci-node24-actions",
+  "commit": "b86db9d91a567cc6815c1bd616859c65520161d3",
+  "worktree_path": "/tmp/nerdss-matrix-004_codex_ci-node24-actions_b86db9d91a56",
+  "created_at_utc": "2026-06-03T17:19:15Z"
+}

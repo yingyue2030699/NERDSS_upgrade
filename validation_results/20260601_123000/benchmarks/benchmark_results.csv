@@ -1,0 +1,2 @@
+case_id,label,size,status,exit_status,timed_out,wall_time_seconds,cpu_time_seconds,user_cpu_seconds,system_cpu_seconds,max_rss_bytes,max_rss_source,produced_output_count,produced_output_bytes,stdout_bytes,stderr_bytes,timeout_seconds,seed,work_dir
+small_homotrimer,Small 3D homotrimer association,small,passed,0,False,9.106467040954158,8.752647999999999,8.631205,0.121443,,,24,8828274,7294,0,120.0,12345,/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260601_123000/benchmarks/workdirs/small_homotrimer

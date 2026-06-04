@@ -1,0 +1,1 @@
+HEAD is now at d5d396d Register diagnostics tests with CTest

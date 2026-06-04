@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/private/tmp/nerdss-matrix-016_codex_diagnostics-setup-slice_a2c96c7f82f6/tools/run_upgrade_validation.py", line 359, in <module>
+  File "/private/tmp/nerdss-matrix-016_codex_diagnostics-setup-slice_a2c96c7f82f6/tools/run_upgrade_validation.py", line 249, in main
+  File "/private/tmp/nerdss-matrix-016_codex_diagnostics-setup-slice_a2c96c7f82f6/tools/run_upgrade_validation.py", line 208, in write_report
+  File "/private/tmp/nerdss-matrix-016_codex_diagnostics-setup-slice_a2c96c7f82f6/tools/run_upgrade_validation.py", line 193, in git_metadata
+  File "/private/tmp/nerdss-matrix-016_codex_diagnostics-setup-slice_a2c96c7f82f6/tools/run_upgrade_validation.py", line 177, in git_command
+  File "/opt/anaconda3/lib/python3.9/subprocess.py", line 505, in run
+    with Popen(*popenargs, **kwargs) as process:
+  File "/opt/anaconda3/lib/python3.9/subprocess.py", line 951, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/opt/anaconda3/lib/python3.9/subprocess.py", line 1821, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/nerdss-matrix-016_codex_diagnostics-setup-slice_a2c96c7f82f6'

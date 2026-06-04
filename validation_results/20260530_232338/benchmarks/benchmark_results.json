@@ -1,0 +1,183 @@
+{
+  "build": null,
+  "cases": [
+    {
+      "case_id": "small_homotrimer",
+      "command": [
+        "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/bin/nerdss",
+        "-f",
+        "parmTri6.inp",
+        "-s",
+        "12345"
+      ],
+      "cpu_time_seconds": 8.472142,
+      "ended_at": "2026-05-31T03:23:48+00:00",
+      "error": null,
+      "exit_status": 0,
+      "input_file": "parmTri6.inp",
+      "label": "Small 3D homotrimer association",
+      "max_rss_bytes": null,
+      "max_rss_source": null,
+      "parameter_overrides": {
+        "nItr": "2000",
+        "pdbWrite": "1000000",
+        "restartWrite": "1000000",
+        "timeWrite": "500",
+        "trajWrite": "1000000",
+        "transitionWrite": "500"
+      },
+      "produced_output_bytes": 8828274,
+      "produced_output_count": 24,
+      "produced_outputs": [
+        {
+          "bytes": 0,
+          "path": "DATA/assoc_dissoc_time.dat"
+        },
+        {
+          "bytes": 257,
+          "path": "DATA/bound_pair_time.dat"
+        },
+        {
+          "bytes": 124,
+          "path": "DATA/copy_numbers_time.dat"
+        },
+        {
+          "bytes": 183,
+          "path": "DATA/event_counters_time.dat"
+        },
+        {
+          "bytes": 132022,
+          "path": "DATA/final_coords.xyz"
+        },
+        {
+          "bytes": 217,
+          "path": "DATA/histogram_complexes_time.dat"
+        },
+        {
+          "bytes": 132022,
+          "path": "DATA/initial_crds.xyz"
+        },
+        {
+          "bytes": 104,
+          "path": "DATA/mono_dimer_time.dat"
+        },
+        {
+          "bytes": 0,
+          "path": "DATA/observables_time.dat"
+        },
+        {
+          "bytes": 751852,
+          "path": "DATA/restart.dat"
+        },
+        {
+          "bytes": 198164,
+          "path": "DATA/system.psf"
+        },
+        {
+          "bytes": 264039,
+          "path": "DATA/trajectory.xyz"
+        },
+        {
+          "bytes": 400,
+          "path": "DATA/transition_matrix_time.dat"
+        },
+        {
+          "bytes": 234118,
+          "path": "PDB/0.pdb"
+        },
+        {
+          "bytes": 234121,
+          "path": "PDB/1999.pdb"
+        },
+        {
+          "bytes": 761146,
+          "path": "RESTARTS/restart1000.dat"
+        },
+        {
+          "bytes": 750755,
+          "path": "RESTARTS/restart1200.dat"
+        },
+        {
+          "bytes": 763999,
+          "path": "RESTARTS/restart1400.dat"
+        },
+        {
+          "bytes": 760452,
+          "path": "RESTARTS/restart1600.dat"
+        },
+        {
+          "bytes": 764513,
+          "path": "RESTARTS/restart1800.dat"
+        },
+        {
+          "bytes": 769112,
+          "path": "RESTARTS/restart200.dat"
+        },
+        {
+          "bytes": 772506,
+          "path": "RESTARTS/restart400.dat"
+        },
+        {
+          "bytes": 767991,
+          "path": "RESTARTS/restart600.dat"
+        },
+        {
+          "bytes": 770177,
+          "path": "RESTARTS/restart800.dat"
+        }
+      ],
+      "seed": 12345,
+      "size": "small",
+      "source_dir": "sample_inputs/VALIDATE_SUITE/homoTrimer",
+      "started_at": "2026-05-31T03:23:40+00:00",
+      "status": "passed",
+      "stderr_bytes": 0,
+      "stderr_path": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260530_232338/benchmarks/workdirs/small_homotrimer/stderr.txt",
+      "stdout_bytes": 7294,
+      "stdout_path": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260530_232338/benchmarks/workdirs/small_homotrimer/stdout.txt",
+      "system_cpu_seconds": 0.09665699999999999,
+      "timed_out": false,
+      "timeout_seconds": 120.0,
+      "user_cpu_seconds": 8.375485,
+      "wall_time_seconds": 8.57095770793967,
+      "work_dir": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260530_232338/benchmarks/workdirs/small_homotrimer"
+    }
+  ],
+  "created_at": "2026-05-31T03:23:40+00:00",
+  "manifest": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/benchmarks/benchmark_manifest.json",
+  "output_dir": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260530_232338/benchmarks",
+  "repo": {
+    "branch": "codex/mathengine-next-kernels",
+    "commit": "42b62c7d070e1434a67338f45b3b31bc597954ee",
+    "dirty": true,
+    "status_short": [
+      "M CMakeLists.txt",
+      " M docs/upgrade/core_computation_refactor_plan.md",
+      " M include/core/math_engine.hpp",
+      " M src/math/math_functions.cpp",
+      " M tests/unit/test_vector_coord.cpp",
+      "?? tests/topology/",
+      "?? validation_results/"
+    ]
+  },
+  "runner": {
+    "build_requested": false,
+    "build_target": "serial",
+    "dry_run": false,
+    "executable": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/bin/nerdss",
+    "extra_args": [],
+    "script": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/benchmarks/run_benchmarks.py"
+  },
+  "schema_version": 1,
+  "system": {
+    "cpu_count": 10,
+    "hostname": "Yues-MacBook-Pro.local",
+    "machine": "arm64",
+    "platform": "macOS-14.5-arm64-arm-64bit-Mach-O",
+    "processor": "arm",
+    "python": "3.13.3 (main, Apr  8 2025, 13:54:08) [Clang 16.0.0 (clang-1600.0.26.6)]",
+    "release": "23.5.0",
+    "system": "Darwin",
+    "total_memory_bytes": 34359738368
+  }
+}

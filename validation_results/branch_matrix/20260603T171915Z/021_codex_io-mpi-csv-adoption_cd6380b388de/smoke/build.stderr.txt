@@ -1,0 +1,119 @@
+ld: warning: ignoring file '/opt/homebrew/Cellar/gsl/2.8/lib/libgsl.28.dylib': found architecture 'arm64', required architecture 'x86_64'
+ld: warning: ignoring file '/opt/homebrew/Cellar/gsl/2.8/lib/libgslcblas.0.dylib': found architecture 'arm64', required architecture 'x86_64'
+Undefined symbols for architecture x86_64:
+  "_gsl_integration_qag", referenced from:
+      integrator(gsl_function_struct, IntegrandParams, gsl_integration_workspace*, double, double, double, double, double, char*, double (*)(double, void*)) in integrator.o
+  "_gsl_integration_qagiu", referenced from:
+      create_normMatrix(gsl_matrix*&, double, double, double, double, double, Parameters const&) in create_normMatrix.o
+      integral_for_blockdistance2D(paramsIL&) in functions_implicitlipid.o
+      pimplicitlipid_2D(paramsIL&) in functions_implicitlipid.o
+      integrator(gsl_function_struct, IntegrandParams, gsl_integration_workspace*, double, double, double, double, double, char*, double (*)(double, void*)) in integrator.o
+      integrator(gsl_function_struct, IntegrandParams, gsl_integration_workspace*, double, double, double, double, double, char*, double (*)(double, void*)) in integrator.o
+  "_gsl_integration_qags", referenced from:
+      integral_for_blockdistance2D(paramsIL&) in functions_implicitlipid.o
+      pimplicitlipid_2D(paramsIL&) in functions_implicitlipid.o
+  "_gsl_integration_workspace_alloc", referenced from:
+      create_normMatrix(gsl_matrix*&, double, double, double, double, double, Parameters const&) in create_normMatrix.o
+      create_pirMatrix(gsl_matrix*&, double, double, double, double, double, Parameters const&) in create_pirMatrix.o
+      create_survMatrix(gsl_matrix*&, double, double, double, double, double, Parameters const&) in create_survMatrix.o
+      integral_for_blockdistance2D(paramsIL&) in functions_implicitlipid.o
+      pimplicitlipid_2D(paramsIL&) in functions_implicitlipid.o
+  "_gsl_integration_workspace_free", referenced from:
+      create_normMatrix(gsl_matrix*&, double, double, double, double, double, Parameters const&) in create_normMatrix.o
+      create_pirMatrix(gsl_matrix*&, double, double, double, double, double, Parameters const&) in create_pirMatrix.o
+      create_survMatrix(gsl_matrix*&, double, double, double, double, double, Parameters const&) in create_survMatrix.o
+      integral_for_blockdistance2D(paramsIL&) in functions_implicitlipid.o
+      pimplicitlipid_2D(paramsIL&) in functions_implicitlipid.o
+  "_gsl_matrix_alloc", referenced from:
+      determine_2D_bimolecular_reaction_probability(int, int, int, bool, unsigned int&, double*, BiMolData&, Parameters const&, std::__1::vector<Molecule, std::__1::allocator<Molecule>>&, std::__1::vector<Complex, std::__1::allocator<Complex>>&, std::__1::vector<ForwardRxn, std::__1::allocator<ForwardRxn>> const&, std::__1::vector<BackRxn, std::__1::allocator<BackRxn>> const&, Membrane&, std::__1::vector<gsl_matrix*, std::__1::allocator<gsl_matrix*>>&, std::__1::vector<gsl_matrix*, std::__1::allocator<gsl_matrix*>>&, std::__1::vector<gsl_matrix*, std::__1::allocator<gsl_matrix*>>&) in determine_2D_bimolecular_reaction_probability.o
+      determine_2D_bimolecular_reaction_probability(int, int, int, bool, unsigned int&, double*, BiMolData&, Parameters const&, std::__1::vector<Molecule, std::__1::allocator<Molecule>>&, std::__1::vector<Complex, std::__1::allocator<Complex>>&, std::__1::vector<ForwardRxn, std::__1::allocator<ForwardRxn>> const&, std::__1::vector<BackRxn, std::__1::allocator<BackRxn>> const&, Membrane&, std::__1::vector<gsl_matrix*, std::__1::allocator<gsl_matrix*>>&, std::__1::vector<gsl_matrix*, std::__1::allocator<gsl_matrix*>>&, std::__1::vector<gsl_matrix*, std::__1::allocator<gsl_matrix*>>&) in determine_2D_bimolecular_reaction_probability.o
+      determine_2D_bimolecular_reaction_probability(int, int, int, bool, unsigned int&, double*, BiMolData&, Parameters const&, std::__1::vector<Molecule, std::__1::allocator<Molecule>>&, std::__1::vector<Complex, std::__1::allocator<Complex>>&, std::__1::vector<ForwardRxn, std::__1::allocator<ForwardRxn>> const&, std::__1::vector<BackRxn, std::__1::allocator<BackRxn>> const&, Membrane&, std::__1::vector<gsl_matrix*, std::__1::allocator<gsl_matrix*>>&, std::__1::vector<gsl_matrix*, std::__1::allocator<gsl_matrix*>>&, std::__1::vector<gsl_matrix*, std::__1::allocator<gsl_matrix*>>&) in determine_2D_bimolecular_reaction_probability.o
+  "_gsl_matrix_get", referenced from:
+      nerdss::core::ProbabilityEngine::RebindingProbabilityRatioTable2D(gsl_matrix const*, gsl_matrix const*, gsl_matrix const*, double, double, double, double, double, double, double) in DDpirr_pfree_ratio_ps.o
+      nerdss::core::ProbabilityEngine::RebindingProbabilityRatioTable2D(gsl_matrix const*, gsl_matrix const*, gsl_matrix const*, double, double, double, double, double, double, double) in DDpirr_pfree_ratio_ps.o
+      nerdss::core::ProbabilityEngine::RebindingProbabilityRatioTable2D(gsl_matrix const*, gsl_matrix const*, gsl_matrix const*, double, double, double, double, double, double, double) in DDpirr_pfree_ratio_ps.o
+      nerdss::core::ProbabilityEngine::RebindingProbabilityRatioTable2D(gsl_matrix const*, gsl_matrix const*, gsl_matrix const*, double, double, double, double, double, double, double) in DDpirr_pfree_ratio_ps.o
+      nerdss::core::ProbabilityEngine::IrreversibleProbabilityTable2D(gsl_matrix const*, gsl_matrix const*, double, double, double, double) in DDpirr_pfree_ratio_ps.o
+      nerdss::core::ProbabilityEngine::IrreversibleProbabilityTable2D(gsl_matrix const*, gsl_matrix const*, double, double, double, double) in DDpirr_pfree_ratio_ps.o
+      nerdss::core::ProbabilityEngine::IrreversibleProbabilityTable2D(gsl_matrix const*, gsl_matrix const*, double, double, double, double) in DDpirr_pfree_ratio_ps.o
+      nerdss::core::ProbabilityEngine::IrreversibleProbabilityTable2D(gsl_matrix const*, gsl_matrix const*, double, double, double, double) in DDpirr_pfree_ratio_ps.o
+      nerdss::core::ProbabilityEngine::IrreversibleProbabilityTable2D(gsl_matrix const*, gsl_matrix const*, double, double, double, double) in DDpirr_pfree_ratio_ps.o
+      nerdss::core::ProbabilityEngine::IrreversibleProbabilityTable2D(gsl_matrix const*, gsl_matrix const*, double, double, double, double) in DDpirr_pfree_ratio_ps.o
+      nerdss::core::ProbabilityEngine::IrreversibleProbabilityTable2D(gsl_matrix const*, gsl_matrix const*, double, double, double, double) in DDpirr_pfree_ratio_ps.o
+      nerdss::core::ProbabilityEngine::IrreversibleProbabilityTable2D(gsl_matrix const*, gsl_matrix const*, double, double, double, double) in DDpirr_pfree_ratio_ps.o
+      nerdss::core::ProbabilityEngine::IrreversibleProbabilityTable2D(gsl_matrix const*, gsl_matrix const*, double, double, double, double) in DDpirr_pfree_ratio_ps.o
+      nerdss::core::ProbabilityEngine::IrreversibleProbabilityTable2D(gsl_matrix const*, gsl_matrix const*, double, double, double, double) in DDpirr_pfree_ratio_ps.o
+      nerdss::core::ProbabilityEngine::IrreversibleProbabilityTable2D(gsl_matrix const*, gsl_matrix const*, double, double, double, double) in DDpirr_pfree_ratio_ps.o
+      nerdss::core::ProbabilityEngine::IrreversibleProbabilityTable2D(gsl_matrix const*, gsl_matrix const*, double, double, double, double) in DDpirr_pfree_ratio_ps.o
+      nerdss::core::ProbabilityEngine::IrreversibleProbabilityTable2D(gsl_matrix const*, gsl_matrix const*, double, double, double, double) in DDpirr_pfree_ratio_ps.o
+      ...
+  "_gsl_matrix_set", referenced from:
+      create_normMatrix(gsl_matrix*&, double, double, double, double, double, Parameters const&) in create_normMatrix.o
+      create_normMatrix(gsl_matrix*&, double, double, double, double, double, Parameters const&) in create_normMatrix.o
+      create_pirMatrix(gsl_matrix*&, double, double, double, double, double, Parameters const&) in create_pirMatrix.o
+      create_survMatrix(gsl_matrix*&, double, double, double, double, double, Parameters const&) in create_survMatrix.o
+      create_survMatrix(gsl_matrix*&, double, double, double, double, double, Parameters const&) in create_survMatrix.o
+      create_survMatrix(gsl_matrix*&, double, double, double, double, double, Parameters const&) in create_survMatrix.o
+      create_survMatrix(gsl_matrix*&, double, double, double, double, double, Parameters const&) in create_survMatrix.o
+      ...
+  "_gsl_ran_binomial", referenced from:
+      check_for_unimolecular_reactions_population(long long, Parameters&, std::__1::vector<Molecule, std::__1::allocator<Molecule>>&, std::__1::vector<Complex, std::__1::allocator<Complex>>&, SimulVolume&, std::__1::vector<ForwardRxn, std::__1::allocator<ForwardRxn>> const&, std::__1::vector<BackRxn, std::__1::allocator<BackRxn>> const&, std::__1::vector<CreateDestructRxn, std::__1::allocator<CreateDestructRxn>> const&, std::__1::vector<MolTemplate, std::__1::allocator<MolTemplate>>&, std::__1::map<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>, int, std::__1::less<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>>, std::__1::allocator<std::__1::pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const, int>>>&, copyCounters&, Membrane&, std::__1::basic_ofstream<char, std::__1::char_traits<char>>&) in check_for_unimolecular_reactions_population.o
+      check_for_unimolecular_reactions_population(long long, Parameters&, std::__1::vector<Molecule, std::__1::allocator<Molecule>>&, std::__1::vector<Complex, std::__1::allocator<Complex>>&, SimulVolume&, std::__1::vector<ForwardRxn, std::__1::allocator<ForwardRxn>> const&, std::__1::vector<BackRxn, std::__1::allocator<BackRxn>> const&, std::__1::vector<CreateDestructRxn, std::__1::allocator<CreateDestructRxn>> const&, std::__1::vector<MolTemplate, std::__1::allocator<MolTemplate>>&, std::__1::map<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>, int, std::__1::less<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>>, std::__1::allocator<std::__1::pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const, int>>>&, copyCounters&, Membrane&, std::__1::basic_ofstream<char, std::__1::char_traits<char>>&) in check_for_unimolecular_reactions_population.o
+      check_for_unimolecular_reactions_population(long long, Parameters&, std::__1::vector<Molecule, std::__1::allocator<Molecule>>&, std::__1::vector<Complex, std::__1::allocator<Complex>>&, SimulVolume&, std::__1::vector<ForwardRxn, std::__1::allocator<ForwardRxn>> const&, std::__1::vector<BackRxn, std::__1::allocator<BackRxn>> const&, std::__1::vector<CreateDestructRxn, std::__1::allocator<CreateDestructRxn>> const&, std::__1::vector<MolTemplate, std::__1::allocator<MolTemplate>>&, std::__1::map<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>, int, std::__1::less<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>>, std::__1::allocator<std::__1::pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const, int>>>&, copyCounters&, Membrane&, std::__1::basic_ofstream<char, std::__1::char_traits<char>>&) in check_for_unimolecular_reactions_population.o
+      check_for_unimolecular_reactions_population(long long, Parameters&, std::__1::vector<Molecule, std::__1::allocator<Molecule>>&, std::__1::vector<Complex, std::__1::allocator<Complex>>&, SimulVolume&, std::__1::vector<ForwardRxn, std::__1::allocator<ForwardRxn>> const&, std::__1::vector<BackRxn, std::__1::allocator<BackRxn>> const&, std::__1::vector<CreateDestructRxn, std::__1::allocator<CreateDestructRxn>> const&, std::__1::vector<MolTemplate, std::__1::allocator<MolTemplate>>&, std::__1::map<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>, int, std::__1::less<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>>, std::__1::allocator<std::__1::pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const, int>>>&, copyCounters&, Membrane&, std::__1::basic_ofstream<char, std::__1::char_traits<char>>&) in check_for_unimolecular_reactions_population.o
+  "_gsl_ran_poisson", referenced from:
+      check_for_zeroth_order_creation(unsigned int, Parameters&, SimulVolume&, std::__1::vector<ForwardRxn, std::__1::allocator<ForwardRxn>> const&, std::__1::vector<CreateDestructRxn, std::__1::allocator<CreateDestructRxn>> const&, std::__1::vector<Molecule, std::__1::allocator<Molecule>>&, std::__1::vector<Complex, std::__1::allocator<Complex>>&, std::__1::vector<MolTemplate, std::__1::allocator<MolTemplate>>&, std::__1::map<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>, int, std::__1::less<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>>, std::__1::allocator<std::__1::pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const, int>>>&, copyCounters&, Membrane&) in check_for_zeroth_order_creation.o
+      check_for_zeroth_order_creation(unsigned int, Parameters&, SimulVolume&, std::__1::vector<ForwardRxn, std::__1::allocator<ForwardRxn>> const&, std::__1::vector<CreateDestructRxn, std::__1::allocator<CreateDestructRxn>> const&, std::__1::vector<Molecule, std::__1::allocator<Molecule>>&, std::__1::vector<Complex, std::__1::allocator<Complex>>&, std::__1::vector<MolTemplate, std::__1::allocator<MolTemplate>>&, std::__1::map<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>, int, std::__1::less<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>>, std::__1::allocator<std::__1::pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const, int>>>&, copyCounters&, Membrane&) in check_for_zeroth_order_creation.o
+  "_gsl_rng_alloc", referenced from:
+      _main in nerdss-06adea.o
+  "_gsl_rng_default", referenced from:
+      _main in nerdss-06adea.o
+  "_gsl_rng_fread", referenced from:
+      read_rng_state() in rand_gsl.o
+      read_rng_state(int) in rand_gsl.o
+  "_gsl_rng_free", referenced from:
+      _main in nerdss-06adea.o
+  "_gsl_rng_fwrite", referenced from:
+      write_rng_state() in rand_gsl.o
+      write_rng_state(int) in rand_gsl.o
+      write_rng_state_simItr(int) in rand_gsl.o
+  "_gsl_rng_max", referenced from:
+      rand_gsl64() in rand_gsl.o
+  "_gsl_rng_set", referenced from:
+      _main in nerdss-06adea.o
+      srand_gsl(int) in rand_gsl.o
+      parse_input_for_a_restart_simulation(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>, Parameters&, std::__1::map<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>, int, std::__1::less<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>>, std::__1::allocator<std::__1::pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const, int>>>&, std::__1::vector<ForwardRxn, std::__1::allocator<ForwardRxn>>&, std::__1::vector<BackRxn, std::__1::allocator<BackRxn>>&, std::__1::vector<CreateDestructRxn, std::__1::allocator<CreateDestructRxn>>&, std::__1::vector<MolTemplate, std::__1::allocator<MolTemplate>>&, Membrane&, std::__1::vector<Molecule, std::__1::allocator<Molecule>>&, std::__1::vector<Complex, std::__1::allocator<Complex>>&, SimulVolume&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>, int, long long, structMpiContext&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>, unsigned int, copyCounters&) in parse_input_for_a_restart_simulation.o
+  "_gsl_rng_uniform", referenced from:
+      rand_gsl() in rand_gsl.o
+      rand_gsl64() in rand_gsl.o
+      rand_gsl64() in rand_gsl.o
+      GaussV() in rand_gsl.o
+      GaussV() in rand_gsl.o
+  "_gsl_set_error_handler", referenced from:
+      create_pirMatrix(gsl_matrix*&, double, double, double, double, double, Parameters const&) in create_pirMatrix.o
+      create_survMatrix(gsl_matrix*&, double, double, double, double, double, Parameters const&) in create_survMatrix.o
+      integral_for_blockdistance2D(paramsIL&) in functions_implicitlipid.o
+      pimplicitlipid_2D(paramsIL&) in functions_implicitlipid.o
+  "_gsl_set_error_handler_off", referenced from:
+      create_pirMatrix(gsl_matrix*&, double, double, double, double, double, Parameters const&) in create_pirMatrix.o
+      create_survMatrix(gsl_matrix*&, double, double, double, double, double, Parameters const&) in create_survMatrix.o
+      integral_for_blockdistance2D(paramsIL&) in functions_implicitlipid.o
+      pimplicitlipid_2D(paramsIL&) in functions_implicitlipid.o
+  "_gsl_sf_bessel_I0_scaled", referenced from:
+      nerdss::core::ProbabilityEngine::RebindingProbabilityRatioTable2D(gsl_matrix const*, gsl_matrix const*, gsl_matrix const*, double, double, double, double, double, double, double) in DDpirr_pfree_ratio_ps.o
+      norm_function(double, void*) in norm_function.o
+  "_gsl_sf_bessel_J0", referenced from:
+      nerdss::core::ProbabilityEngine::ImplicitLipidIntegralKernel2D(double, double, double, double, double, double) in functions_implicitlipid.o
+  "_gsl_sf_bessel_J1", referenced from:
+      nerdss::core::ProbabilityEngine::ImplicitLipidIntegralKernel2D(double, double, double, double, double, double) in functions_implicitlipid.o
+      nerdss::core::ProbabilityEngine::ImplicitLipidIntegralKernel2D(double, double, double, double, double, double) in functions_implicitlipid.o
+      nerdss::core::ProbabilityEngine::ImplicitLipidIntegralKernel2D(double, double, double, double, double, double) in functions_implicitlipid.o
+  "_gsl_sf_bessel_Y0", referenced from:
+      nerdss::core::ProbabilityEngine::ImplicitLipidIntegralKernel2D(double, double, double, double, double, double) in functions_implicitlipid.o
+  "_gsl_sf_bessel_Y1", referenced from:
+      nerdss::core::ProbabilityEngine::ImplicitLipidIntegralKernel2D(double, double, double, double, double, double) in functions_implicitlipid.o
+      nerdss::core::ProbabilityEngine::ImplicitLipidIntegralKernel2D(double, double, double, double, double, double) in functions_implicitlipid.o
+      nerdss::core::ProbabilityEngine::ImplicitLipidIntegralKernel2D(double, double, double, double, double, double) in functions_implicitlipid.o
+ld: symbol(s) not found for architecture x86_64
+clang++: error: linker command failed with exit code 1 (use -v to see invocation)
+make: *** [bin/nerdss] Error 1

@@ -1,0 +1,1 @@
+HEAD is now at 70a8351 Use structured diagnostics for reaction state validation

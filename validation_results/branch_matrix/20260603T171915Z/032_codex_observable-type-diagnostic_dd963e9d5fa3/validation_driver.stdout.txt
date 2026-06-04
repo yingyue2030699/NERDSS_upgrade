@@ -1,0 +1,2 @@
+FAIL smoke (513.40s)
+Report: /Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/032_codex_observable-type-diagnostic_dd963e9d5fa3/validation_report.json

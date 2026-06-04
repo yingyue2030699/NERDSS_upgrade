@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-06-03T18:55:36+00:00",
+  "repo": {
+    "commit": "217fe42dce5b46ca1c6c6d4b1c7e0f992e6c3b56",
+    "branch": null,
+    "dirty": false,
+    "status_short": []
+  },
+  "status": "failed",
+  "steps": [
+    {
+      "name": "smoke",
+      "command": [
+        "/opt/anaconda3/bin/python3",
+        "-B",
+        "/private/tmp/nerdss-matrix-055_codex_static-analysis-macos-clang-tidy_217fe42dce5b/tools/run_smoke_tests.py",
+        "--artifact-dir",
+        "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/055_codex_static-analysis-macos-clang-tidy_217fe42dce5b/smoke"
+      ],
+      "cwd": "/private/tmp/nerdss-matrix-055_codex_static-analysis-macos-clang-tidy_217fe42dce5b",
+      "exit_code": 1,
+      "runtime_seconds": 504.069586,
+      "stdout_path": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/055_codex_static-analysis-macos-clang-tidy_217fe42dce5b/smoke.stdout.txt",
+      "stderr_path": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/055_codex_static-analysis-macos-clang-tidy_217fe42dce5b/smoke.stderr.txt",
+      "skipped": false,
+      "passed": false
+    }
+  ]
+}

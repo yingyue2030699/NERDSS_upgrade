@@ -1,0 +1,49 @@
+{
+  "status": "failed",
+  "message": "Serial NERDSS build failed. See captured build stderr/stdout.",
+  "repo_root": "/private/tmp/nerdss-matrix-015_codex_diagnostics-semantic-slice_0bed44f0edc7",
+  "build_system": "make",
+  "executable": null,
+  "smoke_dir": null,
+  "artifact_dir": "/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/015_codex_diagnostics-semantic-slice_0bed44f0edc7/smoke",
+  "dependency_checks": {
+    "gsl-config": {
+      "available": true,
+      "path": "/opt/homebrew/bin/gsl-config",
+      "version": "2.8",
+      "exit_code": 0
+    },
+    "make": {
+      "available": true,
+      "path": "/usr/bin/make",
+      "version": "GNU Make 3.81",
+      "exit_code": 0
+    },
+    "g++": {
+      "available": true,
+      "path": "/usr/bin/g++",
+      "version": "Apple clang version 16.0.0 (clang-1600.0.26.6)",
+      "exit_code": 0
+    }
+  },
+  "environment": {
+    "python": "3.9.7",
+    "platform": "macOS-10.16-x86_64-i386-64bit",
+    "machine": "x86_64"
+  },
+  "build": {
+    "command": [
+      "make",
+      "serial"
+    ],
+    "cwd": "/private/tmp/nerdss-matrix-015_codex_diagnostics-semantic-slice_0bed44f0edc7",
+    "exit_code": 2,
+    "runtime_seconds": 7.091554,
+    "stdout": "Compiling src/boundary_conditions/check_if_spans.cpp to obj/release/boundary_conditions/check_if_spans.o\ng++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/check_if_spans.cpp -o obj/release/boundary_conditions/check_if_spans.o  \n------------\nCompiling src/boundary_conditions/check_if_spans_box.cpp to obj/release/boundary_conditions/check_if_spans_box.o\ng++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/check_if_spans_box.cpp -o obj/release/boundary_conditions/check_if_spans_box.o  \n------------\nCompiling src/boundary_conditions/check_if_spans_sphere.cpp to obj/release/boundary_conditions/check_if_spans_sphere.o\ng++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/check_if_spans_sphere.cpp -o obj/release/boundary_conditions/check_if_spans_sphere.o  \n------------\nCompiling src/boundary_conditions/reflect_complex_compartment.cpp to obj/release/boundary_conditions/reflect_complex_compartment.o\ng++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/reflect_complex_compartment.cpp -o obj/release/boundary_conditions/reflect_complex_compartment.o  \n------------\nCompiling src/boundary_conditions/reflect_complex_rad_rot.cpp to obj/release/boundary_conditions/reflect_complex_rad_rot.o\ng++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/reflect_complex_rad_rot.cpp -o obj/release/boundary_conditions/reflect_complex_rad_rot.o  \n",
+    "stderr": "error: unable to open output file 'obj/release/boundary_conditions/reflect_complex_rad_rot.o': 'No such file or directory'\n1 error generated.\nmake: *** [obj/release/boundary_conditions/reflect_complex_rad_rot.o] Error 1\n",
+    "timed_out": false
+  },
+  "run": null,
+  "cli_checks": [],
+  "produced_files": []
+}

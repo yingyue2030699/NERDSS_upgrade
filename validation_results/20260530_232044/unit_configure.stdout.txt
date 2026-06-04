@@ -1,0 +1,5 @@
+-- We are on a Darwin system
+-- The host processor is arm64 with 10 physical cores and 10 logical cores.
+-- Configuring done (0.1s)
+-- Generating done (0.1s)
+-- Build files have been written to: /Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/build

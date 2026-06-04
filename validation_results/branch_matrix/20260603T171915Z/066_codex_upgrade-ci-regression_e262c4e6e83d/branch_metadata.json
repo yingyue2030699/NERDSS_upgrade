@@ -1,0 +1,9 @@
+{
+  "branch_names": [
+    "codex/upgrade-ci-regression"
+  ],
+  "primary_branch": "codex/upgrade-ci-regression",
+  "commit": "e262c4e6e83d45cb89d21948185aa3956c69965f",
+  "worktree_path": "/tmp/nerdss-matrix-066_codex_upgrade-ci-regression_e262c4e6e83d",
+  "created_at_utc": "2026-06-03T17:19:15Z"
+}

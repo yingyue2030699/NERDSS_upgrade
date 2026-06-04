@@ -1,0 +1,17 @@
+Compiling src/boundary_conditions/check_if_spans.cpp to obj/release/boundary_conditions/check_if_spans.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/check_if_spans.cpp -o obj/release/boundary_conditions/check_if_spans.o  
+------------
+Compiling src/boundary_conditions/check_if_spans_box.cpp to obj/release/boundary_conditions/check_if_spans_box.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/check_if_spans_box.cpp -o obj/release/boundary_conditions/check_if_spans_box.o  
+------------
+Compiling src/boundary_conditions/check_if_spans_sphere.cpp to obj/release/boundary_conditions/check_if_spans_sphere.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/check_if_spans_sphere.cpp -o obj/release/boundary_conditions/check_if_spans_sphere.o  
+------------
+Compiling src/boundary_conditions/reflect_complex_compartment.cpp to obj/release/boundary_conditions/reflect_complex_compartment.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/reflect_complex_compartment.cpp -o obj/release/boundary_conditions/reflect_complex_compartment.o  
+------------
+Compiling src/boundary_conditions/reflect_complex_rad_rot.cpp to obj/release/boundary_conditions/reflect_complex_rad_rot.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/reflect_complex_rad_rot.cpp -o obj/release/boundary_conditions/reflect_complex_rad_rot.o  
+------------
+Compiling src/boundary_conditions/reflect_complex_rad_rot_box.cpp to obj/release/boundary_conditions/reflect_complex_rad_rot_box.o
+g++ -O3  -std=c++0x -I/opt/homebrew/Cellar/gsl/2.8/include -Iinclude  -c src/boundary_conditions/reflect_complex_rad_rot_box.cpp -o obj/release/boundary_conditions/reflect_complex_rad_rot_box.o  

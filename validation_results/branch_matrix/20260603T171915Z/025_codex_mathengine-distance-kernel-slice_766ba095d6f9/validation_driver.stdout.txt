@@ -1,0 +1,2 @@
+FAIL smoke (536.28s)
+Report: /Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/025_codex_mathengine-distance-kernel-slice_766ba095d6f9/validation_report.json

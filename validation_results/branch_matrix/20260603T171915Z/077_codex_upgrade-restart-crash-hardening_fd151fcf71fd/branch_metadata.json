@@ -1,0 +1,10 @@
+{
+  "branch_names": [
+    "codex/upgrade-restart-crash-hardening",
+    "codex/upgrade-restart-crash-hardening"
+  ],
+  "primary_branch": "codex/upgrade-restart-crash-hardening",
+  "commit": "fd151fcf71fda331f670dd4772cfd4b78baac3e7",
+  "worktree_path": "/tmp/nerdss-matrix-077_codex_upgrade-restart-crash-hardening_fd151fcf71fd",
+  "created_at_utc": "2026-06-03T17:19:15Z"
+}

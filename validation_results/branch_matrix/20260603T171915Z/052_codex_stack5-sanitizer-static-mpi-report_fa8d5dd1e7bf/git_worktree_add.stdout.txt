@@ -1,0 +1,1 @@
+HEAD is now at fa8d5dd docs: report stack5 sanitizer static mpi gates

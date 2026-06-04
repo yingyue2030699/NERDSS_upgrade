@@ -1,0 +1,7 @@
+Test project /Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/branch_matrix/20260603T171915Z/066_codex_upgrade-ci-regression_e262c4e6e83d/unit-build
+    Start 1: nerdss_unit_tests
+1/1 Test #1: nerdss_unit_tests ................   Passed    0.74 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.74 sec

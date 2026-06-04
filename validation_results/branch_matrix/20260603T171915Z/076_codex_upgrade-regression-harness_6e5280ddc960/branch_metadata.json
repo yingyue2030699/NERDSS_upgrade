@@ -1,0 +1,11 @@
+{
+  "branch_names": [
+    "codex/upgrade-regression-harness",
+    "codex/upgrade-regression-harness",
+    "codex/upgrade-regression-harness"
+  ],
+  "primary_branch": "codex/upgrade-regression-harness",
+  "commit": "6e5280ddc96044f630d2e42eff2181b5e85e728c",
+  "worktree_path": "/tmp/nerdss-matrix-076_codex_upgrade-regression-harness_6e5280ddc960",
+  "created_at_utc": "2026-06-03T17:19:15Z"
+}

@@ -1,0 +1,33 @@
+NERDSS smoke status: passed
+Serial NERDSS build and minimal smoke simulation succeeded.
+Build system: make
+Executable: /Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/bin/nerdss
+Run: exit=0 runtime=0.01s cmd='/Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/bin/nerdss -f smoke.inp -s 123'
+CLI checks: passed
+Artifacts: /Users/yueying/Documents/NERDSS upgrade/NERDSS_upgrade/validation_results/20260530_231924/smoke
+Produced files: 25
+  DATA/assoc_dissoc_time.dat (0 bytes)
+  DATA/bound_pair_time.dat (178 bytes)
+  DATA/copy_numbers_time.dat (34 bytes)
+  DATA/event_counters_time.dat (44 bytes)
+  DATA/final_coords.xyz (107 bytes)
+  DATA/histogram_complexes_time.dat (71 bytes)
+  DATA/initial_crds.xyz (107 bytes)
+  DATA/mono_dimer_time.dat (58 bytes)
+  DATA/observables_time.dat (0 bytes)
+  DATA/restart.dat (2014 bytes)
+  DATA/system.psf (306 bytes)
+  DATA/trajectory.xyz (309 bytes)
+  DATA/transition_matrix_time.dat (233 bytes)
+  PDB/0.pdb (274 bytes)
+  PDB/5.pdb (274 bytes)
+  PDB/9.pdb (274 bytes)
+  RESTARTS/restart1.dat (2014 bytes)
+  RESTARTS/restart2.dat (2014 bytes)
+  RESTARTS/restart3.dat (2014 bytes)
+  RESTARTS/restart4.dat (2014 bytes)
+  RESTARTS/restart5.dat (2014 bytes)
+  RESTARTS/restart6.dat (2014 bytes)
+  RESTARTS/restart7.dat (2014 bytes)
+  RESTARTS/restart8.dat (2014 bytes)
+  RESTARTS/restart9.dat (2014 bytes)
