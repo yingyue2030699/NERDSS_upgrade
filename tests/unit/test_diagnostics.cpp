@@ -599,6 +599,24 @@ void test_parser_malformed_restart_diagnostic() {
                    "malformed restart rendering includes exit code");
 }
 
+void test_parser_restart_file_open_diagnostic() {
+  const nerdss::core::Diagnostic diagnostic =
+      nerdss::parser::MakeRestartFileOpenDiagnostic("restart_rank3.dat", 3);
+  const std::string formatted = nerdss::core::FormatDiagnostic(diagnostic);
+
+  require_true(diagnostic.category == nerdss::error::ErrorCategory::file_io,
+               "restart file-open should use file_io category");
+  require_true(diagnostic.exit_code == nerdss::error::ExitCode::file_io,
+               "restart file-open should use file_io exit code");
+  require_contains(diagnostic.message,
+                   "cannot open restart file 'restart_rank3.dat' (rank=3)",
+                   "restart file-open message includes path and rank");
+  require_contains(formatted, "ERROR [file_io]",
+                   "restart file-open rendering includes category");
+  require_contains(formatted, "exit_code=file_io(9)",
+                   "restart file-open rendering includes exit code");
+}
+
 void test_parser_unknown_observable_type_diagnostic() {
   const nerdss::core::Diagnostic diagnostic =
       nerdss::parser::MakeUnknownObservableTypeDiagnostic("species");
@@ -729,6 +747,7 @@ int main() {
   test_parser_invalid_reaction_molecule_syntax_diagnostic();
   test_parser_invalid_restart_reaction_type_diagnostic();
   test_parser_malformed_restart_diagnostic();
+  test_parser_restart_file_open_diagnostic();
   test_parser_unknown_observable_type_diagnostic();
   test_parser_unknown_state_interface_diagnostic();
   test_parser_unknown_reaction_molecule_template_diagnostic();

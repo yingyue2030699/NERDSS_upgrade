@@ -240,6 +240,14 @@ Malformed restart-stream catch paths now use
 `input` diagnostics with the restart section context and exception reason,
 without changing restart field ordering or reconstruction state.
 
+Restart setup now uses
+`nerdss::parser::MakeRestartFileOpenDiagnostic` and
+`ExitWithRestartFileOpenDiagnostic` when the requested restart file cannot be
+opened before `read_restart` starts. This migrates the previous legacy
+`error("could not find restart file, exiting...")` branch in
+`parse_input_for_a_restart_simulation` to a structured `file_io` diagnostic
+with the restart path and MPI rank.
+
 ## Setup State Diagnostics
 
 The state setup path now uses

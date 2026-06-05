@@ -24,6 +24,7 @@
 #include "mpi.h"
 #endif
 #include "mpi/mpi_function.hpp"
+#include "parser/parser_diagnostics.hpp"
 #include "parser/parser_functions.hpp"
 #include "reactions/unimolecular/unimolecular_reactions.hpp"
 #include "split.cpp"
@@ -82,7 +83,10 @@ void parse_input_for_a_restart_simulation(
   }
 
   std::ifstream restartFileInput{restartFileNameInput};
-  if (!restartFileInput) error("could not find restart file, exiting...");
+  if (!restartFileInput) {
+    nerdss::parser::ExitWithRestartFileOpenDiagnostic(
+        restartFileNameInput, mpiContext.rank);
+  }
 
   std::cout << "Reading restart file..." << std::endl;
   std::vector<TransmissionRxn> transmissionRxns{};

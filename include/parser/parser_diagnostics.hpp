@@ -201,6 +201,16 @@ inline core::Diagnostic MakeMalformedRestartDiagnostic(
   return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
 }
 
+inline core::Diagnostic MakeRestartFileOpenDiagnostic(
+    const std::string& path, int rank) {
+  std::ostringstream message;
+  message << "cannot open restart file '" << path << "'";
+  if (rank >= 0) {
+    message << " (rank=" << rank << ")";
+  }
+  return core::MakeDiagnostic(error::ErrorCategory::file_io, message.str(), "");
+}
+
 inline core::Diagnostic
 MakeUnknownObservableTypeDiagnostic(const std::string& observable_type) {
   std::ostringstream message;
@@ -340,6 +350,11 @@ inline void ExitWithMalformedRestartDiagnostic(
     const std::string& context, const std::string& reason) {
   core::ExitWithDiagnostic(
       MakeMalformedRestartDiagnostic(context, reason));
+}
+
+inline void ExitWithRestartFileOpenDiagnostic(
+    const std::string& path, int rank) {
+  core::ExitWithDiagnostic(MakeRestartFileOpenDiagnostic(path, rank));
 }
 
 inline void ExitWithUnknownObservableTypeDiagnostic(
