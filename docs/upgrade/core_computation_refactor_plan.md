@@ -60,6 +60,11 @@ trajectory math, restart semantics, or legacy input/output compatibility.
    integrator slice also moves the semi-infinite GSL integration retry/fallback
    algorithm used by 2D reaction-table generation behind `ProbabilityEngine`
    while keeping the legacy `integrator` function as a forwarding wrapper.
+   The 2026-06-05 reaction-table service slice moves the pure 2D table
+   integrands, free-diffusion probability helpers, interpolation, table sizing,
+   PIR lookup, and rebinding-ratio lookup into
+   `nerdss::core::ReactionTable2DService`; `ProbabilityEngine` and the legacy
+   free functions remain forwarding wrappers.
    The 2D diffusion-table binning helper now also lives behind
    `ProbabilityEngine` so bimolecular and implicit-lipid reaction paths share
    one table quantization rule. Reaction search-radius/RMax arithmetic for

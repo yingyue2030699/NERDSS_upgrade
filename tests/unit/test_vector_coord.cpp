@@ -3,6 +3,7 @@
 #include "core/diagnostics.hpp"
 #include "core/math_engine.hpp"
 #include "core/probability/association_probability_service.hpp"
+#include "core/probability/reaction_table_2d_service.hpp"
 #include "core/probability_engine.hpp"
 #include "core/trajectory_engine.hpp"
 #include "parser/parser_diagnostics.hpp"
@@ -608,11 +609,27 @@ void test_probability_engine_facade()
     finite_params.r = 1.9;
     finite_params.t = 0.1;
     require_close(
+        nerdss::core::ReactionTable2DService::SurvivalProbabilityIntegrand(
+            0.6, finite_params.a, finite_params.D, finite_params.k,
+            finite_params.r0, finite_params.t),
+        nerdss::core::ProbabilityEngine::SurvivalProbabilityIntegrand2D(
+            0.6, finite_params.a, finite_params.D, finite_params.k,
+            finite_params.r0, finite_params.t),
+        "2D survival table service should match probability facade");
+    require_close(
         nerdss::core::ProbabilityEngine::SurvivalProbabilityIntegrand2D(
             0.6, finite_params.a, finite_params.D, finite_params.k,
             finite_params.r0, finite_params.t),
         survival_function(0.6, &finite_params),
         "2D finite-rate survival integrand facade should match legacy callback");
+    require_close(
+        nerdss::core::ReactionTable2DService::IrreversibleProbabilityIntegrand(
+            0.6, finite_params.a, finite_params.D, finite_params.k,
+            finite_params.r0, finite_params.r, finite_params.t),
+        nerdss::core::ProbabilityEngine::IrreversibleProbabilityIntegrand2D(
+            0.6, finite_params.a, finite_params.D, finite_params.k,
+            finite_params.r0, finite_params.r, finite_params.t),
+        "2D pir table service should match probability facade");
     require_close(
         nerdss::core::ProbabilityEngine::IrreversibleProbabilityIntegrand2D(
             0.6, finite_params.a, finite_params.D, finite_params.k,
@@ -639,6 +656,12 @@ void test_probability_engine_facade()
             0.6, finite_params.r0, finite_params.D, finite_params.t),
         norm_function(0.6, &finite_params),
         "2D norm integrand facade should match legacy callback");
+    require_close(
+        nerdss::core::ReactionTable2DService::FreeDiffusionNormIntegrand(
+            0.6, finite_params.r0, finite_params.D, finite_params.t),
+        nerdss::core::ProbabilityEngine::FreeDiffusionNormIntegrand2D(
+            0.6, finite_params.r0, finite_params.D, finite_params.t),
+        "2D norm table service should match probability facade");
 
     IntegrandParams integration_params;
     integration_params.k = 2.0;
@@ -646,6 +669,12 @@ void test_probability_engine_facade()
     integration_function.function = &exponential_integrand;
     integration_function.params = &integration_params;
     gsl_integration_workspace* integration_workspace = gsl_integration_workspace_alloc(1000000);
+    require_close_with_tolerance(
+        nerdss::core::ReactionTable2DService::IntegrateSemiInfinite(
+            integration_function, &integration_params, integration_workspace,
+            &exponential_integrand),
+        0.5, 1.0e-7,
+        "2D table service integrator should match known exponential integral");
     require_close_with_tolerance(
         nerdss::core::ProbabilityEngine::IntegrateSemiInfinite2D(
             integration_function, &integration_params, integration_workspace,
@@ -672,13 +701,29 @@ void test_probability_engine_facade()
         get_prevNorm(lookup_matrix, 0.1, 0.85, 0.7),
         "2D previous norm facade should match legacy lookup");
     require_close(
+        nerdss::core::ReactionTable2DService::PreviousNormProbability(
+            lookup_matrix, 0.1, 0.85, 0.7),
+        nerdss::core::ProbabilityEngine::PreviousNormProbability2D(
+            lookup_matrix, 0.1, 0.85, 0.7),
+        "2D previous norm table service should match probability facade");
+    require_close(
         nerdss::core::ProbabilityEngine::PreviousSurvivalProbability2D(
             lookup_matrix, 1.0, 25.0, 0.85, 0.7),
         get_prevSurv(lookup_matrix, 1.0, 25.0, 0.85, 0.7),
         "2D previous survival facade should match legacy lookup");
     require_close(
+        nerdss::core::ReactionTable2DService::PreviousSurvivalProbability(
+            lookup_matrix, 1.0, 25.0, 0.85, 0.7),
+        nerdss::core::ProbabilityEngine::PreviousSurvivalProbability2D(
+            lookup_matrix, 1.0, 25.0, 0.85, 0.7),
+        "2D previous survival table service should match probability facade");
+    require_close(
         nerdss::core::ProbabilityEngine::TableStepSize2D(1.0, 0.01), 0.002,
         "2D table step helper should preserve legacy sqrt(Dt)/50 relation");
+    require_close(
+        nerdss::core::ReactionTable2DService::TableStepSize(1.0, 0.01),
+        nerdss::core::ProbabilityEngine::TableStepSize2D(1.0, 0.01),
+        "2D table service step helper should match probability facade");
     require_close(
         nerdss::core::ProbabilityEngine::RotationalDiffusionDisplacement(0.5, 0.02, 3.0, 2),
         0.059900066642862626,
@@ -903,6 +948,10 @@ void test_probability_engine_facade()
         nerdss::core::ProbabilityEngine::TableSize2D(0.7, 1.0, 0.01, 0.71)
             == size_lookup(0.7, 1.0, lookup_params, 0.71),
         "2D table size facade should match legacy wrapper");
+    require_true(
+        nerdss::core::ReactionTable2DService::TableSize(0.7, 1.0, 0.01, 0.71)
+            == nerdss::core::ProbabilityEngine::TableSize2D(0.7, 1.0, 0.01, 0.71),
+        "2D table service size helper should match probability facade");
 
     gsl_matrix* pir_matrix = gsl_matrix_alloc(100, 100);
     for (size_t row = 0; row < 100; ++row) {
@@ -916,10 +965,22 @@ void test_probability_engine_facade()
         calc_pirr(pir_matrix, lookup_matrix, 0.1, 0.95, 0.85, 0.7),
         "2D pir table facade should match legacy lookup");
     require_close(
+        nerdss::core::ReactionTable2DService::IrreversibleProbability(
+            pir_matrix, lookup_matrix, 0.1, 0.95, 0.85, 0.7),
+        nerdss::core::ProbabilityEngine::IrreversibleProbabilityTable2D(
+            pir_matrix, lookup_matrix, 0.1, 0.95, 0.85, 0.7),
+        "2D pir table service should match probability facade lookup");
+    require_close(
         nerdss::core::ProbabilityEngine::IrreversibleProbabilityTable2D(
             pir_matrix, lookup_matrix, 0.1, 0.85, 0.85, 0.7),
         calc_pirr(pir_matrix, lookup_matrix, 0.1, 0.85, 0.85, 0.7),
         "2D pir table facade should match legacy diagonal lookup");
+    require_close(
+        nerdss::core::ReactionTable2DService::IrreversibleProbability(
+            pir_matrix, lookup_matrix, 0.1, 0.85, 0.85, 0.7),
+        nerdss::core::ProbabilityEngine::IrreversibleProbabilityTable2D(
+            pir_matrix, lookup_matrix, 0.1, 0.85, 0.85, 0.7),
+        "2D pir table service should match probability facade diagonal lookup");
     require_close(
         nerdss::core::ProbabilityEngine::RebindingProbabilityRatioTable2D(
             pir_matrix, lookup_matrix, lookup_matrix, 0.95, 1.0, 25.0, 0.85,
@@ -928,6 +989,14 @@ void test_probability_engine_facade()
             pir_matrix, lookup_matrix, lookup_matrix, 0.95, 1.0, 25.0, 0.85,
             0.8, 1.0e-12, 0.7),
         "2D table rebinding ratio facade should match legacy wrapper");
+    require_close(
+        nerdss::core::ReactionTable2DService::RebindingProbabilityRatio(
+            pir_matrix, lookup_matrix, lookup_matrix, 0.95, 1.0, 25.0, 0.85,
+            0.8, 1.0e-12, 0.7),
+        nerdss::core::ProbabilityEngine::RebindingProbabilityRatioTable2D(
+            pir_matrix, lookup_matrix, lookup_matrix, 0.95, 1.0, 25.0, 0.85,
+            0.8, 1.0e-12, 0.7),
+        "2D table rebinding ratio service should match probability facade");
     gsl_matrix_free(pir_matrix);
     gsl_matrix_free(lookup_matrix);
 
@@ -935,6 +1004,11 @@ void test_probability_engine_facade()
     const double free_probability =
         nerdss::core::ProbabilityEngine::FreeDiffusionProbability2D(
             0.6, finite_params.r0, finite_params.D, finite_params.t);
+    require_close(
+        nerdss::core::ReactionTable2DService::FreeDiffusionProbability(
+            0.6, finite_params.r0, finite_params.D, finite_params.t),
+        free_probability,
+        "2D free diffusion table service should match probability facade");
     const double free_norm =
         nerdss::core::ProbabilityEngine::FreeDiffusionNormIntegrand2D(
             0.6, finite_params.r0, finite_params.D, finite_params.t);
