@@ -259,6 +259,13 @@ direct `std::cerr` plus `exit(1)` path in `initialize_states` to the shared
 structured formatter, includes the molecule name and state expression, and
 exits with `ExitCode::input`.
 
+New-simulation and add-file setup now use
+`nerdss::setup::MakeImplicitLipidOrderingDiagnostic` and
+`ExitWithImplicitLipidOrderingDiagnostic` when an implicit lipid molecule is not
+type index 0. This migrates the previous legacy `error(...)` calls in
+`parse_input_for_a_new_simulation` and `parse_input_for_add_file` while keeping
+the failure fatal and reporting the molecule name and type index.
+
 ## Parser Reaction Semantic Diagnostics
 
 The reaction parser now uses

@@ -27,6 +27,7 @@
 #include "parser/parser_functions.hpp"
 #include "reactions/unimolecular/unimolecular_reactions.hpp"
 #include "split.cpp"
+#include "system_setup/setup_diagnostics.hpp"
 #include "system_setup/system_setup.hpp"
 #include "tracing.hpp"
 #include "trajectory_functions/trajectory_functions.hpp"
@@ -91,7 +92,8 @@ void parse_input_for_add_file(
   for (auto& tempMolTemplate : molTemplateList) {
     if (tempMolTemplate.isImplicitLipid == true &&
         tempMolTemplate.molTypeIndex != 0) {
-      error("Implicit Lipid must be the first molecule type!");
+      nerdss::setup::ExitWithImplicitLipidOrderingDiagnostic(
+          tempMolTemplate.molName, tempMolTemplate.molTypeIndex);
     }
   }
 
