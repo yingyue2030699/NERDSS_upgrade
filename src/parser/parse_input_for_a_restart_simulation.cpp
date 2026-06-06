@@ -24,6 +24,7 @@
 #include "mpi.h"
 #endif
 #include "mpi/mpi_function.hpp"
+#include "parser/parser_diagnostics.hpp"
 #include "parser/parser_functions.hpp"
 #include "reactions/unimolecular/unimolecular_reactions.hpp"
 #include "split.cpp"
@@ -82,7 +83,10 @@ void parse_input_for_a_restart_simulation(
   }
 
   std::ifstream restartFileInput{restartFileNameInput};
-  if (!restartFileInput) error("could not find restart file, exiting...");
+  if (!restartFileInput) {
+    nerdss::parser::ExitWithRankedFileOpenDiagnostic(
+        restartFileNameInput, "restart", mpiContext.rank);
+  }
 
   std::cout << "Reading restart file..." << std::endl;
   std::vector<TransmissionRxn> transmissionRxns{};
@@ -146,24 +150,39 @@ void parse_input_for_a_restart_simulation(
   long long int trajItr{-1};
   if (trajFile) {
     std::string line;
+    bool malformedTrajectoryHeader{false};
     while (getline(trajFile, line)) {
       auto headerItr = line.find(':');
       if (headerItr != std::string::npos) {
-        trajItr = std::stoi(line.substr(
-            headerItr + 1, std::string::npos));  // + 1 to ignore the colon
+        try {
+          trajItr = std::stoll(line.substr(
+              headerItr + 1, std::string::npos));  // + 1 to ignore the colon
+        } catch (const std::exception& exception) {
+          nerdss::parser::WriteWarningDiagnostic(
+              std::cerr,
+              nerdss::parser::MakeMalformedRestartTrajectoryDiagnostic(
+                  params.trajFile, line, exception.what(), mpiContext.rank));
+          malformedTrajectoryHeader = true;
+          break;
+        }
       }
     }
-    if (trajItr == simItr) {
+    if (malformedTrajectoryHeader) {
+      // Keep restart behavior permissive: a bad or missing trajectory should
+      // not prevent the restart file itself from being used.
+    } else if (trajItr == simItr) {
       std::cout << "Trajectory length matches provided restart file. "
                    "Continuing...\n";
     } else {
-      // error("Trajectory length doesn't match provided restart file.
-      // Exiting...");
-      std::cout << "WARNING: Trajectory length doesn't match provided "
-                   "restart file...\n";
+      nerdss::parser::WriteWarningDiagnostic(
+          std::cerr,
+          nerdss::parser::MakeRestartTrajectoryMismatchDiagnostic(
+              params.trajFile, simItr, trajItr, mpiContext.rank));
     }
     trajFile.close();
   } else {
-    std::cout << "WARNING: No trajectory found, writing new trajectory.\n";
+    nerdss::parser::WriteWarningDiagnostic(
+        std::cerr, nerdss::parser::MakeRestartTrajectoryUnavailableDiagnostic(
+                       params.trajFile, mpiContext.rank));
   }
 }
