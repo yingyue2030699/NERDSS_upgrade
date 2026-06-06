@@ -1,4 +1,5 @@
 #include "io/io.hpp"
+#include "io/io_diagnostics.hpp"
 #include "tracing.hpp"
 #include <chrono>
 #include <ctime>
@@ -9,6 +10,11 @@ void write_xyz_assoc(
 {
     // TRACE();
     std::ofstream out(filename);
+    if (!out.is_open()) {
+        nerdss::io::WriteArtifactWriteOpenDiagnostic(std::cerr, filename,
+                                                     "XYZ");
+        return;
+    }
 
     int totAtoms { int(reactCom1.memberList.size() + reactCom2.memberList.size()) };
     for (auto memMol : reactCom1.memberList)
