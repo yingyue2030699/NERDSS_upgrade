@@ -135,6 +135,12 @@ missing `--coordinate` / `-c` files. This replaces the previous plain stderr
 message and silent continuation with a structured `file_io` diagnostic and
 `ExitCode::file_io`.
 
+New-simulation setup now checks observables, trajectory, and transition output
+streams immediately after opening them. These failures use
+`nerdss::io::MakeArtifactWriteOpenDiagnostic` with the shared diagnostic
+formatter and exit with `ExitCode::file_io` before downstream writers operate
+on a bad stream.
+
 ## Parser Invalid-Keyword Diagnostics
 
 The molecule config parser now uses
