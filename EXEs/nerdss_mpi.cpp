@@ -242,11 +242,7 @@ int main(int argc, char* argv[]) {
   r = gsl_rng_alloc(T);
   gsl_rng_set(r, seed);
 
-  // 2D reaction probability tables, used to calculate reaction probability
-  std::vector<gsl_matrix*> survMatrices;
-  std::vector<gsl_matrix*> normMatrices;
-  std::vector<gsl_matrix*> pirMatrices;
-  double* tableIDs = new double[params.max2DRxns * 2];
+  nerdss::core::ReactionTable2DCache reaction_table_cache;
 
   // list of the observables
   std::map<std::string, int> observablesList;
@@ -445,8 +441,6 @@ int main(int argc, char* argv[]) {
   std::fill(durationList.begin(), durationList.end(),
             std::chrono::duration<double>(simulTimeStart - totalTimeStart));
 
-  unsigned DDTableIndex{0};
-
   // Vectors to store binding probabilities for implicit lipids in 2D.
   std::vector<double> IL2DbindingVec{};
   std::vector<double> IL2DUnbindingVec{};
@@ -562,8 +556,7 @@ int main(int argc, char* argv[]) {
         simItr, params, moleculeList, complexList, simulVolume, forwardRxns,
         backRxns, createDestructRxns, molTemplateList, observablesList,
         counterArrays, membraneObject, IL2DbindingVec, IL2DUnbindingVec,
-        ILTableIDs, normMatrices, survMatrices, pirMatrices, implicitlipidIndex,
-        tableIDs, DDTableIndex);
+        ILTableIDs, implicitlipidIndex, reaction_table_cache);
 
     if (DEBUG) {
       debug_molecule_complex_missmatch(mpiContext, moleculeList, complexList,
@@ -1046,7 +1039,6 @@ int main(int argc, char* argv[]) {
     merge_outputs(mpiContext.nprocs, molTemplateList.size());
   }
 
-  delete[] tableIDs;
   gsl_rng_free(r);
 
 #ifdef ENABLE_PROFILING

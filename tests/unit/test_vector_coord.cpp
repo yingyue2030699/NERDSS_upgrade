@@ -3,6 +3,7 @@
 #include "core/diagnostics.hpp"
 #include "core/math_engine.hpp"
 #include "core/probability/association_probability_service.hpp"
+#include "core/probability/reaction_table_2d_cache.hpp"
 #include "core/probability/reaction_table_2d_service.hpp"
 #include "core/probability_engine.hpp"
 #include "core/trajectory_engine.hpp"
@@ -1023,6 +1024,37 @@ void test_probability_engine_facade()
     gsl_matrix_free(wrapper_survival_matrix);
     gsl_matrix_free(wrapper_norm_matrix);
     gsl_matrix_free(wrapper_pir_matrix);
+
+    nerdss::core::ReactionTable2DCache reaction_table_cache;
+    const auto first_table = reaction_table_cache.FindOrCreate(
+        fill_association_rate, fill_diffusion_total, fill_bind_radius,
+        fill_max_radius, fill_time, 10);
+    require_true(first_table.created,
+                 "2D table cache should report first lookup as created");
+    require_true(reaction_table_cache.Size() == 1,
+                 "2D table cache should own one table after first lookup");
+
+    const auto reused_table = reaction_table_cache.FindOrCreate(
+        fill_association_rate + 0.5e-8, fill_diffusion_total + 0.5e-4,
+        fill_bind_radius, fill_max_radius, fill_time, 10);
+    require_true(!reused_table.created,
+                 "2D table cache should reuse keys within legacy tolerances");
+    require_true(reused_table.index == first_table.index,
+                 "2D table cache reused lookup should keep the same index");
+    require_true(reused_table.survival_matrix == first_table.survival_matrix,
+                 "2D table cache reused lookup should keep survival matrix");
+    require_true(reaction_table_cache.Size() == 1,
+                 "2D table cache should not grow for reused lookup");
+
+    const auto second_table = reaction_table_cache.FindOrCreate(
+        fill_association_rate + 2.0e-8, fill_diffusion_total, fill_bind_radius,
+        fill_max_radius, fill_time, 10);
+    require_true(second_table.created,
+                 "2D table cache should create a table outside rate tolerance");
+    require_true(second_table.index == 1,
+                 "2D table cache should assign the next table index");
+    require_true(reaction_table_cache.Size() == 2,
+                 "2D table cache should own two distinct tables");
 
     gsl_matrix* pir_matrix = gsl_matrix_alloc(100, 100);
     for (size_t row = 0; row < 100; ++row) {

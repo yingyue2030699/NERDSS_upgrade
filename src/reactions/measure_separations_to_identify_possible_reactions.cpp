@@ -45,10 +45,8 @@ void measure_separations_to_identify_possible_reactions(
     std::map<std::string, int>& observablesList, copyCounters& counterArrays,
     Membrane& membraneObject, std::vector<double>& IL2DbindingVec,
     std::vector<double>& IL2DUnbindingVec, std::vector<double>& ILTableIDs,
-    std::vector<gsl_matrix*>& normMatrices,
-    std::vector<gsl_matrix*>& survMatrices,
-    std::vector<gsl_matrix*>& pirMatrices, int implicitlipidIndex,
-    double* tableIDs, unsigned& DDTableIndex) {
+    int implicitlipidIndex,
+    nerdss::core::ReactionTable2DCache& reaction_table_cache) {
   for (unsigned cellItr{0}; cellItr < simulVolume.subCellList.size();
        ++cellItr) {
     for (unsigned memItr{0};
@@ -80,8 +78,8 @@ void measure_separations_to_identify_possible_reactions(
               simulVolume.subCellList[cellItr].memberMolList[memItr2]};
 
           check_bimolecular_reactions(
-              targMolIndex, partMolIndex, simItr, tableIDs, DDTableIndex,
-              params, normMatrices, survMatrices, pirMatrices, moleculeList,
+              targMolIndex, partMolIndex, simItr, reaction_table_cache,
+              params, moleculeList,
               complexList, molTemplateList, forwardRxns, backRxns,
               counterArrays, membraneObject);
         }  // loop over protein partners in your same cell
@@ -102,8 +100,8 @@ void measure_separations_to_identify_possible_reactions(
             if (DEBUG && (partMolIndex > moleculeList.size()))
               error("partMolIndex is higher than moleculeList size!");
             check_bimolecular_reactions(
-                targMolIndex, partMolIndex, simItr, tableIDs, DDTableIndex,
-                params, normMatrices, survMatrices, pirMatrices, moleculeList,
+                targMolIndex, partMolIndex, simItr, reaction_table_cache,
+                params, moleculeList,
                 complexList, molTemplateList, forwardRxns, backRxns,
                 counterArrays, membraneObject);
           }  // loop over all proteins in this neighbor cell

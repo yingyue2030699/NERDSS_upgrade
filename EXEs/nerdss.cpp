@@ -203,11 +203,7 @@ int main(int argc, char *argv[]) {
                          // sequence, set this true to print the rng_state so
                          // that restarts can be identical
   /* SET UP SOME IMPORTANT VARIABLES */
-  // 2D reaction probability tables
-  std::vector<gsl_matrix *> survMatrices; // used in evaluate_binding_pair_com
-  std::vector<gsl_matrix *> normMatrices; // idem
-  std::vector<gsl_matrix *> pirMatrices;  // idem
-  double *tableIDs = new double[params.max2DRxns * 2]; // TODO: Change this?
+  nerdss::core::ReactionTable2DCache reaction_table_cache;
 
   /* SET UP SYSTEM */
   std::map<std::string, int> observablesList;
@@ -760,7 +756,6 @@ int main(int argc, char *argv[]) {
   std::fill(durationList.begin(), durationList.end(),
             std::chrono::duration<double>(simulTimeStart - totalTimeStart));
 
-  unsigned DDTableIndex{0};
   /*Vectors to store binding probabilities for implicit lipids in 2D.*/
   std::vector<double> IL2DbindingVec{};
   std::vector<double> IL2DUnbindingVec{};
@@ -917,8 +912,8 @@ int main(int argc, char *argv[]) {
             int partMolIndex{
                 simulVolume.subCellList[cellItr].memberMolList[memItr2]};
             check_bimolecular_reactions(
-                targMolIndex, partMolIndex, simItr, tableIDs, DDTableIndex,
-                params, normMatrices, survMatrices, pirMatrices, moleculeList,
+                targMolIndex, partMolIndex, simItr, reaction_table_cache,
+                params, moleculeList,
                 complexList, molTemplateList, forwardRxns, backRxns,
                 counterArrays, membraneObject);
           } // loop over protein partners in your same cell
@@ -932,8 +927,8 @@ int main(int argc, char *argv[]) {
               int partMolIndex{
                   simulVolume.subCellList[neighCellItr].memberMolList[memItr2]};
               check_bimolecular_reactions(
-                  targMolIndex, partMolIndex, simItr, tableIDs, DDTableIndex,
-                  params, normMatrices, survMatrices, pirMatrices, moleculeList,
+                  targMolIndex, partMolIndex, simItr, reaction_table_cache,
+                  params, moleculeList,
                   complexList, molTemplateList, forwardRxns, backRxns,
                   counterArrays, membraneObject);
             } // loop over all proteins in this neighbor cell
@@ -1852,7 +1847,6 @@ int main(int argc, char *argv[]) {
   std::cout << "\tWall Time: ";
   std::cout << wallTime.count() << " seconds\n";
 
-  delete[] tableIDs;
   gsl_rng_free(r);
   // if(PROFILE) {ProfilerStop();}
   return 0;

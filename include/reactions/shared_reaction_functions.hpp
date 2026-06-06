@@ -15,6 +15,7 @@
 #include "classes/class_Rxns.hpp"
 #include "classes/class_SimulVolume.hpp"
 #include "classes/class_copyCounters.hpp"
+#include "core/probability/reaction_table_2d_cache.hpp"
 #include "gsl/gsl_matrix.h"
 
 #include <algorithm>
@@ -93,12 +94,8 @@ extern int evalBindNum;
  * \param[in] pro1Index Index of first protein in moleculeList.
  * \param[in] pro2Index Index of second protein in moleculeList.
  * \param[in] simItr Current simulation iteration.
- * \param[in] tableIDs C-style array containing the rates and their total diffusion constant.
- * \param[in] DDTableIndex Current index in tableIDs
  * \param[in] params User-provided simulation Parameters.
- * \param[in] normMatrices List of all previously calculated normMatrix
- * \param[in] survMatrices List of all previously calculated survMatrix
- * \param[in] pirMatrices List of all previously calculated pirMatrix
+ * \param[in] reaction_table_cache Owner/cache for 2D reaction probability tables.
  * \param[in] moleculeList List of all Molecules in the system.
  * \param[in] complexList List of all Complexes in the system.
  * \param[in] molTemplateList List of all user-provided MolTemplates.
@@ -106,9 +103,9 @@ extern int evalBindNum;
  *
  * If 2D, also calculates/looks up values for 2D reaction tables (normMatrix, survMatrix, and pirMatrix)
  */
-void check_bimolecular_reactions(int pro1Index, int pro2Index, int simItr, double* tableIDs, unsigned& DDTableIndex,
-    const Parameters& params, std::vector<gsl_matrix*>& normMatrices, std::vector<gsl_matrix*>& survMatrices,
-    std::vector<gsl_matrix*>& pirMatrices, std::vector<Molecule>& moleculeList, std::vector<Complex>& complexList,
+void check_bimolecular_reactions(int pro1Index, int pro2Index, int simItr,
+    nerdss::core::ReactionTable2DCache& reaction_table_cache,
+    const Parameters& params, std::vector<Molecule>& moleculeList, std::vector<Complex>& complexList,
     const std::vector<MolTemplate>& molTemplateList, const std::vector<ForwardRxn>& forwardRxns,
     const std::vector<BackRxn>& backRxns, copyCounters& counterArrays, Membrane& membraneObject);
 
@@ -156,10 +153,8 @@ void measure_separations_to_identify_possible_reactions(
     std::map<std::string, int>& observablesList, copyCounters& counterArrays,
     Membrane& membraneObject, std::vector<double>& IL2DbindingVec,
     std::vector<double>& IL2DUnbindingVec, std::vector<double>& ILTableIDs,
-    std::vector<gsl_matrix*>& normMatrices,
-    std::vector<gsl_matrix*>& survMatrices,
-    std::vector<gsl_matrix*>& pirMatrices, int implicitlipidIndex,
-    double* tableIDs, unsigned& DDTableIndex);
+    int implicitlipidIndex,
+    nerdss::core::ReactionTable2DCache& reaction_table_cache);
 
 void perform_bimolecular_reactions(
     unsigned simItr, Parameters& params, std::vector<Molecule>& moleculeList,

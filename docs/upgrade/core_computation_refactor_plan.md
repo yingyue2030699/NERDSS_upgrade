@@ -104,6 +104,11 @@ trajectory math, restart semantics, or legacy input/output compatibility.
    lives behind a pure `ProbabilityEngine` setup helper; the legacy wrappers
    still perform candidate search, warning emission, reweighting, and
    probability-vector mutation.
+   The 2D reaction table fill algorithms now live in
+   `ReactionTable2DService`, and table lookup/allocation ownership is moving
+   behind `ReactionTable2DCache`. The cache owns and releases the GSL matrices
+   while legacy reaction code still performs stochastic event selection,
+   topology mutation, and molecule reweighting.
    Association rotation-angle diffusion-policy selection now also lives behind
    `MathEngine::PartitionAssociationRotationAngle`; the legacy
    `determine_rotation_angles` wrapper only adapts `Complex` diffusion fields
