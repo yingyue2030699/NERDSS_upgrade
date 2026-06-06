@@ -1,4 +1,5 @@
 #include "io/io.hpp"
+#include "io/io_diagnostics.hpp"
 #include "tracing.hpp"
 #include <chrono>
 #include <ctime>
@@ -10,7 +11,13 @@ void write_psf(const Parameters &params,
   // TODO: Not currently working properly
 
   // std::cout << "Writing system PSF to system.psf...\n";
-  std::ofstream outFile("DATA/system.psf");
+  const std::string psfFileName{"DATA/system.psf"};
+  std::ofstream outFile(psfFileName);
+  if (!outFile.is_open()) {
+    nerdss::io::WriteArtifactWriteOpenDiagnostic(std::cerr, psfFileName,
+                                                 "PSF");
+    return;
+  }
   // Write PSF Header
   outFile << "PSF CMAP CHEQ\n\n";
   outFile << std::setw(8) << "2"

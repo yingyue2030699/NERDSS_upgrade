@@ -1,4 +1,5 @@
 #include "io/io.hpp"
+#include "io/io_diagnostics.hpp"
 #include "tracing.hpp"
 #include <chrono>
 #include <ctime>
@@ -9,6 +10,11 @@ void write_xyz(std::string filename, const Parameters& params, const std::vector
 {
     // TRACE();
     std::ofstream out(filename);
+    if (!out.is_open()) {
+        nerdss::io::WriteArtifactWriteOpenDiagnostic(std::cerr, filename,
+                                                     "XYZ");
+        return;
+    }
     std::string lett { "ABCDEFGHIJKLMNOPQRSTUVWXYZ" };
     std::vector<std::string> names;
     for (auto& molTemp : molTemplateList)
