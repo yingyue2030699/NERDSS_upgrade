@@ -14,6 +14,7 @@
 
 #include "boundary_conditions/reflect_functions.hpp"
 #include "debug/debug.hpp"
+#include "io/io_diagnostics.hpp"
 #include "error/error.hpp"
 #include "io/io.hpp"
 #include "macro.hpp"
@@ -103,6 +104,11 @@ void parse_input_for_a_new_simulation(
 
   // Write the Observables file header and initial values
   std::ofstream observablesFile{observablesFileName};
+  if (!observablesFile) {
+    nerdss::core::ExitWithDiagnostic(
+        nerdss::io::MakeArtifactWriteOpenDiagnostic(
+            observablesFileName, "observables"));
+  }
   if (observablesList.size() == 1) {
     observablesFile << "Time (s)," << observablesList.begin()->first << '\n';
     observablesFile << "0,0\n";
@@ -161,6 +167,11 @@ void parse_input_for_a_new_simulation(
 
   // Write beginning of trajectory
   std::ofstream trajFile{trajFileName};
+  if (!trajFile) {
+    nerdss::core::ExitWithDiagnostic(
+        nerdss::io::MakeArtifactWriteOpenDiagnostic(
+            trajFileName, "trajectory"));
+  }
   write_traj(0, trajFile, params, moleculeList, molTemplateList,
              membraneObject);
   trajFile.close();
@@ -179,6 +190,11 @@ void parse_input_for_a_new_simulation(
 
   // Write beginning of transition matrix
   std::ofstream transitionFile{transitionFileName};
+  if (!transitionFile) {
+    nerdss::core::ExitWithDiagnostic(
+        nerdss::io::MakeArtifactWriteOpenDiagnostic(
+            transitionFileName, "transition"));
+  }
   write_transition(0, transitionFile, molTemplateList);
   transitionFile.close();
 }
