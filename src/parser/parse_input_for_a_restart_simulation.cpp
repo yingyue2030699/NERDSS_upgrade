@@ -20,6 +20,7 @@
 #include "math/constants.hpp"
 #include "math/matrix.hpp"
 #include "math/rand_gsl.hpp"
+#include "parser/parser_diagnostics.hpp"
 #ifdef mpi_
 #include "mpi.h"
 #endif
@@ -82,7 +83,10 @@ void parse_input_for_a_restart_simulation(
   }
 
   std::ifstream restartFileInput{restartFileNameInput};
-  if (!restartFileInput) error("could not find restart file, exiting...");
+  if (!restartFileInput) {
+    nerdss::parser::ExitWithFileOpenDiagnostic(restartFileNameInput,
+                                               "restart");
+  }
 
   std::cout << "Reading restart file..." << std::endl;
   std::vector<TransmissionRxn> transmissionRxns{};

@@ -16,6 +16,7 @@
 //  #endif
 
 #include "boundary_conditions/reflect_functions.hpp"
+#include "io/io_diagnostics.hpp"
 #include "io/io.hpp"
 #include "math/constants.hpp"
 #include "math/matrix.hpp"
@@ -93,6 +94,15 @@ void exit_if_compartment_water_box_too_small(const Membrane& membrane_object,
   if (has_error) {
     std::exit(
         nerdss::error::to_exit_status(nerdss::error::ExitCode::input));
+  }
+}
+
+void exit_if_artifact_stream_not_open(const std::ofstream& stream,
+                                      const std::string& path,
+                                      const char* artifact_type) {
+  if (!stream) {
+    nerdss::core::ExitWithDiagnostic(
+        nerdss::io::MakeArtifactWriteOpenDiagnostic(path, artifact_type));
   }
 }
 
@@ -772,6 +782,7 @@ int main(int argc, char *argv[]) {
     // auto endTimeFormat = MDTimer::to_time_t(endTime);
     std::ofstream restartFile{restartFileName,
                               std::ios::out}; // to show different from append
+    exit_if_artifact_stream_not_open(restartFile, restartFileName, "restart");
     // std::cout << "Writing restart file at iteration " << simItr << " ";
     // if (0 < strftime(charTime, sizeof(charTime), "%F %T",
     // std::localtime(&endTimeFormat))) std::cout << charTime << '\n';
@@ -1610,6 +1621,8 @@ int main(int argc, char *argv[]) {
       auto endTimeFormat = MDTimer::to_time_t(endTime);
       std::ofstream restartFile{restartFileName,
                                 std::ios::out}; // to show different from append
+      exit_if_artifact_stream_not_open(restartFile, restartFileName,
+                                       "restart");
       // std::cout << "Writing restart file at iteration " << simItr;
       //                      << ", system time: " <<
       //                      std::put_time(std::localtime(&endTimeFormat), "%F
@@ -1636,6 +1649,7 @@ int main(int argc, char *argv[]) {
     if (simItr % params.checkPoint == 0) {
       snprintf(fnameProXYZ, sizeof(fnameProXYZ), "RESTARTS/restart%lld.dat", simItr);
       std::ofstream restartFile(fnameProXYZ);
+      exit_if_artifact_stream_not_open(restartFile, fnameProXYZ, "restart");
       if (params.rngwrite == true) // only do this if you need a rng sequence for debugging
         write_rng_state_simItr(simItr); // write the current RNG state
       write_restart(simItr, restartFile, params, simulVolume, moleculeList,
@@ -1751,6 +1765,7 @@ int main(int argc, char *argv[]) {
     // std::cout << "Writing restart file at final iteration\n.";
     std::ofstream restartFile{restartFileName,
                               std::ios::out}; // to show different from append
+    exit_if_artifact_stream_not_open(restartFile, restartFileName, "restart");
     if (params.rngwrite == true) // only do this if you need a rng sequence for debugging
       write_rng_state(); // write the current RNG state
     write_restart(simItr, restartFile, params, simulVolume, moleculeList,

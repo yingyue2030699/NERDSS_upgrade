@@ -135,6 +135,18 @@ missing `--coordinate` / `-c` files. This replaces the previous plain stderr
 message and silent continuation with a structured `file_io` diagnostic and
 `ExitCode::file_io`.
 
+The factored restart parser entry point now also uses the shared parser
+file-open diagnostic for missing restart input files. This keeps the parser
+helper aligned with the serial executable restart path and reports missing
+restart files as structured `file_io` failures instead of routing through the
+legacy `error(...)` helper.
+
+Serial restart artifact writes now check the output stream before writing the
+immediate restart rewrite, scheduled restart, checkpoint restart, and final
+restart files. Failed restart artifact opens use
+`nerdss::io::MakeArtifactWriteOpenDiagnostic` and exit with `ExitCode::file_io`
+instead of continuing after a silent failed write.
+
 ## Parser Invalid-Keyword Diagnostics
 
 The molecule config parser now uses
