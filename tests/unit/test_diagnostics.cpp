@@ -65,6 +65,59 @@ void test_diagnostic_format_without_trace() {
                "diagnostic without trace should omit trace heading");
 }
 
+void test_parser_ranked_file_open_diagnostic() {
+  const nerdss::core::Diagnostic diagnostic =
+      nerdss::parser::MakeRankedFileOpenDiagnostic("restart.dat", "restart",
+                                                   2);
+  const std::string formatted = nerdss::core::FormatDiagnostic(diagnostic);
+
+  require_true(diagnostic.category == nerdss::error::ErrorCategory::file_io,
+               "ranked parser file-open should use file_io category");
+  require_true(diagnostic.exit_code == nerdss::error::ExitCode::file_io,
+               "ranked parser file-open should use file_io exit code");
+  require_contains(diagnostic.message,
+                   "cannot open restart file 'restart.dat' (rank=2)",
+                   "ranked file-open message includes path and rank");
+  require_contains(formatted, "ERROR [file_io]",
+                   "ranked file-open rendering includes category");
+  require_contains(formatted, "exit_code=file_io(9)",
+                   "ranked file-open rendering includes exit code");
+}
+
+void test_parser_restart_trajectory_diagnostics() {
+  const nerdss::core::Diagnostic unavailable =
+      nerdss::parser::MakeRestartTrajectoryUnavailableDiagnostic("traj.xyz",
+                                                                3);
+  const nerdss::core::Diagnostic mismatch =
+      nerdss::parser::MakeRestartTrajectoryMismatchDiagnostic("traj.xyz", 25,
+                                                              20, 3);
+  const nerdss::core::Diagnostic malformed =
+      nerdss::parser::MakeMalformedRestartTrajectoryDiagnostic(
+          "traj.xyz", "iteration: bad", "stoll", 3);
+
+  require_true(unavailable.category == nerdss::error::ErrorCategory::file_io,
+               "missing restart trajectory should use file_io category");
+  require_contains(unavailable.message,
+                   "cannot open restart trajectory file 'traj.xyz' (rank=3): "
+                   "writing a new trajectory",
+                   "missing restart trajectory message includes rank");
+
+  require_true(mismatch.category == nerdss::error::ErrorCategory::input,
+               "restart trajectory mismatch should use input category");
+  require_contains(mismatch.message,
+                   "restart trajectory iteration mismatch for 'traj.xyz' "
+                   "(rank=3): restart iteration 25, trajectory iteration 20",
+                   "restart trajectory mismatch message includes iterations");
+
+  require_true(malformed.category == nerdss::error::ErrorCategory::input,
+               "malformed restart trajectory should use input category");
+  require_contains(malformed.message,
+                   "malformed restart trajectory file 'traj.xyz' (rank=3) "
+                   "while reading line 'iteration: bad': stoll; writing a new "
+                   "trajectory",
+                   "malformed restart trajectory message includes bad line");
+}
+
 void test_parser_invalid_keyword_diagnostic() {
   const nerdss::core::Diagnostic diagnostic =
       nerdss::parser::MakeInvalidKeywordDiagnostic("diffusionx",
@@ -705,6 +758,8 @@ void test_parser_unknown_reaction_interface_state_diagnostic() {
 int main() {
   test_diagnostic_format_with_trace();
   test_diagnostic_format_without_trace();
+  test_parser_ranked_file_open_diagnostic();
+  test_parser_restart_trajectory_diagnostics();
   test_parser_invalid_keyword_diagnostic();
   test_parser_section_order_diagnostic();
   test_parser_invalid_boolean_diagnostic();

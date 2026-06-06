@@ -7,6 +7,7 @@
 #include "core/diagnostics.hpp"
 
 #include <cstddef>
+#include <ostream>
 #include <sstream>
 #include <string>
 
@@ -18,6 +19,50 @@ inline core::Diagnostic MakeFileOpenDiagnostic(const std::string& path,
   std::ostringstream message;
   message << "cannot open " << role << " file '" << path << "'";
   return core::MakeDiagnostic(error::ErrorCategory::file_io, message.str(), "");
+}
+
+inline core::Diagnostic MakeRankedFileOpenDiagnostic(const std::string& path,
+                                                     const char* role,
+                                                     int rank) {
+  std::ostringstream message;
+  message << "cannot open " << role << " file '" << path << "'"
+          << " (rank=" << rank << ")";
+  return core::MakeDiagnostic(error::ErrorCategory::file_io, message.str(), "");
+}
+
+inline core::Diagnostic MakeRestartTrajectoryUnavailableDiagnostic(
+    const std::string& path, int rank) {
+  std::ostringstream message;
+  message << "cannot open restart trajectory file '" << path << "'"
+          << " (rank=" << rank << "): writing a new trajectory";
+  return core::MakeDiagnostic(error::ErrorCategory::file_io, message.str(), "");
+}
+
+inline core::Diagnostic MakeRestartTrajectoryMismatchDiagnostic(
+    const std::string& path, long long restart_iteration,
+    long long trajectory_iteration, int rank) {
+  std::ostringstream message;
+  message << "restart trajectory iteration mismatch for '" << path << "'"
+          << " (rank=" << rank << "): restart iteration "
+          << restart_iteration << ", trajectory iteration "
+          << trajectory_iteration;
+  return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
+}
+
+inline core::Diagnostic MakeMalformedRestartTrajectoryDiagnostic(
+    const std::string& path, const std::string& line,
+    const std::string& reason, int rank) {
+  std::ostringstream message;
+  message << "malformed restart trajectory file '" << path << "'"
+          << " (rank=" << rank << ")";
+  if (!line.empty()) {
+    message << " while reading line '" << line << "'";
+  }
+  if (!reason.empty()) {
+    message << ": " << reason;
+  }
+  message << "; writing a new trajectory";
+  return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
 }
 
 inline core::Diagnostic MakeInvalidKeywordDiagnostic(const std::string& keyword,
@@ -249,6 +294,17 @@ inline core::Diagnostic MakeUnknownReactionInterfaceStateDiagnostic(
 inline void ExitWithFileOpenDiagnostic(const std::string& path,
                                        const char* role) {
   core::ExitWithDiagnostic(MakeFileOpenDiagnostic(path, role));
+}
+
+inline void ExitWithRankedFileOpenDiagnostic(const std::string& path,
+                                             const char* role, int rank) {
+  core::ExitWithDiagnostic(MakeRankedFileOpenDiagnostic(path, role, rank));
+}
+
+inline void WriteWarningDiagnostic(std::ostream& stream,
+                                   const core::Diagnostic& diagnostic) {
+  stream << "WARNING [" << error::to_string(diagnostic.category) << "]: "
+         << diagnostic.message << '\n';
 }
 
 inline void ExitWithInvalidKeywordDiagnostic(const std::string& keyword,
