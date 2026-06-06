@@ -953,6 +953,77 @@ void test_probability_engine_facade()
             == nerdss::core::ProbabilityEngine::TableSize2D(0.7, 1.0, 0.01, 0.71),
         "2D table service size helper should match probability facade");
 
+    const double fill_bind_radius = 0.7;
+    const double fill_diffusion_total = 1.0;
+    const double fill_association_rate = 0.25;
+    const double fill_time = 0.01;
+    const double fill_radius_step =
+        nerdss::core::ReactionTable2DService::TableStepSize(
+            fill_diffusion_total, fill_time);
+    const double fill_max_radius = fill_bind_radius + fill_radius_step;
+    const size_t fill_table_size =
+        nerdss::core::ReactionTable2DService::TableSize(
+            fill_bind_radius, fill_diffusion_total, fill_time,
+            fill_max_radius);
+    Parameters fill_params;
+    fill_params.timeStep = fill_time;
+
+    gsl_matrix* service_survival_matrix = gsl_matrix_alloc(2, fill_table_size);
+    gsl_matrix* service_norm_matrix = gsl_matrix_alloc(2, fill_table_size);
+    gsl_matrix* service_pir_matrix =
+        gsl_matrix_alloc(fill_table_size, fill_table_size);
+    gsl_matrix* wrapper_survival_matrix = gsl_matrix_alloc(2, fill_table_size);
+    gsl_matrix* wrapper_norm_matrix = gsl_matrix_alloc(2, fill_table_size);
+    gsl_matrix* wrapper_pir_matrix =
+        gsl_matrix_alloc(fill_table_size, fill_table_size);
+
+    nerdss::core::ReactionTable2DService::FillMatrices(
+        service_survival_matrix, service_norm_matrix, service_pir_matrix,
+        nerdss::core::ReactionTable2DService::TableParameters {
+            fill_bind_radius, fill_diffusion_total, fill_association_rate,
+            fill_max_radius, fill_time });
+    create_DDMatrices(
+        wrapper_survival_matrix, wrapper_norm_matrix, wrapper_pir_matrix,
+        fill_bind_radius, fill_diffusion_total, fill_max_radius,
+        fill_association_rate, fill_params);
+
+    for (size_t index = 0; index < fill_table_size; ++index) {
+        require_close_with_tolerance(
+            gsl_matrix_get(service_survival_matrix, 0, index),
+            fill_bind_radius + fill_radius_step * static_cast<double>(index),
+            1.0e-12,
+            "2D table service survival radius row should use legacy spacing");
+        require_close_with_tolerance(
+            gsl_matrix_get(service_survival_matrix, 0, index),
+            gsl_matrix_get(wrapper_survival_matrix, 0, index), 1.0e-12,
+            "2D table service survival radii should match wrapper fill");
+        require_close_with_tolerance(
+            gsl_matrix_get(service_survival_matrix, 1, index),
+            gsl_matrix_get(wrapper_survival_matrix, 1, index), 1.0e-10,
+            "2D table service survival probabilities should match wrapper fill");
+        require_close_with_tolerance(
+            gsl_matrix_get(service_norm_matrix, 0, index),
+            gsl_matrix_get(wrapper_norm_matrix, 0, index), 1.0e-12,
+            "2D table service norm radii should match wrapper fill");
+        require_close_with_tolerance(
+            gsl_matrix_get(service_norm_matrix, 1, index),
+            gsl_matrix_get(wrapper_norm_matrix, 1, index), 1.0e-10,
+            "2D table service norm probabilities should match wrapper fill");
+        for (size_t column = 0; column < fill_table_size; ++column) {
+            require_close_with_tolerance(
+                gsl_matrix_get(service_pir_matrix, index, column),
+                gsl_matrix_get(wrapper_pir_matrix, index, column), 1.0e-10,
+                "2D table service PIR probabilities should match wrapper fill");
+        }
+    }
+
+    gsl_matrix_free(service_survival_matrix);
+    gsl_matrix_free(service_norm_matrix);
+    gsl_matrix_free(service_pir_matrix);
+    gsl_matrix_free(wrapper_survival_matrix);
+    gsl_matrix_free(wrapper_norm_matrix);
+    gsl_matrix_free(wrapper_pir_matrix);
+
     gsl_matrix* pir_matrix = gsl_matrix_alloc(100, 100);
     for (size_t row = 0; row < 100; ++row) {
         for (size_t column = 0; column < 100; ++column) {

@@ -64,7 +64,10 @@ trajectory math, restart semantics, or legacy input/output compatibility.
    integrands, free-diffusion probability helpers, interpolation, table sizing,
    PIR lookup, and rebinding-ratio lookup into
    `nerdss::core::ReactionTable2DService`; `ProbabilityEngine` and the legacy
-   free functions remain forwarding wrappers.
+   free functions remain forwarding wrappers. The 2026-06-05 table-fill slice
+   also moves the survival, normalization, PIR, and combined 2D matrix-fill
+   algorithms into `ReactionTable2DService`, while legacy wrappers still own
+   externally provided matrix pointers and table-cache integration.
    The 2D diffusion-table binning helper now also lives behind
    `ProbabilityEngine` so bimolecular and implicit-lipid reaction paths share
    one table quantization rule. Reaction search-radius/RMax arithmetic for
