@@ -16,6 +16,34 @@ namespace core {
 
 class ReactionTable2DService {
 public:
+  struct TableParameters {
+    double binding_radius {};
+    double diffusion_total {};
+    double association_rate {};
+    double max_radius {};
+    double time {};
+
+    TableParameters() = default;
+
+    TableParameters(double binding_radius_value, double diffusion_total_value,
+                    double association_rate_value, double max_radius_value,
+                    double time_value)
+        : binding_radius { binding_radius_value }
+        , diffusion_total { diffusion_total_value }
+        , association_rate { association_rate_value }
+        , max_radius { max_radius_value }
+        , time { time_value } {}
+  };
+
+  struct IntegrandParameters {
+    double binding_radius {};
+    double diffusion_total {};
+    double association_rate {};
+    double initial_radius {};
+    double current_radius {};
+    double time {};
+  };
+
   static double SurvivalProbabilityIntegrand(double x, double binding_radius,
                                              double diffusion_total,
                                              double association_rate,
@@ -302,6 +330,153 @@ public:
     }
     return irreversible_probability
            / (normalized_free_probability * previous_survival);
+  }
+
+  static void FillMatrices(gsl_matrix* survival_matrix, gsl_matrix* norm_matrix,
+                           gsl_matrix* pir_matrix,
+                           const TableParameters& parameters) {
+    const double radius_step_size {
+        TableStepSize(parameters.diffusion_total, parameters.time) };
+    FillNormMatrix(norm_matrix, parameters, radius_step_size);
+    FillSurvivalMatrix(survival_matrix, parameters, radius_step_size);
+    FillIrreversibleMatrix(pir_matrix, parameters, radius_step_size);
+  }
+
+  static void FillSurvivalMatrix(gsl_matrix* survival_matrix,
+                                 const TableParameters& parameters,
+                                 double radius_step_size) {
+    std::size_t index { 0 };
+    gsl_function function {};
+    function.function = &SurvivalCallback;
+    IntegrandParameters integrand_parameters {};
+    integrand_parameters.binding_radius = parameters.binding_radius;
+    integrand_parameters.diffusion_total = parameters.diffusion_total;
+    integrand_parameters.association_rate = parameters.association_rate;
+    integrand_parameters.time = parameters.time;
+
+    gsl_set_error_handler_off();
+    gsl_integration_workspace* workspace =
+        gsl_integration_workspace_alloc(1000000);
+
+    double radius { integrand_parameters.binding_radius };
+    while (radius <= parameters.max_radius + radius_step_size) {
+      integrand_parameters.initial_radius = radius;
+      gsl_matrix_set(survival_matrix, 0, index, radius);
+      function.params = reinterpret_cast<void*>(&integrand_parameters);
+
+      const double result { IntegrateSemiInfinite(
+          function, &integrand_parameters, workspace, &SurvivalCallback) };
+      if (parameters.association_rate < 1.0 / 0.0) {
+        gsl_matrix_set(survival_matrix, 1, index, result);
+      } else {
+        gsl_matrix_set(survival_matrix, 1, index, 1.0 - result);
+      }
+      ++index;
+      radius += radius_step_size;
+    }
+
+    gsl_integration_workspace_free(workspace);
+    gsl_set_error_handler(nullptr);
+  }
+
+  static void FillNormMatrix(gsl_matrix* norm_matrix,
+                             const TableParameters& parameters,
+                             double radius_step_size) {
+    const double x_low { parameters.binding_radius };
+    const double eps_abs { 1.0e-6 };
+    const double eps_rel { 1.0e-6 };
+    std::size_t index { 0 };
+
+    gsl_function function {};
+    function.function = &NormCallback;
+    IntegrandParameters integrand_parameters {};
+    integrand_parameters.binding_radius = parameters.binding_radius;
+    integrand_parameters.diffusion_total = parameters.diffusion_total;
+    integrand_parameters.association_rate = parameters.association_rate;
+    integrand_parameters.time = parameters.time;
+
+    double radius { integrand_parameters.binding_radius };
+    while (radius <= parameters.max_radius + radius_step_size) {
+      gsl_integration_workspace* workspace =
+          gsl_integration_workspace_alloc(10000000);
+      integrand_parameters.initial_radius = radius;
+      gsl_matrix_set(norm_matrix, 0, index, radius);
+      function.params = reinterpret_cast<void*>(&integrand_parameters);
+
+      double result {};
+      double error {};
+      gsl_integration_qagiu(&function, x_low, eps_abs, eps_rel, 10000000,
+                            workspace, &result, &error);
+      gsl_matrix_set(norm_matrix, 1, index, result);
+      gsl_integration_workspace_free(workspace);
+      ++index;
+      radius += radius_step_size;
+    }
+  }
+
+  static void FillIrreversibleMatrix(gsl_matrix* pir_matrix,
+                                     const TableParameters& parameters,
+                                     double radius_step_size) {
+    int initial_index { 0 };
+    int current_index { 0 };
+    gsl_function function {};
+    function.function = &IrreversibleCallback;
+    IntegrandParameters integrand_parameters {};
+    integrand_parameters.binding_radius = parameters.binding_radius;
+    integrand_parameters.diffusion_total = parameters.diffusion_total;
+    integrand_parameters.association_rate = parameters.association_rate;
+    integrand_parameters.time = parameters.time;
+
+    gsl_set_error_handler_off();
+    gsl_integration_workspace* workspace =
+        gsl_integration_workspace_alloc(1000000);
+
+    double current_radius { integrand_parameters.binding_radius };
+    while (current_radius <= parameters.max_radius + radius_step_size) {
+      integrand_parameters.current_radius = current_radius;
+      double initial_radius { integrand_parameters.binding_radius };
+      while (initial_radius <= parameters.max_radius + radius_step_size) {
+        integrand_parameters.initial_radius = initial_radius;
+        function.params = reinterpret_cast<void*>(&integrand_parameters);
+        const double result { IntegrateSemiInfinite(
+            function, &integrand_parameters, workspace,
+            &IrreversibleCallback) };
+        gsl_matrix_set(pir_matrix, initial_index, current_index, result);
+        ++initial_index;
+        initial_radius += radius_step_size;
+      }
+      initial_index = 0;
+      ++current_index;
+      current_radius += radius_step_size;
+    }
+
+    gsl_integration_workspace_free(workspace);
+    gsl_set_error_handler(nullptr);
+  }
+
+private:
+  static double SurvivalCallback(double x, void* parameters) {
+    const IntegrandParameters* values =
+        reinterpret_cast<IntegrandParameters*>(parameters);
+    return SurvivalProbabilityIntegrand(
+        x, values->binding_radius, values->diffusion_total,
+        values->association_rate, values->initial_radius, values->time);
+  }
+
+  static double NormCallback(double x, void* parameters) {
+    const IntegrandParameters* values =
+        reinterpret_cast<IntegrandParameters*>(parameters);
+    return FreeDiffusionNormIntegrand(
+        x, values->initial_radius, values->diffusion_total, values->time);
+  }
+
+  static double IrreversibleCallback(double x, void* parameters) {
+    const IntegrandParameters* values =
+        reinterpret_cast<IntegrandParameters*>(parameters);
+    return IrreversibleProbabilityIntegrand(
+        x, values->binding_radius, values->diffusion_total,
+        values->association_rate, values->initial_radius,
+        values->current_radius, values->time);
   }
 };
 

@@ -92,7 +92,11 @@ if(BUILD_TESTING)
         src/reactions/areSameAngle.cpp
         src/reactions/DDpirr_pfree_ratio_ps.cpp
         src/reactions/calc_pirr.cpp
+        src/reactions/create_DDMatrices.cpp
         src/reactions/create_arbitrary_vector.cpp
+        src/reactions/create_normMatrix.cpp
+        src/reactions/create_pirMatrix.cpp
+        src/reactions/create_survMatrix.cpp
         src/reactions/requiresSignFlip.cpp
         src/reactions/passocF.cpp
         src/reactions/passocF_1D.cpp
