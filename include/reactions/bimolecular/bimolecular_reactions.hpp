@@ -7,6 +7,7 @@
 #pragma once
 
 #include "classes/class_Rxns.hpp"
+#include "core/probability/reaction_table_2d_cache.hpp"
 #include <classes/class_copyCounters.hpp>
 #include <gsl/gsl_matrix.h>
 
@@ -65,10 +66,9 @@ void determine_1D_bimolecular_reaction_probability(
     const std::vector<BackRxn> &backRxns);
 
 void determine_2D_bimolecular_reaction_probability(int simItr, int rxnIndex, int rateIndex, bool isStateChangeBackRxn,
-    unsigned& DDTableIndex, double* tableIDs, BiMolData& biMolData, const Parameters& params,
+    nerdss::core::ReactionTable2DCache& reaction_table_cache, BiMolData& biMolData, const Parameters& params,
     std::vector<Molecule>& moleculeList, std::vector<Complex>& complexList, const std::vector<ForwardRxn>& forwardRxns,
-    const std::vector<BackRxn>& backRxns, Membrane& membraneObject, std::vector<gsl_matrix*>& normMatrices,
-    std::vector<gsl_matrix*>& survMatrices, std::vector<gsl_matrix*>& pirMatrices);
+    const std::vector<BackRxn>& backRxns, Membrane& membraneObject);
 
 void determine_3D_bimolecular_reaction_probability(int simItr, int rxnIndex, int rateIndex, bool isStateChangeBackRxn,
     BiMolData& biMolData, const Parameters& params,

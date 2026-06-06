@@ -6,9 +6,9 @@
 #include <algorithm>
 #include <vector>
 
-void check_bimolecular_reactions(int pro1Index, int pro2Index, int simItr, double* tableIDs, unsigned& DDTableIndex,
-    const Parameters& params, std::vector<gsl_matrix*>& normMatrices, std::vector<gsl_matrix*>& survMatrices,
-    std::vector<gsl_matrix*>& pirMatrices, std::vector<Molecule>& moleculeList, std::vector<Complex>& complexList,
+void check_bimolecular_reactions(int pro1Index, int pro2Index, int simItr,
+    nerdss::core::ReactionTable2DCache& reaction_table_cache,
+    const Parameters& params, std::vector<Molecule>& moleculeList, std::vector<Complex>& complexList,
     const std::vector<MolTemplate>& molTemplateList, const std::vector<ForwardRxn>& forwardRxns,
     const std::vector<BackRxn>& backRxns, copyCounters& counterArrays, Membrane& membraneObject)
 {
@@ -157,11 +157,10 @@ void check_bimolecular_reactions(int pro1Index, int pro2Index, int simItr, doubl
                                     // std::cout << "Evaluate 2-D binding " << pro1Index << ", " << pro2Index << " Dtot " << Dtot << std::endl;
                                     determine_2D_bimolecular_reaction_probability(
                                         simItr, rxnIndex, rateIndex,
-                                        isStateChangeBackRxn, DDTableIndex,
-                                        tableIDs, biMolData, params,
+                                        isStateChangeBackRxn,
+                                        reaction_table_cache, biMolData, params,
                                         moleculeList, complexList, forwardRxns,
-                                        backRxns, membraneObject, normMatrices,
-                                        survMatrices, pirMatrices);
+                                        backRxns, membraneObject);
                                 } 
                                 else {
                                     //3D reaction

@@ -5,10 +5,9 @@
 #include <sstream>
 
 void determine_2D_bimolecular_reaction_probability(int simItr, int rxnIndex, int rateIndex, bool isStateChangeBackRxn,
-    unsigned& DDTableIndex, double* tableIDs, BiMolData& biMolData, const Parameters& params,
+    nerdss::core::ReactionTable2DCache& reaction_table_cache, BiMolData& biMolData, const Parameters& params,
     std::vector<Molecule>& moleculeList, std::vector<Complex>& complexList, const std::vector<ForwardRxn>& forwardRxns,
-    const std::vector<BackRxn>& backRxns, Membrane& membraneObject, std::vector<gsl_matrix*>& normMatrices,
-    std::vector<gsl_matrix*>& survMatrices, std::vector<gsl_matrix*>& pirMatrices)
+    const std::vector<BackRxn>& backRxns, Membrane& membraneObject)
 {
     // TRACE();
     biMolData.Dtot += nerdss::core::ProbabilityEngine::RotationalDiffusionContribution(
@@ -36,52 +35,15 @@ void determine_2D_bimolecular_reaction_probability(int simItr, int rxnIndex, int
     /*This movestat check is if you allow just dissociated proteins to avoid
          * overlap*/
         if (withinRmax && forwardRxns[rxnIndex].rateList[rateIndex].rate > 0) {
-            bool probValExists { false };
-            int probMatrixIndex { 0 };
             // get_distance, because ncross is > 0 iff R1 < RMax
             /*Evaluate probability of reaction, with reweighting*/
-            // Generate 2D tables unless they were not before
             double ktemp { nerdss::core::ProbabilityEngine::BimolecularAssociationRate2D(
                 forwardRxns[rxnIndex].rateList[rateIndex].rate,
                 forwardRxns[rxnIndex].length3Dto2D,
                 forwardRxns[rxnIndex].isSymmetric) };
-
-            for (int l = 0; l < DDTableIndex; ++l) {
-                if (std::abs(tableIDs[l] - ktemp) < 1e-8 && std::abs(tableIDs[params.max2DRxns + l] - biMolData.Dtot) < 1E-4) {
-                    probValExists = true;
-                    probMatrixIndex = l;
-                    break;
-                }
-            }
-
-            if (!probValExists) {
-                // first dimension (+0*params.max2DRxns)
-                tableIDs[DDTableIndex] = ktemp;
-                // second dimension (+1*params.max2DRxns)
-                tableIDs[DDTableIndex + params.max2DRxns] = biMolData.Dtot;
-                size_t veclen { size_lookup(forwardRxns[rxnIndex].bindRadius, biMolData.Dtot, params, RMax) };
-                // std::cout << "Create new 2D table: " << ktemp << ", Dtot: " << biMolData.Dtot << " size: " << veclen
-                //           << '\n';
-                survMatrices.resize(DDTableIndex + 1);
-                normMatrices.resize(DDTableIndex + 1);
-                pirMatrices.resize(DDTableIndex + 1);
-                survMatrices[DDTableIndex] = gsl_matrix_alloc(2, veclen);
-                normMatrices[DDTableIndex] = gsl_matrix_alloc(2, veclen);
-                pirMatrices[DDTableIndex] = gsl_matrix_alloc(veclen, veclen);
-
-                create_DDMatrices(survMatrices[DDTableIndex], normMatrices[DDTableIndex], pirMatrices[DDTableIndex],
-                    forwardRxns[rxnIndex].bindRadius, biMolData.Dtot, RMax, ktemp, params);
-                probMatrixIndex = DDTableIndex;
-                DDTableIndex += 1;
-                if (DDTableIndex == params.max2DRxns) {
-                    std::cout << "You have hit the maximum number of unique 2D reactions "
-                                 "allowed: "
-                              << params.max2DRxns << '\n';
-                    std::cout << "terminating...." << '\n';
-                    exit(1);
-                }
-            }
-            probValExists = false; // reset
+            const auto reaction_table { reaction_table_cache.FindOrCreate(
+                ktemp, biMolData.Dtot, forwardRxns[rxnIndex].bindRadius, RMax,
+                params.timeStep, params.max2DRxns) };
 
             const auto contact_geometry {
                 nerdss::core::ProbabilityEngine::NormalizeAssociationContact(
@@ -148,8 +110,8 @@ void determine_2D_bimolecular_reaction_probability(int simItr, int rxnIndex, int
                         // restart reweighting in 2D.
                         currnorm = 1.0;
                     } else {
-                        p0_ratio = DDpirr_pfree_ratio_ps(pirMatrices[probMatrixIndex], survMatrices[probMatrixIndex],
-                            normMatrices[probMatrixIndex], R1, biMolData.Dtot, params.timeStep,
+                        p0_ratio = DDpirr_pfree_ratio_ps(reaction_table.irreversible_matrix, reaction_table.survival_matrix,
+                            reaction_table.norm_matrix, R1, biMolData.Dtot, params.timeStep,
                             moleculeList[proA].prevsep[s], moleculeList[proA].ps_prev[s], 1E-10,
                             forwardRxns[rxnIndex].bindRadius);
                         currnorm = moleculeList[proA].prevnorm[s] * p0_ratio;
@@ -158,7 +120,7 @@ void determine_2D_bimolecular_reaction_probability(int simItr, int rxnIndex, int
                 }
             }
             rxnProb = get_prevSurv(
-                survMatrices[probMatrixIndex], biMolData.Dtot, params.timeStep, R1, forwardRxns[rxnIndex].bindRadius);
+                reaction_table.survival_matrix, biMolData.Dtot, params.timeStep, R1, forwardRxns[rxnIndex].bindRadius);
             moleculeList[biMolData.pro1Index].probvec.back() = rxnProb * currnorm;
             moleculeList[biMolData.pro2Index].probvec.back() = rxnProb * currnorm;
             if (rxnProb > 1.000001) {
