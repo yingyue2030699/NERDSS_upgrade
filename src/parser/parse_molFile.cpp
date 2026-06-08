@@ -67,6 +67,10 @@ MolTemplate parse_molFile(std::string& mol)
     while (getline(molFile, line)) {
         line.erase(
             std::remove_if(line.begin(), line.end(), [](unsigned char x) { return std::isspace(x); }), line.end());
+        if (line.empty()) {
+            initialPos = molFile.tellg();
+            continue;
+        }
 
         // skip if entire line is a comment, or remove the trailing comment
         if (line[0] == '#') {
@@ -78,7 +82,9 @@ MolTemplate parse_molFile(std::string& mol)
         std::string buffer;
         for (auto lineItr = line.begin(); lineItr != line.end(); ++lineItr) {
             // if the line starts with com, it's the beginning of the coordinates block
-            if (std::isdigit(*lineItr) && molKeywords.find(buffer)->second == MolKeyword::com) {
+            auto keyFind = molKeywords.find(buffer);
+            if (std::isdigit(*lineItr) && keyFind != molKeywords.end()
+                && keyFind->second == MolKeyword::com) {
                 molFile.seekg(initialPos);
                 std::cout << "Coordinates: " << std::endl;
                 read_internal_coordinates(molFile, tmpTemplate);
@@ -104,7 +110,7 @@ MolTemplate parse_molFile(std::string& mol)
                     // std::cout << "Found bonds for molecule " << tmpTemplate.molName << ".\n";
                     std::cout << "Bonds: " << std::endl;
                     int numBonds = parse_bond_count(line, molPath);
-                    read_bonds(numBonds, molFile, tmpTemplate);
+                    read_bonds(numBonds, molFile, tmpTemplate, molPath);
                     break;
                 } else {
                     tmpTemplate.set_value(line, keyFind->second);
