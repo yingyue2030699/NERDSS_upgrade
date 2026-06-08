@@ -259,7 +259,8 @@ void parse_states(std::string& line, MolTemplate& molTemplate);
  * @param[in] fileLine line from the input file containing a boolean
  * @param[out] bool parsed boolean
  */
-void read_bonds(int numBonds, std::ifstream& molFile, MolTemplate& molTemplate);
+void read_bonds(int numBonds, std::ifstream& molFile,
+                MolTemplate& molTemplate, const std::string& molPath);
 /*************************/
 
 /*************************/

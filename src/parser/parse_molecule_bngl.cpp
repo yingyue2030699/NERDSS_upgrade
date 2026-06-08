@@ -1,6 +1,7 @@
 #include "parser/parser_functions.hpp"
 #include "parser/parser_diagnostics.hpp"
 
+#include <cstddef>
 #include <stdexcept>
 
 namespace {
@@ -8,8 +9,10 @@ namespace {
 int parse_copy_number_token(const std::string& token,
     const std::string& moleculeName, const std::string& expression)
 {
+    std::size_t parsedLength { 0 };
+    int copyNumber { 0 };
     try {
-        return std::stoi(token);
+        copyNumber = std::stoi(token, &parsedLength);
     } catch (const std::invalid_argument&) {
         nerdss::parser::ExitWithInvalidMoleculeCountDiagnostic(
             moleculeName, expression, "cannot read copy-number token '" + token + "'");
@@ -17,14 +20,24 @@ int parse_copy_number_token(const std::string& token,
         nerdss::parser::ExitWithInvalidMoleculeCountDiagnostic(
             moleculeName, expression, "copy-number token '" + token + "' is out of range");
     }
-    return 0;
+    if (parsedLength != token.size()) {
+        nerdss::parser::ExitWithInvalidMoleculeCountDiagnostic(
+            moleculeName, expression, "copy-number token '" + token + "' has trailing characters");
+    }
+    if (copyNumber < 0) {
+        nerdss::parser::ExitWithInvalidMoleculeCountDiagnostic(
+            moleculeName, expression, "copy-number token '" + token + "' cannot be negative");
+    }
+    return copyNumber;
 }
 
 int parse_reaction_bond_index_token(const std::string& token,
     const std::string& moleculeExpression)
 {
+    std::size_t parsedLength { 0 };
+    int bondIndex { 0 };
     try {
-        return std::stoi(token);
+        bondIndex = std::stoi(token, &parsedLength);
     } catch (const std::invalid_argument&) {
         nerdss::parser::ExitWithInvalidReactionMoleculeSyntaxDiagnostic(
             moleculeExpression, "cannot read bond index token '" + token + "'");
@@ -32,7 +45,15 @@ int parse_reaction_bond_index_token(const std::string& token,
         nerdss::parser::ExitWithInvalidReactionMoleculeSyntaxDiagnostic(
             moleculeExpression, "bond index token '" + token + "' is out of range");
     }
-    return 0;
+    if (parsedLength != token.size()) {
+        nerdss::parser::ExitWithInvalidReactionMoleculeSyntaxDiagnostic(
+            moleculeExpression, "bond index token '" + token + "' has trailing characters");
+    }
+    if (bondIndex < 0) {
+        nerdss::parser::ExitWithInvalidReactionMoleculeSyntaxDiagnostic(
+            moleculeExpression, "bond index token '" + token + "' cannot be negative");
+    }
+    return bondIndex;
 }
 
 std::string invalid_character_reason(char character)
@@ -58,15 +79,23 @@ ParsedMol parse_molecule_bngl(int& totSpecies, bool isProductSide,
                 // if the character is '_' it indicates an underscore for separator
                 // it will be treated as part of a continuous name
                 buffer += *molIterator;
+                break;
             }
             case '~': {
                 // if the character is '~' it indicates a state. add an iface to the vector with
                 // iface~state as the ifaceName and state as the state
                 std::string iface { buffer };
                 ++molIterator;
+                if (molIterator == oneMol.first.end() || *molIterator == ')'
+                    || *molIterator == ',' || *molIterator == '!'
+                    || *molIterator == '~') {
+                    nerdss::parser::ExitWithInvalidReactionMoleculeSyntaxDiagnostic(
+                        oneMol.first, "state marker '~' must be followed by a state token");
+                }
                 buffer += "~";
                 buffer += static_cast<char>(std::toupper(*molIterator));
-                if (*(molIterator + 1) != '!') {
+                if ((molIterator + 1) == oneMol.first.end()
+                    || *(molIterator + 1) != '!') {
                     tmpMol.interfaceList.emplace_back(iface, static_cast<char>(std::toupper(*molIterator)), false,
                         Involvement::possible, oneMol.second);
                     buffer.clear(); // flush the buffer, no bond
@@ -85,11 +114,24 @@ ParsedMol parse_molecule_bngl(int& totSpecies, bool isProductSide,
                 ++molIterator;
                 std::string iface { buffer };
                 buffer.clear();
+                if (molIterator == oneMol.first.end() || *molIterator == ')'
+                    || *molIterator == ',') {
+                    nerdss::parser::ExitWithInvalidReactionMoleculeSyntaxDiagnostic(
+                        oneMol.first, "bond marker '!' must be followed by a wildcard or bond index");
+                }
 
                 // look for the bond index or wildcard
-                while ((*molIterator != ')') && (*molIterator != ',')) {
+                while (molIterator != oneMol.first.end() && (*molIterator != ')') && (*molIterator != ',')) {
+                    if (*molIterator == '!' || *molIterator == '~' || *molIterator == '(') {
+                        nerdss::parser::ExitWithInvalidReactionMoleculeSyntaxDiagnostic(
+                            oneMol.first, invalid_character_reason(*molIterator));
+                    }
                     buffer += *molIterator;
                     ++molIterator;
+                }
+                if (molIterator == oneMol.first.end()) {
+                    nerdss::parser::ExitWithInvalidReactionMoleculeSyntaxDiagnostic(
+                        oneMol.first, "unterminated bond token after '!'");
                 }
 
                 bool isWildcard { (buffer.size() == 1) && (buffer[0] == '*') };
@@ -187,6 +229,11 @@ ParsedMolNumState parse_number_bngl(std::string oneLine, const std::string& mole
                 // iface~state as the ifaceName and state as the state
                 std::string iface { buffer };
                 ++molIterator;
+                if (molIterator == oneLine.end() || *molIterator == ')'
+                    || *molIterator == ',' || *molIterator == '~') {
+                    nerdss::parser::ExitWithInvalidMoleculeCountDiagnostic(
+                        moleculeName, oneLine, "state marker '~' must be followed by a state token");
+                }
                 buffer += "~";
                 buffer += static_cast<char>(std::toupper(*molIterator));
                 break;

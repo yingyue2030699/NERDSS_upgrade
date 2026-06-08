@@ -199,7 +199,10 @@ void parse_input(std::string& fileName, Parameters& params, std::map<std::string
                                 gotValue = true;
                                 break;
                             } else {
-                                std::cout << "Warning, ignoring unknown keyword " << buffer << '\n';
+                                nerdss::parser::WriteWarningDiagnostic(
+                                    std::cerr,
+                                    nerdss::parser::MakeIgnoredParserKeywordDiagnostic(
+                                        buffer, "boundary", fileName));
                                 break;
                             }
                         }
@@ -489,7 +492,10 @@ void parse_input_for_add(std::string& fileName, Parameters& params, std::map<std
                                 gotValue = true;
                                 break;
                             } else {
-                                std::cout << "Warning, ignoring unknown keyword " << buffer << '\n';
+                                nerdss::parser::WriteWarningDiagnostic(
+                                    std::cerr,
+                                    nerdss::parser::MakeIgnoredParserKeywordDiagnostic(
+                                        buffer, "boundary", fileName));
                                 break;
                             }
                         }

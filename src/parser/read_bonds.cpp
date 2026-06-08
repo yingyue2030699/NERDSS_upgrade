@@ -1,6 +1,8 @@
+#include "parser/parser_diagnostics.hpp"
 #include "parser/parser_functions.hpp"
 
-void read_bonds(int numBonds, std::ifstream& molFile, MolTemplate& molTemplate)
+void read_bonds(int numBonds, std::ifstream& molFile,
+    MolTemplate& molTemplate, const std::string& molPath)
 {
     for (unsigned bondItr { 0 }; bondItr < numBonds; ++bondItr) {
         std::string atom1 {};
@@ -28,7 +30,10 @@ void read_bonds(int numBonds, std::ifstream& molFile, MolTemplate& molTemplate)
         }
 
         if (tmpBond[0] == -1 || tmpBond[1] == -1) {
-            std::cout << "Invalid atom in " << molTemplate.molName << " mol file. Ignoring bonds...\n";
+            nerdss::parser::WriteWarningDiagnostic(
+                std::cerr,
+                nerdss::parser::MakeIgnoredMoleculeBondDiagnostic(
+                    molTemplate.molName, molPath, atom1, atom2));
             molTemplate.bondList.clear();
             return;
         } else {

@@ -99,6 +99,31 @@ inline core::Diagnostic MakeInvalidKeywordDiagnostic(const std::string& keyword,
   return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
 }
 
+inline core::Diagnostic MakeIgnoredParserKeywordDiagnostic(
+    const std::string& keyword, const char* context, const std::string& path) {
+  std::ostringstream message;
+  message << "ignoring unknown " << context << " keyword '" << keyword << "'";
+  if (!path.empty()) {
+    message << " in '" << path << "'";
+  }
+  return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
+}
+
+inline core::Diagnostic MakeIgnoredMoleculeBondDiagnostic(
+    const std::string& molecule_name, const std::string& path,
+    const std::string& atom1, const std::string& atom2) {
+  std::ostringstream message;
+  message << "ignoring molecule bonds";
+  if (!molecule_name.empty()) {
+    message << " for molecule '" << molecule_name << "'";
+  }
+  if (!path.empty()) {
+    message << " in '" << path << "'";
+  }
+  message << ": invalid atom pair '" << atom1 << "-" << atom2 << "'";
+  return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
+}
+
 inline core::Diagnostic MakeSectionOrderDiagnostic(const std::string& path,
                                                    const char* encountered,
                                                    const char* required) {

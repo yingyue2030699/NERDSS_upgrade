@@ -165,6 +165,28 @@ void test_parser_invalid_keyword_diagnostic() {
                    "invalid parser keyword rendering includes exit code");
 }
 
+void test_parser_ignored_warning_diagnostics() {
+  const nerdss::core::Diagnostic ignored_keyword =
+      nerdss::parser::MakeIgnoredParserKeywordDiagnostic("wall", "boundary",
+                                                         "parms.inp");
+  const nerdss::core::Diagnostic ignored_bond =
+      nerdss::parser::MakeIgnoredMoleculeBondDiagnostic(
+          "Kinase", "Kinase.mol", "sitea", "ghost");
+
+  require_true(ignored_keyword.category == nerdss::error::ErrorCategory::input,
+               "ignored parser keyword should use input category");
+  require_contains(ignored_keyword.message,
+                   "ignoring unknown boundary keyword 'wall' in 'parms.inp'",
+                   "ignored parser keyword message includes context");
+
+  require_true(ignored_bond.category == nerdss::error::ErrorCategory::input,
+               "ignored molecule bond should use input category");
+  require_contains(ignored_bond.message,
+                   "ignoring molecule bonds for molecule 'Kinase' in "
+                   "'Kinase.mol': invalid atom pair 'sitea-ghost'",
+                   "ignored molecule bond message includes molecule and atoms");
+}
+
 void test_parser_section_order_diagnostic() {
   const nerdss::core::Diagnostic diagnostic =
       nerdss::parser::MakeSectionOrderDiagnostic("bad_order.inp",
@@ -789,6 +811,7 @@ int main() {
   test_parser_ranked_file_open_diagnostic();
   test_parser_restart_trajectory_diagnostics();
   test_parser_invalid_keyword_diagnostic();
+  test_parser_ignored_warning_diagnostics();
   test_parser_section_order_diagnostic();
   test_parser_invalid_boolean_diagnostic();
   test_parser_invalid_numeric_array_token_diagnostic();
