@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.5)
 
 project(nerdss)
 
@@ -29,9 +29,27 @@ message(STATUS "The host processor is ${CMAKE_HOST_SYSTEM_PROCESSOR} with ${NUM_
 
 include_directories(include)
 
+include(CTest)
+
 #add_definitions(-D_DEBUG) # comment this line if no need _DEBUG
 
-file(GLOB SOURCES "src/*/*.cpp")
+set(SOURCE_DIRS
+    boundary_conditions
+    classes
+    error
+    math
+    parser
+    reactions
+    system_setup
+    trajectory_functions
+    io
+)
+
+foreach(SOURCE_DIR ${SOURCE_DIRS})
+    file(GLOB DIR_SOURCES "src/${SOURCE_DIR}/*.cpp")
+    list(APPEND SOURCES ${DIR_SOURCES})
+endforeach()
+
 add_executable(nerdss ${SOURCES} EXEs/nerdss.cpp)
 
 # Set up external libraries
@@ -40,3 +58,13 @@ target_link_libraries(nerdss GSL::gsl GSL::gslcblas)
 
 # Set up header directories
 include_directories(include $(GSL_INCLUDE_DIR))
+
+if(BUILD_TESTING)
+    add_executable(nerdss_unit_tests
+        tests/unit/test_vector_coord.cpp
+        src/classes/class_Coord.cpp
+        src/classes/class_Vector.cpp
+    )
+    target_include_directories(nerdss_unit_tests PRIVATE include)
+    add_test(NAME nerdss_unit_tests COMMAND nerdss_unit_tests)
+endif()

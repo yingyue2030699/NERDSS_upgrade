@@ -2,6 +2,7 @@
 #include "tracing.hpp"
 #include <chrono>
 #include <ctime>
+#include <sstream>
 
 void read_restart(long long int& simItr, std::ifstream& restartFile, Parameters& params, SimulVolume& simulVolume,
     std::vector<Molecule>& moleculeList, std::vector<Complex>& complexList,
@@ -120,18 +121,26 @@ void read_restart(long long int& simItr, std::ifstream& restartFile, Parameters&
             restartFile >> params.clusterOverlapCheck;
             restartFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-            restartFile.ignore(std::numeric_limits<std::streamsize>::max(), '=');
-            restartFile >> params.rngwrite;
-            restartFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
             unsigned long lastUpdateTransitionSize { 0 };
-            restartFile >> lastUpdateTransitionSize;
+            std::string nextLine;
+            std::getline(restartFile, nextLine);
+            while (nextLine.find('=') != std::string::npos) {
+                std::istringstream valueLine { nextLine.substr(nextLine.find('=') + 1) };
+                if (nextLine.find("RNGwrite") != std::string::npos) {
+                    valueLine >> params.rngwrite;
+                } else if (nextLine.find("bondedComplexWrite") != std::string::npos) {
+                    valueLine >> params.bondedComplexWrite;
+                }
+                std::getline(restartFile, nextLine);
+            }
+
+            std::istringstream transitionLine { nextLine };
+            transitionLine >> lastUpdateTransitionSize;
             for (unsigned itr { 0 }; itr < lastUpdateTransitionSize; ++itr) {
                 int index { 0 };
-                restartFile >> index;
+                transitionLine >> index;
                 Parameters::lastUpdateTransition.push_back(index);
             }
-            restartFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
         std::cout << "restart write, pdbWrite: " << params.restartWrite << ' ' << params.pdbWrite << std::endl;
         /*	std::cout<<"READ IN SUB volume PARTITIONING from restart file"<<std::endl;

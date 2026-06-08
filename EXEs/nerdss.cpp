@@ -64,7 +64,7 @@ void debug_print_wrong_Mol(std::vector<Molecule> &moleculeList,
   }
 }
 
-void debug_check_nan_Mol(const Molecule moli, const int simItr, const std::string &infoStr){
+void debug_check_nan_Mol(const Molecule& moli, const int simItr, const std::string &infoStr){
   // raise error if there is nan in the coordinates
   if (std::isnan(moli.comCoord.x) || std::isnan(moli.comCoord.y) || std::isnan(moli.comCoord.z)) {
     std::cerr << "ERROR: [" << infoStr << "] nan in the coordinates of molecule " << moli.index
@@ -1286,6 +1286,10 @@ int main(int argc, char *argv[]) {
 
     // Now we have to check for overlap!!!
     for (auto &mol : moleculeList) {
+      // Destroyed molecules remain as empty slots until end-of-step compaction.
+      if (mol.isEmpty)
+        continue;
+
       // Now track each complex (ncrosscom), and test for overlap of all
       // proteins in that complex before performing final position updates.
       // determine RS3Dinput
