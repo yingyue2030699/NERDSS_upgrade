@@ -3,6 +3,7 @@
 #include "core/diagnostics.hpp"
 #include "core/math_engine.hpp"
 #include "core/probability/association_probability_service.hpp"
+#include "core/probability/implicit_lipid_probability_service.hpp"
 #include "core/probability_engine.hpp"
 #include "core/trajectory_engine.hpp"
 #include "parser/parser_diagnostics.hpp"
@@ -996,6 +997,20 @@ void test_probability_engine_facade()
     implicit_lipid_params.compartmentR = 10.0;
     implicit_lipid_params.compartSiteRho = 0.2;
     implicit_lipid_params.R2D = 1.2;
+    const auto service_compartment_transmission =
+        nerdss::core::ImplicitLipidProbabilityService::
+            CompartmentTransmissionSetup(
+                7.0, 0.7, 1.5, 0.1, 10.0, 0.2);
+    require_close(
+        service_compartment_transmission.association_rate,
+        compartment_transmission.association_rate,
+        "implicit-lipid service compartment setup should match facade setup");
+    require_close(
+        nerdss::core::ImplicitLipidProbabilityService::
+            SurfaceAssociationRate3DTo2D(7.0),
+        nerdss::core::ProbabilityEngine::SurfaceAssociationRate3DTo2D(7.0),
+        "implicit-lipid service surface rate conversion should match facade");
+
     paramsIL compartment_transmission_params {};
     compartment_transmission_params.R2D =
         compartment_transmission.reaction_radius_2d;
@@ -1039,6 +1054,18 @@ void test_probability_engine_facade()
         dissociate2D(implicit_lipid_params),
         "2D implicit-lipid dissociation facade should match legacy wrapper");
     require_close(
+        nerdss::core::ImplicitLipidProbabilityService::DissociationProbability2D(
+            implicit_lipid_params.dt, implicit_lipid_params.Dtot,
+            implicit_lipid_params.sigma, implicit_lipid_params.ka,
+            implicit_lipid_params.kb, implicit_lipid_params.Na,
+            implicit_lipid_params.Nlipid, implicit_lipid_params.area),
+        nerdss::core::ProbabilityEngine::ImplicitLipidDissociationProbability2D(
+            implicit_lipid_params.dt, implicit_lipid_params.Dtot,
+            implicit_lipid_params.sigma, implicit_lipid_params.ka,
+            implicit_lipid_params.kb, implicit_lipid_params.Na,
+            implicit_lipid_params.Nlipid, implicit_lipid_params.area),
+        "2D implicit-lipid dissociation service should match facade");
+    require_close(
         nerdss::core::ProbabilityEngine::ImplicitLipidDissociationProbability3D(
             0.1, 1.5, 0.7, 0.25, 2.5),
         dissociate3D(0.1, 1.5, 0.7, 0.25, 2.5),
@@ -1049,6 +1076,14 @@ void test_probability_engine_facade()
             implicit_lipid_params.sigma, implicit_lipid_params.ka),
         pimplicitlipid_3D(0.9, implicit_lipid_params),
         "3D implicit-lipid separated binding facade should match legacy wrapper");
+    require_close(
+        nerdss::core::ImplicitLipidProbabilityService::BindingProbability3D(
+            0.9, implicit_lipid_params.dt, implicit_lipid_params.Dtot,
+            implicit_lipid_params.sigma, implicit_lipid_params.ka),
+        nerdss::core::ProbabilityEngine::ImplicitLipidBindingProbability3D(
+            0.9, implicit_lipid_params.dt, implicit_lipid_params.Dtot,
+            implicit_lipid_params.sigma, implicit_lipid_params.ka),
+        "3D implicit-lipid binding service should match facade");
     require_close(
         nerdss::core::ProbabilityEngine::ImplicitLipidBindingProbability3D(
             0.5, implicit_lipid_params.dt, implicit_lipid_params.Dtot,
@@ -1064,6 +1099,19 @@ void test_probability_engine_facade()
         prob_entering_compartment(0.9, implicit_lipid_params),
         "compartment entry facade should match legacy wrapper");
     require_close(
+        nerdss::core::ImplicitLipidProbabilityService::
+            CompartmentEntryProbability(
+                0.9, implicit_lipid_params.dt, implicit_lipid_params.Dtot,
+                implicit_lipid_params.sigma, implicit_lipid_params.ka,
+                implicit_lipid_params.compartmentR,
+                implicit_lipid_params.compartSiteRho),
+        nerdss::core::ProbabilityEngine::CompartmentEntryProbability(
+            0.9, implicit_lipid_params.dt, implicit_lipid_params.Dtot,
+            implicit_lipid_params.sigma, implicit_lipid_params.ka,
+            implicit_lipid_params.compartmentR,
+            implicit_lipid_params.compartSiteRho),
+        "compartment entry service should match facade");
+    require_close(
         nerdss::core::ProbabilityEngine::CompartmentExitProbability(
             0.9, implicit_lipid_params.dt, implicit_lipid_params.Dtot,
             implicit_lipid_params.sigma, implicit_lipid_params.ka,
@@ -1078,10 +1126,27 @@ void test_probability_engine_facade()
             implicit_lipid_params.dt),
         function2D(0.8, &implicit_lipid_params),
         "2D implicit-lipid integrand facade should match legacy callback");
+    require_close(
+        nerdss::core::ImplicitLipidProbabilityService::IntegralKernel2D(
+            0.8, implicit_lipid_params.sigma, implicit_lipid_params.Dtot,
+            implicit_lipid_params.ka, implicit_lipid_params.R2D,
+            implicit_lipid_params.dt),
+        nerdss::core::ProbabilityEngine::ImplicitLipidIntegralKernel2D(
+            0.8, implicit_lipid_params.sigma, implicit_lipid_params.Dtot,
+            implicit_lipid_params.ka, implicit_lipid_params.R2D,
+            implicit_lipid_params.dt),
+        "2D implicit-lipid integrand service should match facade");
 
     paramsIL direct_binding_params = implicit_lipid_params;
     const auto direct_binding =
         nerdss::core::ProbabilityEngine::ImplicitLipidBindingProbability2D(
+            direct_binding_params.dt, direct_binding_params.Dtot,
+            direct_binding_params.sigma, direct_binding_params.ka,
+            direct_binding_params.kb, direct_binding_params.Na,
+            direct_binding_params.Nlipid, direct_binding_params.area,
+            direct_binding_params.R2D);
+    const auto service_binding =
+        nerdss::core::ImplicitLipidProbabilityService::BindingProbability2D(
             direct_binding_params.dt, direct_binding_params.Dtot,
             direct_binding_params.sigma, direct_binding_params.ka,
             direct_binding_params.kb, direct_binding_params.Na,
@@ -1096,6 +1161,12 @@ void test_probability_engine_facade()
     require_close(
         direct_binding.reaction_radius, legacy_binding_params.R2D,
         "2D implicit-lipid binding facade should preserve legacy block distance");
+    require_close(
+        service_binding.probability, direct_binding.probability,
+        "2D implicit-lipid binding service probability should match facade");
+    require_close(
+        service_binding.reaction_radius, direct_binding.reaction_radius,
+        "2D implicit-lipid binding service radius should match facade");
 }
 
 } // namespace
