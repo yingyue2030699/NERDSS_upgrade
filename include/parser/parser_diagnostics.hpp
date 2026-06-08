@@ -14,6 +14,12 @@
 namespace nerdss {
 namespace parser {
 
+inline void AppendRankIfAvailable(std::ostringstream& message, int rank) {
+  if (rank >= 0) {
+    message << " (rank=" << rank << ")";
+  }
+}
+
 inline core::Diagnostic MakeFileOpenDiagnostic(const std::string& path,
                                                const char* role) {
   std::ostringstream message;
@@ -25,16 +31,17 @@ inline core::Diagnostic MakeRankedFileOpenDiagnostic(const std::string& path,
                                                      const char* role,
                                                      int rank) {
   std::ostringstream message;
-  message << "cannot open " << role << " file '" << path << "'"
-          << " (rank=" << rank << ")";
+  message << "cannot open " << role << " file '" << path << "'";
+  AppendRankIfAvailable(message, rank);
   return core::MakeDiagnostic(error::ErrorCategory::file_io, message.str(), "");
 }
 
 inline core::Diagnostic MakeRestartTrajectoryUnavailableDiagnostic(
     const std::string& path, int rank) {
   std::ostringstream message;
-  message << "cannot open restart trajectory file '" << path << "'"
-          << " (rank=" << rank << "): writing a new trajectory";
+  message << "cannot open restart trajectory file '" << path << "'";
+  AppendRankIfAvailable(message, rank);
+  message << ": writing a new trajectory";
   return core::MakeDiagnostic(error::ErrorCategory::file_io, message.str(), "");
 }
 
@@ -42,9 +49,10 @@ inline core::Diagnostic MakeRestartTrajectoryMismatchDiagnostic(
     const std::string& path, long long restart_iteration,
     long long trajectory_iteration, int rank) {
   std::ostringstream message;
-  message << "restart trajectory iteration mismatch for '" << path << "'"
-          << " (rank=" << rank << "): restart iteration "
-          << restart_iteration << ", trajectory iteration "
+  message << "restart trajectory iteration mismatch for '" << path << "'";
+  AppendRankIfAvailable(message, rank);
+  message << ": restart iteration " << restart_iteration
+          << ", trajectory iteration "
           << trajectory_iteration;
   return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
 }
@@ -53,8 +61,8 @@ inline core::Diagnostic MakeMalformedRestartTrajectoryDiagnostic(
     const std::string& path, const std::string& line,
     const std::string& reason, int rank) {
   std::ostringstream message;
-  message << "malformed restart trajectory file '" << path << "'"
-          << " (rank=" << rank << ")";
+  message << "malformed restart trajectory file '" << path << "'";
+  AppendRankIfAvailable(message, rank);
   if (!line.empty()) {
     message << " while reading line '" << line << "'";
   }
@@ -62,6 +70,21 @@ inline core::Diagnostic MakeMalformedRestartTrajectoryDiagnostic(
     message << ": " << reason;
   }
   message << "; writing a new trajectory";
+  return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
+}
+
+inline core::Diagnostic MakeFatalMalformedRestartTrajectoryDiagnostic(
+    const std::string& path, const std::string& line,
+    const std::string& reason, int rank) {
+  std::ostringstream message;
+  message << "malformed restart trajectory file '" << path << "'";
+  AppendRankIfAvailable(message, rank);
+  if (!line.empty()) {
+    message << " while reading line '" << line << "'";
+  }
+  if (!reason.empty()) {
+    message << ": " << reason;
+  }
   return core::MakeDiagnostic(error::ErrorCategory::input, message.str(), "");
 }
 

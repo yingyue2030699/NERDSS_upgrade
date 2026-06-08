@@ -33,6 +33,7 @@
 #include "trajectory_functions/trajectory_functions.hpp"
 #include <chrono>
 #include <cstring>
+#include <exception>
 #include <iomanip>
 #include <random>
 #include <sstream>
@@ -571,21 +572,29 @@ int main(int argc, char *argv[]) {
       while (getline(trajFile, line)) {
         auto headerItr = line.find(':');
         if (headerItr != std::string::npos) {
-          trajItr = std::stoi(line.substr(
-              headerItr + 1, std::string::npos)); // + 1 to ignore the colon
+          try {
+            trajItr = std::stoll(line.substr(
+                headerItr + 1, std::string::npos)); // + 1 to ignore the colon
+          } catch (const std::exception& exception) {
+            nerdss::core::ExitWithDiagnostic(
+                nerdss::parser::MakeFatalMalformedRestartTrajectoryDiagnostic(
+                    params.trajFile, line, exception.what(), params.rank));
+          }
         }
       }
       if (trajItr == simItr) {
         std::cout << "Trajectory length matches provided restart file. "
                      "Continuing...\n";
       } else {
-        std::cerr << "ERROR: Trajectory length doesn't match provided restart "
-                     "file. Exiting...\n";
-        exit(1);
+        nerdss::core::ExitWithDiagnostic(
+            nerdss::parser::MakeRestartTrajectoryMismatchDiagnostic(
+                params.trajFile, simItr, trajItr, params.rank));
       }
       trajFile.close();
     } else {
-      std::cout << "WARNING: No trajectory found, writing new trajectory.\n";
+      nerdss::parser::WriteWarningDiagnostic(
+          std::cerr, nerdss::parser::MakeRestartTrajectoryUnavailableDiagnostic(
+                         params.trajFile, params.rank));
     }
   } else {
     std::cerr << "Please provide a parameter and/or restart file. Parameter "
