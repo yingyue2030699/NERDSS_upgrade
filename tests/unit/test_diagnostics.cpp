@@ -88,12 +88,21 @@ void test_parser_restart_trajectory_diagnostics() {
   const nerdss::core::Diagnostic unavailable =
       nerdss::parser::MakeRestartTrajectoryUnavailableDiagnostic("traj.xyz",
                                                                 3);
+  const nerdss::core::Diagnostic serial_unavailable =
+      nerdss::parser::MakeRestartTrajectoryUnavailableDiagnostic("traj.xyz",
+                                                                -1);
   const nerdss::core::Diagnostic mismatch =
       nerdss::parser::MakeRestartTrajectoryMismatchDiagnostic("traj.xyz", 25,
                                                               20, 3);
+  const nerdss::core::Diagnostic serial_mismatch =
+      nerdss::parser::MakeRestartTrajectoryMismatchDiagnostic("traj.xyz", 25,
+                                                              20, -1);
   const nerdss::core::Diagnostic malformed =
       nerdss::parser::MakeMalformedRestartTrajectoryDiagnostic(
           "traj.xyz", "iteration: bad", "stoll", 3);
+  const nerdss::core::Diagnostic fatal_malformed =
+      nerdss::parser::MakeFatalMalformedRestartTrajectoryDiagnostic(
+          "traj.xyz", "iteration: bad", "stoll", -1);
 
   require_true(unavailable.category == nerdss::error::ErrorCategory::file_io,
                "missing restart trajectory should use file_io category");
@@ -101,6 +110,12 @@ void test_parser_restart_trajectory_diagnostics() {
                    "cannot open restart trajectory file 'traj.xyz' (rank=3): "
                    "writing a new trajectory",
                    "missing restart trajectory message includes rank");
+  require_contains(serial_unavailable.message,
+                   "cannot open restart trajectory file 'traj.xyz': writing a "
+                   "new trajectory",
+                   "serial missing restart trajectory omits unavailable rank");
+  require_true(serial_unavailable.message.find("rank=") == std::string::npos,
+               "serial missing restart trajectory should not include rank");
 
   require_true(mismatch.category == nerdss::error::ErrorCategory::input,
                "restart trajectory mismatch should use input category");
@@ -108,6 +123,12 @@ void test_parser_restart_trajectory_diagnostics() {
                    "restart trajectory iteration mismatch for 'traj.xyz' "
                    "(rank=3): restart iteration 25, trajectory iteration 20",
                    "restart trajectory mismatch message includes iterations");
+  require_contains(serial_mismatch.message,
+                   "restart trajectory iteration mismatch for 'traj.xyz': "
+                   "restart iteration 25, trajectory iteration 20",
+                   "serial restart trajectory mismatch omits unavailable rank");
+  require_true(serial_mismatch.message.find("rank=") == std::string::npos,
+               "serial restart trajectory mismatch should not include rank");
 
   require_true(malformed.category == nerdss::error::ErrorCategory::input,
                "malformed restart trajectory should use input category");
@@ -116,6 +137,13 @@ void test_parser_restart_trajectory_diagnostics() {
                    "while reading line 'iteration: bad': stoll; writing a new "
                    "trajectory",
                    "malformed restart trajectory message includes bad line");
+  require_contains(fatal_malformed.message,
+                   "malformed restart trajectory file 'traj.xyz' while "
+                   "reading line 'iteration: bad': stoll",
+                   "fatal malformed restart trajectory message includes line");
+  require_true(fatal_malformed.message.find("writing a new trajectory")
+                   == std::string::npos,
+               "fatal malformed restart trajectory omits recovery text");
 }
 
 void test_parser_invalid_keyword_diagnostic() {
