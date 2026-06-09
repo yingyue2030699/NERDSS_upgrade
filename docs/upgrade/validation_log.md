@@ -29,6 +29,63 @@ Artifacts:
 
 Notes:
 
+## 2026-06-09: Probability 2D Table Spec
+
+Date: 2026-06-09
+
+Branch: `codex/probability-2d-table-spec`
+
+Commit: Pending at validation log update
+
+Workstream: MathEngine / ProbabilityEngine extraction
+
+Environment:
+- OS: macOS, local Codex workspace
+- Compiler: Apple clang via default CMake compiler
+- GSL: 2.8 from Homebrew
+- CMake: Available on PATH
+- Make: GNU Make
+- MPI: Local `mpicxx` wrapper remains blocked by missing
+  `x86_64-apple-darwin13.4.0-clang++`
+
+Commands:
+```sh
+git diff --check HEAD
+tools/format_changed_files.sh --check --base HEAD
+cmake -S . -B /tmp/nerdss-probability-2d-table-spec-default
+cmake --build /tmp/nerdss-probability-2d-table-spec-default --target nerdss --parallel 4
+cmake -S . -B /tmp/nerdss-probability-2d-table-spec-gtest -DNERDSS_ENABLE_GTEST=ON
+make serial -j4
+python3 tools/run_smoke_tests.py --skip-build --executable ./bin/nerdss --artifact-dir /tmp/nerdss-probability-2d-table-spec-smoke
+```
+
+Results:
+- `git diff --check HEAD`: passed.
+- `tools/format_changed_files.sh --check --base HEAD`: passed.
+- Default CMake configure: passed.
+- Default CMake `nerdss` target build: passed.
+- `cmake -S . -B /tmp/nerdss-probability-2d-table-spec-gtest
+  -DNERDSS_ENABLE_GTEST=ON`: failed as expected in this local workspace because
+  Google Test is not installed/discoverable (`GTEST_LIBRARY`,
+  `GTEST_INCLUDE_DIR`, and `GTEST_MAIN_LIBRARY` missing).
+- `make serial -j4`: passed.
+- Smoke runner with `--skip-build`: passed.
+
+Artifacts:
+- `include/reactions/bimolecular/probability_engine.hpp`
+- `src/reactions/probability_engine.cpp`
+- `src/reactions/size_lookup.cpp`
+- `src/reactions/create_DDMatrices.cpp`
+- This log entry.
+
+Notes:
+- This slice introduces a backend-neutral 2D reaction table spec and centralizes
+  the existing table step-size and table-size formulas.
+- Legacy wrappers remain in place; no stochastic event selection, topology
+  mutation, or GSL matrix ownership behavior changes are intended.
+- No CTest/custom test implementation was added; Google Test migration remains
+  the selected path for future unit and integration tests.
+
 ## 2026-06-09: BNGL Parser Diagnostics
 
 Date: 2026-06-09
