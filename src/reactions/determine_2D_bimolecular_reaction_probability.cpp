@@ -1,5 +1,6 @@
 #include "reactions/bimolecular/2D_reaction_table_functions.hpp"
 #include "reactions/bimolecular/bimolecular_reactions.hpp"
+#include "reactions/bimolecular/probability_engine.hpp"
 #include "tracing.hpp"
 #include <sstream>
 
@@ -100,9 +101,10 @@ void determine_2D_bimolecular_reaction_probability(int simItr, int rxnIndex, int
                 survMatrices.resize(DDTableIndex + 1);
                 normMatrices.resize(DDTableIndex + 1);
                 pirMatrices.resize(DDTableIndex + 1);
-                survMatrices[DDTableIndex] = gsl_matrix_alloc(2, veclen);
-                normMatrices[DDTableIndex] = gsl_matrix_alloc(2, veclen);
-                pirMatrices[DDTableIndex] = gsl_matrix_alloc(veclen, veclen);
+                const auto matrices = nerdss::probability::allocate_two_d_table_matrices(veclen);
+                survMatrices[DDTableIndex] = matrices.survival_matrix;
+                normMatrices[DDTableIndex] = matrices.norm_matrix;
+                pirMatrices[DDTableIndex] = matrices.pir_matrix;
 
                 create_DDMatrices(survMatrices[DDTableIndex], normMatrices[DDTableIndex], pirMatrices[DDTableIndex],
                     forwardRxns[rxnIndex].bindRadius, biMolData.Dtot, RMax, ktemp, params);
