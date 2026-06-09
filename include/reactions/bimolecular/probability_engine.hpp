@@ -28,6 +28,10 @@ std::size_t two_d_table_size(const TwoDReactionTableSpec& spec);
 
 TwoDReactionTableMatrices allocate_two_d_table_matrices(std::size_t table_size);
 
+TwoDReactionTableMatrices allocate_and_store_two_d_table_matrices(
+    std::vector<gsl_matrix*>& survival_matrices, std::vector<gsl_matrix*>& norm_matrices,
+    std::vector<gsl_matrix*>& pir_matrices, std::size_t table_index, std::size_t table_size);
+
 void release_two_d_table_matrices(std::vector<gsl_matrix*>& survival_matrices,
                                   std::vector<gsl_matrix*>& norm_matrices,
                                   std::vector<gsl_matrix*>& pir_matrices);

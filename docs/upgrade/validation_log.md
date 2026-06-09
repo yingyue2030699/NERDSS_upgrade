@@ -29,6 +29,62 @@ Artifacts:
 
 Notes:
 
+## 2026-06-09: Probability 2D Table Store Helper
+
+Date: 2026-06-09
+
+Branch: `codex/probability-2d-table-store-helper`
+
+Commit: Pending at validation log update
+
+Workstream: MathEngine / ProbabilityEngine extraction
+
+Environment:
+- OS: macOS, local Codex workspace
+- Compiler: Apple clang via default CMake compiler
+- GSL: 2.8 from Homebrew
+- CMake: Available on PATH
+- Make: GNU Make
+- MPI: Local `mpicxx` wrapper remains blocked by missing
+  `x86_64-apple-darwin13.4.0-clang++`
+
+Commands:
+```sh
+git diff --check HEAD
+tools/format_changed_files.sh --check --base HEAD
+cmake -S . -B /tmp/nerdss-probability-2d-table-store-helper-default
+cmake --build /tmp/nerdss-probability-2d-table-store-helper-default --target nerdss --parallel 4
+cmake -S . -B /tmp/nerdss-probability-2d-table-store-helper-gtest -DNERDSS_ENABLE_GTEST=ON
+make serial -j4
+make mpi -j4
+python3 tools/run_smoke_tests.py --skip-build --executable ./bin/nerdss --artifact-dir /tmp/nerdss-probability-2d-table-store-helper-smoke
+```
+
+Results:
+- `git diff --check HEAD`: passed.
+- `tools/format_changed_files.sh --check --base HEAD`: failed because the
+  touched legacy file
+  `src/reactions/determine_2D_bimolecular_reaction_probability.cpp` has broad
+  pre-existing clang-format drift; the new ProbabilityEngine helper files were
+  manually wrapped to satisfy the local style checker.
+- Default CMake configure: passed.
+- Default CMake `nerdss` target build: passed.
+- `cmake -S . -B /tmp/nerdss-probability-2d-table-store-helper-gtest
+  -DNERDSS_ENABLE_GTEST=ON`: failed as expected in this local workspace because
+  Google Test is not installed/discoverable (`GTEST_LIBRARY`,
+  `GTEST_INCLUDE_DIR`, and `GTEST_MAIN_LIBRARY` missing).
+- `make serial -j4`: passed.
+- `make mpi -j4`: failed as expected because the local `/opt/anaconda3/bin/mpicxx`
+  wrapper still invokes missing `x86_64-apple-darwin13.4.0-clang++`.
+- Smoke runner with `--skip-build`: passed.
+
+Artifacts:
+- Smoke artifacts: `/tmp/nerdss-probability-2d-table-store-helper-smoke`
+
+Notes:
+- This slice centralizes the vector resize/store step for 2D probability lookup
+  tables without changing table fill, event selection, or topology mutation.
+
 ## 2026-06-09: Reaction Completion Parser Diagnostics
 
 Date: 2026-06-09

@@ -42,6 +42,20 @@ TwoDReactionTableMatrices allocate_two_d_table_matrices(std::size_t table_size) 
   };
 }
 
+TwoDReactionTableMatrices allocate_and_store_two_d_table_matrices(
+    std::vector<gsl_matrix*>& survival_matrices, std::vector<gsl_matrix*>& norm_matrices,
+    std::vector<gsl_matrix*>& pir_matrices, std::size_t table_index, std::size_t table_size) {
+  survival_matrices.resize(table_index + 1);
+  norm_matrices.resize(table_index + 1);
+  pir_matrices.resize(table_index + 1);
+
+  const auto matrices = allocate_two_d_table_matrices(table_size);
+  survival_matrices[table_index] = matrices.survival_matrix;
+  norm_matrices[table_index] = matrices.norm_matrix;
+  pir_matrices[table_index] = matrices.pir_matrix;
+  return matrices;
+}
+
 void release_two_d_table_matrices(std::vector<gsl_matrix*>& survival_matrices,
                                   std::vector<gsl_matrix*>& norm_matrices,
                                   std::vector<gsl_matrix*>& pir_matrices) {
