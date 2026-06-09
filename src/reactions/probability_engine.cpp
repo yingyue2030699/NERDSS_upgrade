@@ -22,5 +22,13 @@ std::size_t two_d_table_size(const TwoDReactionTableSpec& spec) {
   return static_cast<std::size_t>(count);
 }
 
+TwoDReactionTableMatrices allocate_two_d_table_matrices(std::size_t table_size) {
+  return TwoDReactionTableMatrices{
+      gsl_matrix_alloc(2, table_size),
+      gsl_matrix_alloc(2, table_size),
+      gsl_matrix_alloc(table_size, table_size),
+  };
+}
+
 }  // namespace probability
 }  // namespace nerdss
