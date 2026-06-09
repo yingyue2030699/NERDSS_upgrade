@@ -499,8 +499,7 @@ void parse_reaction(std::ifstream& reactionFile, int& totSpecies, int& numProvid
             // Make sure everything that we need to be defined was provided
             auto status = oneRxn.isComplete(molTemplateList);
             if (!status.first) {
-                std::cerr << status.second << " [" << reaction << "].\n";
-                exit(1);
+                nerdss::parser::fail_parser_error("parse_reaction", status.second, reaction);
             } else
                 std::cout << status.second << " [" << reaction << "].\n";
 
@@ -518,8 +517,7 @@ void parse_reaction(std::ifstream& reactionFile, int& totSpecies, int& numProvid
             // Make sure everything that we need to be defined was provided
             auto status = parsedRxn.isComplete(molTemplateList);
             if (!status.first) {
-                std::cerr << "Error, " << status.second << " [" << reaction << "].\n";
-                exit(1);
+                nerdss::parser::fail_parser_error("parse_reaction", status.second, reaction);
             } else
                 std::cout << status.second << " [" << reaction << "].\n";
             parsedRxn.assemble_reactions(forwardRxns, backRxns, createDestructRxns, transmissionRxns, molTemplateList);

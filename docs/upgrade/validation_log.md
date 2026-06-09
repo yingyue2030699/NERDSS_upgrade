@@ -29,6 +29,64 @@ Artifacts:
 
 Notes:
 
+## 2026-06-09: Reaction Completion Parser Diagnostics
+
+Date: 2026-06-09
+
+Branch: `codex/parser-reaction-completion-diagnostics`
+
+Commit: Pending at validation log update
+
+Workstream: Parser diagnostics migration
+
+Environment:
+- OS: macOS, local Codex workspace
+- Compiler: Apple clang via default CMake compiler
+- GSL: 2.8 from Homebrew
+- CMake: Available on PATH
+- Make: GNU Make
+- MPI: Local `mpicxx` wrapper remains blocked by missing
+  `x86_64-apple-darwin13.4.0-clang++`
+
+Commands:
+```sh
+git diff --check HEAD
+tools/format_changed_files.sh --check --base HEAD
+cmake -S . -B /tmp/nerdss-parser-reaction-completion-diagnostics-default
+cmake --build /tmp/nerdss-parser-reaction-completion-diagnostics-default --target nerdss --parallel 4
+cmake -S . -B /tmp/nerdss-parser-reaction-completion-diagnostics-gtest -DNERDSS_ENABLE_GTEST=ON
+make serial -j4
+python3 tools/run_smoke_tests.py --skip-build --executable ./bin/nerdss --artifact-dir /tmp/nerdss-parser-reaction-completion-diagnostics-smoke
+/Users/yueying/Documents/NERDSS\ upgrade/NERDSS_upgrade/bin/nerdss -f /tmp/nerdss-reaction-missing-rate.inp -s 123
+```
+
+Results:
+- `git diff --check HEAD`: passed.
+- `tools/format_changed_files.sh --check --base HEAD`: failed because the
+  touched legacy file `src/parser/parse_reaction.cpp` has broad pre-existing
+  clang-format drift; this slice did not reformat the full file to keep the
+  review focused.
+- Default CMake configure: passed.
+- Default CMake `nerdss` target build: passed.
+- `cmake -S . -B /tmp/nerdss-parser-reaction-completion-diagnostics-gtest
+  -DNERDSS_ENABLE_GTEST=ON`: failed as expected in this local workspace because
+  Google Test is not installed/discoverable (`GTEST_LIBRARY`,
+  `GTEST_INCLUDE_DIR`, and `GTEST_MAIN_LIBRARY` missing).
+- `make serial -j4`: passed.
+- Smoke runner with `--skip-build`: passed.
+- Full executable malformed completion probe: passed with exit code `2` and
+  `PARSER_ERROR[parse_reaction]` for a reaction missing `onRate3Dka`.
+
+Artifacts:
+- Smoke artifacts:
+  `/tmp/nerdss-parser-reaction-completion-diagnostics-smoke`
+- Temporary malformed completion run:
+  `/tmp/nerdss-reaction-missing-rate-run`
+
+Notes:
+- This slice normalizes constructed-reaction completion failures after reaction
+  parsing has already identified the reaction object.
+
 ## 2026-06-09: Reaction Header Parser Diagnostics
 
 Date: 2026-06-09
