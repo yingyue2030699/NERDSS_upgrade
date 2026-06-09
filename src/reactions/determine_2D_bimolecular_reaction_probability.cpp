@@ -98,13 +98,8 @@ void determine_2D_bimolecular_reaction_probability(int simItr, int rxnIndex, int
                 size_t veclen { size_lookup(forwardRxns[rxnIndex].bindRadius, biMolData.Dtot, params, RMax) };
                 // std::cout << "Create new 2D table: " << ktemp << ", Dtot: " << biMolData.Dtot << " size: " << veclen
                 //           << '\n';
-                survMatrices.resize(DDTableIndex + 1);
-                normMatrices.resize(DDTableIndex + 1);
-                pirMatrices.resize(DDTableIndex + 1);
-                const auto matrices = nerdss::probability::allocate_two_d_table_matrices(veclen);
-                survMatrices[DDTableIndex] = matrices.survival_matrix;
-                normMatrices[DDTableIndex] = matrices.norm_matrix;
-                pirMatrices[DDTableIndex] = matrices.pir_matrix;
+                nerdss::probability::allocate_and_store_two_d_table_matrices(
+                    survMatrices, normMatrices, pirMatrices, DDTableIndex, veclen);
 
                 create_DDMatrices(survMatrices[DDTableIndex], normMatrices[DDTableIndex], pirMatrices[DDTableIndex],
                     forwardRxns[rxnIndex].bindRadius, biMolData.Dtot, RMax, ktemp, params);
