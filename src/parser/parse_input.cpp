@@ -115,7 +115,7 @@ void parse_input(std::string& fileName, Parameters& params, std::map<std::string
     bool hasParsedMol = false;
     std::ifstream inputFile { fileName };
     if (!inputFile) {
-        error("Cannot open input file '" + fileName + "' while parsing simulation input.");
+        nerdss::parser::fail_parser_file_error("parse_input", "cannot open input file", fileName);
     }
 
     std::vector<std::string> providedObs {};
@@ -404,7 +404,7 @@ void parse_input_for_add(std::string& fileName, Parameters& params, std::map<std
 
     std::ifstream inputFile { fileName };
     if (!inputFile) {
-        error("Cannot open add input file '" + fileName + "' while parsing restart add input.");
+        nerdss::parser::fail_parser_file_error("parse_input_for_add", "cannot open add input file", fileName);
     }
 
     std::vector<std::string> providedObs {};

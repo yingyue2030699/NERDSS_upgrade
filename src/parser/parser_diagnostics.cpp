@@ -27,5 +27,24 @@ void fail_parser_error(const std::string& parser_name, const std::string& detail
   std::exit(error::to_exit_status(error::default_exit_code(error::ErrorCategory::input)));
 }
 
+std::string format_parser_file_error(const std::string& parser_name, const std::string& detail,
+                                     const std::string& file_name) {
+  std::ostringstream message;
+  message << "PARSER_FILE_ERROR[" << parser_name << "]: " << detail;
+  if (!file_name.empty()) {
+    message << "\n  file: " << file_name;
+  }
+  message << "\n  category: " << error::to_string(error::ErrorCategory::file_io)
+          << "\n  exit_code: "
+          << error::to_exit_status(error::default_exit_code(error::ErrorCategory::file_io));
+  return message.str();
+}
+
+void fail_parser_file_error(const std::string& parser_name, const std::string& detail,
+                            const std::string& file_name) {
+  std::cerr << format_parser_file_error(parser_name, detail, file_name) << '\n';
+  std::exit(error::to_exit_status(error::default_exit_code(error::ErrorCategory::file_io)));
+}
+
 }  // namespace parser
 }  // namespace nerdss
