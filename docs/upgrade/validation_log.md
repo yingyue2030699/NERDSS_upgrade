@@ -29,6 +29,70 @@ Artifacts:
 
 Notes:
 
+## 2026-06-09: Observable Parser Diagnostics
+
+Date: 2026-06-09
+
+Branch: `codex/parser-observable-diagnostics`
+
+Commit: Pending at validation log update
+
+Workstream: Parser diagnostics migration
+
+Environment:
+- OS: macOS, local Codex workspace
+- Compiler: Apple clang via default CMake compiler
+- GSL: 2.8 from Homebrew
+- CMake: Available on PATH
+- Make: GNU Make
+- MPI: Local `mpicxx` wrapper remains blocked by missing
+  `x86_64-apple-darwin13.4.0-clang++`
+
+Commands:
+```sh
+git diff --check HEAD
+tools/format_changed_files.sh --check --base HEAD
+cmake -S . -B /tmp/nerdss-parser-observable-diagnostics-default
+cmake --build /tmp/nerdss-parser-observable-diagnostics-default --target nerdss --parallel 4
+cmake -S . -B /tmp/nerdss-parser-observable-diagnostics-gtest -DNERDSS_ENABLE_GTEST=ON
+make serial -j4
+python3 tools/run_smoke_tests.py --skip-build --executable ./bin/nerdss --artifact-dir /tmp/nerdss-parser-observable-diagnostics-smoke
+/Users/yueying/Documents/NERDSS\ upgrade/NERDSS_upgrade/bin/nerdss -f smoke.inp -s 123
+g++ -std=c++0x -Iinclude -I/opt/homebrew/Cellar/gsl/2.8/include /tmp/observable_diagnostics_probe.cpp obj/**/*.o -L/opt/homebrew/Cellar/gsl/2.8/lib -lgsl -lgslcblas -o /tmp/observable_diagnostics_probe
+/tmp/observable_diagnostics_probe
+```
+
+Results:
+- `git diff --check HEAD`: passed.
+- `tools/format_changed_files.sh --check --base HEAD`: failed because the
+  touched legacy file `src/parser/parse_observable.cpp` has broad pre-existing
+  clang-format drift; this slice did not reformat the whole file to keep the
+  review focused.
+- Default CMake configure: passed.
+- Default CMake `nerdss` target build: passed.
+- `cmake -S . -B /tmp/nerdss-parser-observable-diagnostics-gtest
+  -DNERDSS_ENABLE_GTEST=ON`: failed as expected in this local workspace because
+  Google Test is not installed/discoverable (`GTEST_LIBRARY`,
+  `GTEST_INCLUDE_DIR`, and `GTEST_MAIN_LIBRARY` missing).
+- `make serial -j4`: passed.
+- Smoke runner with `--skip-build`: passed.
+- Direct temporary observable parser probe: passed, exiting with code `2` and
+  `PARSER_ERROR[parse_observable]` for input `invalid obs A`.
+- End-to-end malformed observable input was also tried from
+  `/tmp/nerdss-parser-observable-diagnostics-negative`; it did not exercise
+  `parse_observable` because current `parse_input.cpp` collects observable
+  lines in `providedObs` but does not consume them on that path.
+
+Artifacts:
+- `src/parser/parse_observable.cpp`
+- This log entry.
+
+Notes:
+- This slice routes malformed observable input and unknown observable types
+  through the shared parser diagnostics path.
+- No CTest/custom test implementation was added; Google Test migration remains
+  the selected path for future unit and integration tests.
+
 ## 2026-06-09: Probability 2D Table Allocation
 
 Date: 2026-06-09

@@ -1,3 +1,4 @@
+#include "parser/parser_diagnostics.hpp"
 #include "parser/parser_functions.hpp"
 
 #include <sstream>
@@ -15,14 +16,17 @@ SpeciesTracker::Observable parse_observable(const std::string& line, const std::
         std::stringstream lineStream { line }; // to read in a formatted manner
 
         // read Observable information
-        lineStream >> obsTypeStr >> tmpObs.name >> specie;
+        if (!(lineStream >> obsTypeStr >> tmpObs.name >> specie)) {
+            nerdss::parser::fail_parser_error(
+                "parse_observable", "expected observable in format: molecule|complex name species", line);
+        }
 
         // determine the Observable type
         std::transform(obsTypeStr.begin(), obsTypeStr.end(), obsTypeStr.begin(), ::tolower);
         auto obsTypeItr = observableTypes.find(obsTypeStr);
         if (obsTypeItr == observableTypes.end()) {
-            std::cerr << "FATAL ERROR: Observable type " << obsTypeStr << " unknown. Exiting.\n";
-            exit(1);
+            nerdss::parser::fail_parser_error(
+                "parse_observable", "unknown observable type; expected molecule or complex", line);
         } else {
             tmpObs.observableType = obsTypeItr->second;
         }
