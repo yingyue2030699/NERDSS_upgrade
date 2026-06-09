@@ -1,6 +1,7 @@
 #include <unistd.h>
 
 #include <algorithm>
+#include <cctype>
 #include <chrono>
 #include <cstring>
 #include <exception>
@@ -24,12 +25,26 @@
 #include "mpi.h"
 #endif
 #include "mpi/mpi_function.hpp"
+#include "parser/parser_diagnostics.hpp"
 #include "parser/parser_functions.hpp"
 #include "reactions/unimolecular/unimolecular_reactions.hpp"
 #include "split.cpp"
 #include "system_setup/system_setup.hpp"
 #include "tracing.hpp"
 #include "trajectory_functions/trajectory_functions.hpp"
+
+namespace {
+
+bool has_only_trailing_space(const std::string& text, std::size_t start) {
+  for (std::size_t index = start; index < text.size(); ++index) {
+    if (!std::isspace(static_cast<unsigned char>(text[index]))) {
+      return false;
+    }
+  }
+  return true;
+}
+
+}  // namespace
 
 /**
  * Parses input files and initializes simulation parameters for a restart
@@ -83,7 +98,10 @@ void parse_input_for_a_restart_simulation(
 
   std::ifstream restartFileInput{restartFileNameInput};
   if (!restartFileInput)
-    error(mpiContext, "Cannot open restart file '" + restartFileNameInput + "'.");
+    nerdss::parser::fail_parser_file_error(
+        "parse_input_for_a_restart_simulation",
+        "cannot open restart file for rank " + std::to_string(mpiContext.rank),
+        restartFileNameInput);
 
   std::cout << "Reading restart file..." << std::endl;
   std::vector<TransmissionRxn> transmissionRxns{};
@@ -150,9 +168,27 @@ void parse_input_for_a_restart_simulation(
     while (getline(trajFile, line)) {
       auto headerItr = line.find(':');
       if (headerItr != std::string::npos) {
-        trajItr = std::stoi(line.substr(
-            headerItr + 1, std::string::npos));  // + 1 to ignore the colon
+        const std::string iteration_text = line.substr(
+            headerItr + 1, std::string::npos);  // + 1 to ignore the colon
+        try {
+          std::size_t parsed_chars{0};
+          trajItr = std::stoll(iteration_text, &parsed_chars);
+          if (!has_only_trailing_space(iteration_text, parsed_chars)) {
+            nerdss::parser::fail_parser_error(
+                "parse_input_for_a_restart_simulation",
+                "expected integer trajectory iteration after ':'", line);
+          }
+        } catch (const std::exception&) {
+          nerdss::parser::fail_parser_error(
+              "parse_input_for_a_restart_simulation",
+              "expected integer trajectory iteration after ':'", line);
+        }
       }
+    }
+    if (trajFile.bad()) {
+      nerdss::parser::fail_parser_file_error(
+          "parse_input_for_a_restart_simulation",
+          "error while reading trajectory file", params.trajFile);
     }
     if (trajItr == simItr) {
       std::cout << "Trajectory length matches provided restart file. "

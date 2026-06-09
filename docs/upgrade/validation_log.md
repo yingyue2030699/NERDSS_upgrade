@@ -29,6 +29,75 @@ Artifacts:
 
 Notes:
 
+## 2026-06-09: Parser Restart File-I/O Diagnostics
+
+Date: 2026-06-09
+
+Branch: `codex/parser-restart-file-io-diagnostics`
+
+Commit: Pending at validation log update
+
+Workstream: Parser diagnostics migration
+
+Environment:
+- OS: macOS, local Codex workspace
+- Compiler: Apple clang via default CMake compiler
+- GSL: 2.8 from Homebrew
+- CMake: Available on PATH
+- Make: GNU Make
+- MPI: Local `mpicxx` wrapper remains blocked by missing
+  `x86_64-apple-darwin13.4.0-clang++`
+
+Commands:
+```sh
+git diff --check HEAD
+tools/format_changed_files.sh --check --base HEAD
+cmake -S . -B /tmp/nerdss-parser-restart-file-io-diagnostics-default
+cmake --build /tmp/nerdss-parser-restart-file-io-diagnostics-default --target nerdss --parallel 4
+cmake -S . -B /tmp/nerdss-parser-restart-file-io-diagnostics-gtest -DNERDSS_ENABLE_GTEST=ON
+make serial -j4
+make mpi -j4
+python3 tools/run_smoke_tests.py --skip-build --executable ./bin/nerdss --artifact-dir /tmp/nerdss-parser-restart-file-io-diagnostics-smoke
+./bin/nerdss -f /tmp/definitely-missing-nerdss-input.inp
+g++ -std=c++0x -Iinclude /tmp/parser_file_diagnostics_probe.cpp obj/parser/parser_diagnostics.o -o /tmp/parser_file_diagnostics_probe
+/tmp/parser_file_diagnostics_probe
+```
+
+Results:
+- `git diff --check HEAD`: passed.
+- `tools/format_changed_files.sh --check --base HEAD`: failed because the
+  touched legacy parser files `src/parser/parse_input.cpp` and
+  `src/parser/parse_input_for_a_restart_simulation.cpp` have broad pre-existing
+  clang-format drift; the new diagnostics helper formatting was adjusted so the
+  remaining failures are legacy-file drift.
+- Default CMake configure: passed.
+- Default CMake `nerdss` target build: passed.
+- `cmake -S . -B /tmp/nerdss-parser-restart-file-io-diagnostics-gtest
+  -DNERDSS_ENABLE_GTEST=ON`: failed as expected in this local workspace because
+  Google Test is not installed/discoverable (`GTEST_LIBRARY`,
+  `GTEST_INCLUDE_DIR`, and `GTEST_MAIN_LIBRARY` missing).
+- `make serial -j4`: passed.
+- `make mpi -j4`: failed as expected because the local `/opt/anaconda3/bin/mpicxx`
+  wrapper still invokes missing `x86_64-apple-darwin13.4.0-clang++`.
+- Smoke runner with `--skip-build`: passed.
+- Missing main input probe: passed, exiting with code `9` and
+  `PARSER_FILE_ERROR[parse_input]`.
+- Temporary direct file-diagnostics probe: passed, exiting with code `9` and
+  `PARSER_FILE_ERROR[probe]`.
+
+Artifacts:
+- Smoke artifacts:
+  `/tmp/nerdss-parser-restart-file-io-diagnostics-smoke`
+- Temporary direct file-diagnostics probe:
+  `/tmp/parser_file_diagnostics_probe`
+
+Notes:
+- This slice routes parser file-open failures through structured
+  `PARSER_FILE_ERROR` diagnostics and guards restart trajectory iteration
+  parsing against malformed integer headers.
+- A compact restart fixture was not available in this slice, so restart
+  trajectory malformed-header runtime coverage remains a follow-up.
+
 ## 2026-06-09: Reaction Completion Parser Diagnostics
 
 Date: 2026-06-09
