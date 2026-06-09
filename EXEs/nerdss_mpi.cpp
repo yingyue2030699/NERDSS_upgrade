@@ -41,6 +41,7 @@
 #include "parser/parser_functions.hpp"
 #include "reactions/association/association.hpp"
 #include "reactions/bimolecular/bimolecular_reactions.hpp"
+#include "reactions/bimolecular/probability_engine.hpp"
 #include "reactions/implicitlipid/implicitlipid_reactions.hpp"
 #include "reactions/shared_reaction_functions.hpp"
 #include "reactions/unimolecular/unimolecular_reactions.hpp"
@@ -1046,6 +1047,8 @@ int main(int argc, char* argv[]) {
     merge_outputs(mpiContext.nprocs, molTemplateList.size());
   }
 
+  nerdss::probability::release_two_d_table_matrices(survMatrices, normMatrices,
+                                                    pirMatrices);
   delete[] tableIDs;
   gsl_rng_free(r);
 

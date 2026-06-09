@@ -29,6 +29,61 @@ Artifacts:
 
 Notes:
 
+## 2026-06-09: Probability 2D Table Release
+
+Date: 2026-06-09
+
+Branch: `codex/probability-2d-table-release`
+
+Commit: Pending at validation log update
+
+Workstream: MathEngine / ProbabilityEngine extraction
+
+Environment:
+- OS: macOS, local Codex workspace
+- Compiler: Apple clang via default CMake compiler
+- GSL: 2.8 from Homebrew
+- CMake: Available on PATH
+- Make: GNU Make
+- MPI: Local `mpicxx` wrapper remains blocked by missing
+  `x86_64-apple-darwin13.4.0-clang++`
+
+Commands:
+```sh
+git diff --check HEAD
+tools/format_changed_files.sh --check --base HEAD
+cmake -S . -B /tmp/nerdss-probability-2d-table-release-default
+cmake --build /tmp/nerdss-probability-2d-table-release-default --target nerdss --parallel 4
+cmake -S . -B /tmp/nerdss-probability-2d-table-release-gtest -DNERDSS_ENABLE_GTEST=ON
+make serial -j4
+make mpi -j4
+python3 tools/run_smoke_tests.py --skip-build --executable ./bin/nerdss --artifact-dir /tmp/nerdss-probability-2d-table-release-smoke
+```
+
+Results:
+- `git diff --check HEAD`: passed.
+- `tools/format_changed_files.sh --check --base HEAD`: failed because the
+  touched legacy entry points `EXEs/nerdss.cpp` and `EXEs/nerdss_mpi.cpp` have
+  broad pre-existing clang-format drift; this slice did not reformat the full
+  executables to keep the review focused.
+- Default CMake configure: passed.
+- Default CMake `nerdss` target build: passed.
+- `cmake -S . -B /tmp/nerdss-probability-2d-table-release-gtest
+  -DNERDSS_ENABLE_GTEST=ON`: failed as expected in this local workspace because
+  Google Test is not installed/discoverable (`GTEST_LIBRARY`,
+  `GTEST_INCLUDE_DIR`, and `GTEST_MAIN_LIBRARY` missing).
+- `make serial -j4`: passed.
+- `make mpi -j4`: failed as expected because the local `/opt/anaconda3/bin/mpicxx`
+  wrapper still invokes missing `x86_64-apple-darwin13.4.0-clang++`.
+- Smoke runner with `--skip-build`: passed.
+
+Artifacts:
+- Smoke artifacts: `/tmp/nerdss-probability-2d-table-release-smoke`
+
+Notes:
+- This slice centralizes release of the 2D probability lookup table matrices
+  without changing table fill, event selection, or topology mutation behavior.
+
 ## 2026-06-09: Observable Parser Diagnostics
 
 Date: 2026-06-09

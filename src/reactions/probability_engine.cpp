@@ -4,6 +4,18 @@
 
 namespace nerdss {
 namespace probability {
+namespace {
+
+void free_matrix_vector(std::vector<gsl_matrix*>& matrices) {
+  for (gsl_matrix* matrix : matrices) {
+    if (matrix != nullptr) {
+      gsl_matrix_free(matrix);
+    }
+  }
+  matrices.clear();
+}
+
+}  // namespace
 
 double two_d_table_step_size(const TwoDReactionTableSpec& spec) {
   return std::sqrt(spec.diffusion_total * spec.time_step) / 50;
@@ -28,6 +40,14 @@ TwoDReactionTableMatrices allocate_two_d_table_matrices(std::size_t table_size) 
       gsl_matrix_alloc(2, table_size),
       gsl_matrix_alloc(table_size, table_size),
   };
+}
+
+void release_two_d_table_matrices(std::vector<gsl_matrix*>& survival_matrices,
+                                  std::vector<gsl_matrix*>& norm_matrices,
+                                  std::vector<gsl_matrix*>& pir_matrices) {
+  free_matrix_vector(survival_matrices);
+  free_matrix_vector(norm_matrices);
+  free_matrix_vector(pir_matrices);
 }
 
 }  // namespace probability
