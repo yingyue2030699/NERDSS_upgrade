@@ -1,5 +1,6 @@
 #include "error_handling.hpp"
 #include "io/io.hpp"
+#include "parser/parser_diagnostics.hpp"
 #include "parser/parser_functions.hpp"
 #include <cmath>
 #include <limits>
@@ -52,7 +53,7 @@ void parse_reaction(std::ifstream& reactionFile, int& totSpecies, int& numProvid
             reactantSide = reaction.substr(0, position);
             productSide = reaction.substr(position + 2, std::string::npos); // +2 is to remove delimiter
         } else
-            invalid_rxn(std::string("Missing reaction arrow."), __func__, __LINE__);
+            nerdss::parser::fail_parser_error("parse_reaction", "expected reaction arrow -> or <->", reaction);
     }
 
     { // break into species based on '+'
@@ -77,9 +78,8 @@ void parse_reaction(std::ifstream& reactionFile, int& totSpecies, int& numProvid
 
     // check to make sure the reactants side only has two molecules
     if (reactantSpecies.size() > 2) {
-        std::cerr << "Error, invalid reaction.\n";
-        std::cerr << "Reaction " << reaction << " has more than two reacting molecules.\n";
-        exit(1);
+        nerdss::parser::fail_parser_error(
+            "parse_reaction", "expected at most two reacting species on reactant side", reaction);
     }
 
     // Check for the reaction type
@@ -105,8 +105,8 @@ void parse_reaction(std::ifstream& reactionFile, int& totSpecies, int& numProvid
             parsedRxn.rxnType = ReactionType::destruction;
             std::cout << "Destruction reaction detected\n";
         } else {
-            std::cerr << "FATAL ERROR: Ccannot determine reaction type. Please check before moving on.\n";
-            exit(1);
+            nerdss::parser::fail_parser_error(
+                "parse_reaction", "reaction cannot have null/0 on both reactant and product sides", reaction);
         }
     } else if ((reactantSpecies.size()) == 1 && (productSpecies.size() == 2)) {
         parsedRxn.rxnType = ReactionType::uniMolCreation;
@@ -193,8 +193,18 @@ void parse_reaction(std::ifstream& reactionFile, int& totSpecies, int& numProvid
         line.erase(
             std::remove_if(line.begin(), line.end(), [](unsigned char x) { return std::isspace(x); }), line.end());
 
+        if (line.empty()) {
+            initialPos = reactionFile.tellg();
+            continue;
+        }
+
         if ((line.find('#') != std::string::npos) && line[0] != '#')
             remove_comment(line);
+
+        if (line.empty()) {
+            initialPos = reactionFile.tellg();
+            continue;
+        }
 
         if (line[0] == '#') {
             initialPos = reactionFile.tellg();
@@ -214,8 +224,8 @@ void parse_reaction(std::ifstream& reactionFile, int& totSpecies, int& numProvid
             else if (*lineItr == '=') {
                 auto keyFind = rxnKeywords.find(buffer);
                 if (keyFind == rxnKeywords.end()) {
-                    std::cerr << buffer + " is an invalid argument for the reactions block. Exiting... San Check!";
-                    exit(1);
+                    nerdss::parser::fail_parser_error(
+                        "parse_reaction", "unknown reaction parameter keyword: " + buffer, line);
                 }
 
                 line.erase(line.begin(), lineItr + 1); // hard coded for character length '='

@@ -29,6 +29,68 @@ Artifacts:
 
 Notes:
 
+## 2026-06-09: Reaction Header Parser Diagnostics
+
+Date: 2026-06-09
+
+Branch: `codex/parser-reaction-header-diagnostics`
+
+Commit: Pending at validation log update
+
+Workstream: Parser diagnostics migration
+
+Environment:
+- OS: macOS, local Codex workspace
+- Compiler: Apple clang via default CMake compiler
+- GSL: 2.8 from Homebrew
+- CMake: Available on PATH
+- Make: GNU Make
+- MPI: Local `mpicxx` wrapper remains blocked by missing
+  `x86_64-apple-darwin13.4.0-clang++`
+
+Commands:
+```sh
+git diff --check HEAD
+tools/format_changed_files.sh --check --base HEAD
+cmake -S . -B /tmp/nerdss-parser-reaction-header-diagnostics-default
+cmake --build /tmp/nerdss-parser-reaction-header-diagnostics-default --target nerdss --parallel 4
+cmake -S . -B /tmp/nerdss-parser-reaction-header-diagnostics-gtest -DNERDSS_ENABLE_GTEST=ON
+make serial -j4
+python3 tools/run_smoke_tests.py --skip-build --executable ./bin/nerdss --artifact-dir /tmp/nerdss-parser-reaction-header-diagnostics-smoke
+g++ -std=c++0x -Iinclude -I/opt/homebrew/Cellar/gsl/2.8/include /tmp/reaction_diagnostics_probe.cpp obj/**/*.o -L/opt/homebrew/Cellar/gsl/2.8/lib -lgsl -lgslcblas -o /tmp/reaction_diagnostics_probe
+/tmp/reaction_diagnostics_probe
+```
+
+Results:
+- `git diff --check HEAD`: passed.
+- `tools/format_changed_files.sh --check --base HEAD`: failed because the
+  touched legacy file `src/parser/parse_reaction.cpp` has broad pre-existing
+  clang-format drift; this slice did not reformat the full file to keep the
+  review focused.
+- Default CMake configure: passed.
+- Default CMake `nerdss` target build: passed.
+- `cmake -S . -B /tmp/nerdss-parser-reaction-header-diagnostics-gtest
+  -DNERDSS_ENABLE_GTEST=ON`: failed as expected in this local workspace because
+  Google Test is not installed/discoverable (`GTEST_LIBRARY`,
+  `GTEST_INCLUDE_DIR`, and `GTEST_MAIN_LIBRARY` missing).
+- `make serial -j4`: passed.
+- Smoke runner with `--skip-build`: passed.
+- Temporary direct parser probe: passed for missing arrow, too many reactants,
+  and null/0 on both sides; each exited with code `2` and
+  `PARSER_ERROR[parse_reaction]`.
+- Full executable malformed-keyword probe: passed with exit code `2` and
+  `PARSER_ERROR[parse_reaction]` for `badRate = 1`.
+
+Artifacts:
+- Smoke artifacts: `/tmp/nerdss-parser-reaction-header-diagnostics-smoke`
+- Temporary parser probe: `/tmp/reaction_diagnostics_probe`
+- Temporary malformed keyword run:
+  `/tmp/nerdss-reaction-unknown-keyword-run`
+
+Notes:
+- This slice normalizes only early reaction syntax and keyword diagnostics; it
+  intentionally leaves later constructed-reaction completion errors unchanged.
+
 ## 2026-06-09: Probability 2D Table Release
 
 Date: 2026-06-09
